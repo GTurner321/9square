@@ -1041,15 +1041,27 @@ sup {
   justify-content: center;
   text-align: center;
   padding: 10px;
+  /* Slight 3D bevel around the edge - lighter top/left, darker
+     bottom/right, plus a subtle inner highlight/shadow - so the panel
+     reads as a raised metal shutter rather than a flat striped square. */
+  border-radius: 9px;
+  border: 1px solid #8C8C82;
+  border-top: 2px solid #E2E2D8;
+  border-left: 2px solid #D6D6CA;
+  border-right: 2px solid #7C7C72;
+  border-bottom: 3px solid #6E6E64;
+  box-shadow:
+    inset 0 1px 2px rgba(255, 255, 255, 0.45),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .square__shutter-text {
-  font-family: 'Black Ops One', var(--font-body);
-  font-weight: 400;
-  font-size: 2.1rem;
+  font-family: Tahoma, Geneva, Verdana, var(--font-body);
+  font-weight: 700;
+  font-size: 1.8rem;
   line-height: 1.15;
-  color: #C9C9BE;
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.35), 1px 1px 1px rgba(255, 255, 255, 0.55);
+  color: #5A5A52;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.55);
   letter-spacing: 0.02em;
 }
 
@@ -1059,7 +1071,7 @@ sup {
 
 .square__shutter-text--title {
   text-transform: uppercase;
-  font-size: 1.6rem;
+  font-size: 1.35rem;
   letter-spacing: 0.1em;
 }
 
