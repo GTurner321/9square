@@ -575,6 +575,16 @@ button:focus-visible {
   line-height: 1;
 }
 
+/* Curly quote marks render inconsistently in Inter (and disappear
+   entirely if the Google Font fails to load, e.g. on a filtered
+   network) - pinning this button to well-established serif fonts
+   (present on every OS, no webfont dependency) guarantees a properly
+   curved "" rather than risking a straight-looking fallback. */
+#quotesBtn {
+  font-family: Georgia, 'Times New Roman', Cambria, serif;
+  font-weight: 700;
+}
+
 .icon-btn svg {
   display: block;
 }
@@ -1024,7 +1034,7 @@ sup {
 }
 
 .square__shutter-text {
-  font-family: 'Open Sans', var(--font-body);
+  font-family: 'Black Ops One', var(--font-body);
   font-weight: 400;
   font-size: 2.1rem;
   line-height: 1.15;
@@ -1072,7 +1082,7 @@ sup {
   position: relative;
   background: var(--panel);
   border-radius: var(--radius);
-  padding: 44px 36px 36px;
+  padding: 56px 36px 36px;
   max-width: 560px;
   width: 100%;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
@@ -1117,13 +1127,74 @@ sup {
   height: 30px;
   border-radius: 50%;
   border: none;
-  background: var(--board);
-  color: var(--chalk-yellow);
+  background: rgba(107, 114, 128, 0.1);
+  color: var(--muted);
   font-size: 1rem;
   cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
-.quotes-modal__icon-btn:hover { background: #0F1A30; }
+.quotes-modal__icon-btn:hover { background: rgba(107, 114, 128, 0.2); color: var(--ink); }
+
+/* ---------- Contact popup ---------- */
+
+.contact-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 26, 48, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+
+.contact-modal {
+  position: relative;
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 44px 36px 36px;
+  max-width: 480px;
+  width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  text-align: left;
+}
+
+.contact-modal__topbar {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.contact-modal__title {
+  margin: 0 0 10px;
+  font-size: 1.3rem;
+  color: var(--ink);
+}
+
+.contact-modal__note {
+  margin: 0 0 20px;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.contact-modal__actions {
+  margin-top: 6px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.field__sublabel {
+  margin: -4px 0 6px;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
 
 /* ---------- Reduced motion ---------- */
 

@@ -126,7 +126,7 @@ const Grid = (() => {
     // it under the shorter, narrower numerator would leave a divider
     // that doesn't span the wider content below it.
     text = text.replace(/\{([^{}]+)\}/g, (m, inner) => {
-      const slashIndex = inner.indexOf('/');
+      const slashIndex = findDivisionSlash(inner);
       if (slashIndex === -1) return m; // no slash - leave the braces as literal text
       const num = inner.slice(0, slashIndex);
       const den = inner.slice(slashIndex + 1);
@@ -137,7 +137,7 @@ const Grid = (() => {
     // Column vectors: [top/bottom] - same stacking mechanism as a {}
     // fraction, but square brackets and no dividing line.
     text = text.replace(/\[([^\[\]]+)\]/g, (m, inner) => {
-      const slashIndex = inner.indexOf('/');
+      const slashIndex = findDivisionSlash(inner);
       if (slashIndex === -1) return m; // no slash - leave the brackets as literal text
       const top = inner.slice(0, slashIndex);
       const bottom = inner.slice(slashIndex + 1);
@@ -145,6 +145,22 @@ const Grid = (() => {
     });
 
     return text;
+  }
+
+  // Finds the "real" division slash inside a {...} or [...] block,
+  // ignoring any "/" that's actually part of an HTML closing tag
+  // already inserted by an earlier pass (e.g. exponents run first, so
+  // "4x^2/6x^2" becomes "4x<sup>2</sup>/6x<sup>2</sup>" before this
+  // runs - a naive indexOf('/') finds the "/" inside "</sup>" first
+  // and splits the fraction there instead of at the real division
+  // sign, producing broken half-tags like "4x<sup>2<" as the
+  // numerator). A closing tag's slash is always immediately followed
+  // by a run of letters then ">" (</sup>, </sub>, </span>), so
+  // excluding slashes that match that pattern reliably finds the
+  // actual division slash instead.
+  function findDivisionSlash(inner) {
+    const match = inner.match(/\/(?![a-zA-Z]+>)/);
+    return match ? match.index : -1;
   }
 
   function init() {
@@ -696,12 +712,22 @@ const Grid = (() => {
 
   function autosizeElement(el, maxRem, minRem, measureSelf) {
     const container = measureSelf ? el : el.parentElement;
+
+    // A stacked column vector like [a/b] is visually much taller than a
+    // line of plain text (two short rows stacked inside one "line"),
+    // which can make this loop hit its usual floor before the line has
+    // actually narrowed enough to stop wrapping onto a second line -
+    // wrapping is worse for a vector-bearing line than going smaller,
+    // so those get a lower floor to prioritise staying on one line.
+    const hasVector = !!el.querySelector('.vector');
+    const effectiveMinRem = hasVector ? Math.min(minRem, 0.45) : minRem;
+
     let size = maxRem;
     el.style.fontSize = size + 'rem';
     let guard = 0;
     while (
       (el.scrollHeight > container.clientHeight || el.scrollWidth > container.clientWidth) &&
-      size > minRem &&
+      size > effectiveMinRem &&
       guard < 40
     ) {
       size -= 0.03;
