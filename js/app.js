@@ -26,6 +26,8 @@ const App = (() => {
     el.returnQuizBtn = document.getElementById('returnQuizBtn');
     el.setupForwardBtn = document.getElementById('setupForwardBtn');
     el.setupFullscreenBtn = document.getElementById('setupFullscreenBtn');
+    el.coffeeBtn = document.getElementById('coffeeBtn');
+    el.contactBtn = document.getElementById('contactBtn');
 
     el.backBtn.addEventListener('click', backToSetup);
     el.quotesBtn.addEventListener('click', () => QuotesModal.open());
@@ -37,6 +39,8 @@ const App = (() => {
     el.returnQuizBtn.addEventListener('click', returnToQuiz);
     el.setupForwardBtn.addEventListener('click', returnToQuiz);
     el.setupFullscreenBtn.addEventListener('click', toggleFullscreen);
+    el.coffeeBtn.addEventListener('click', onCoffeeClick);
+    el.contactBtn.addEventListener('click', () => ContactModal.open());
 
     document.addEventListener('fullscreenchange', () => {
       // Layout dimensions change on entering/exiting fullscreen, so every
@@ -49,13 +53,18 @@ const App = (() => {
     // others from initializing too, which is what actually happened
     // when a stale saved-starter entry once broke Setup.init() and, as
     // a side effect, silently skipped Grid.init() right after it.
-    [Setup, Grid, Timer, QuotesModal].forEach(mod => {
+    [Setup, Grid, Timer, QuotesModal, ContactModal, Analytics].forEach(mod => {
       try {
         mod.init();
       } catch (err) {
         console.error('Module failed to initialize:', err);
       }
     });
+  }
+
+  function onCoffeeClick() {
+    if (!CONFIG.COFFEE_URL) return;
+    window.open(CONFIG.COFFEE_URL, '_blank', 'noopener');
   }
 
   function resetShutterToggle() {
@@ -97,6 +106,7 @@ const App = (() => {
     Timer.reset();
     resetShutterToggle();
     resetGridSizeToggle();
+    Analytics.trackQuizGenerated();
   }
 
   function showGridFromSaved(config, orderList) {
@@ -106,6 +116,7 @@ const App = (() => {
     Timer.reset();
     resetShutterToggle();
     resetGridSizeToggle();
+    Analytics.trackQuizGenerated();
   }
 
   function backToSetup() {

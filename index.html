@@ -20,6 +20,12 @@
       <span class="board__title-text">9 SQUARE — MATHS STARTERS</span>
       <span class="board__title-squares board__title-squares--right" aria-hidden="true">☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐</span>
     </h1>
+    <button type="button" class="icon-btn" id="coffeeBtn" title="Buy me a coffee">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="contactBtn" title="Send a message">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
     <button type="button" class="icon-btn icon-btn--symbol" id="setupFullscreenBtn" title="Fullscreen">⤢</button>
   </div>
 </header>
@@ -43,12 +49,12 @@
             <span class="field__label">Books</span>
             <div class="topic-checklist" id="bookChecklist"><p class="hint">Loading books…</p></div>
           </div>
-          <div class="field">
+          <div class="field" id="chaptersField" hidden>
             <span class="field__label">Chapters</span>
             <p class="hint" id="chapterHelp">Choose at least one book first…</p>
             <div class="topic-checklist" id="chapterChecklist"></div>
           </div>
-          <div class="field" id="subtopicField">
+          <div class="field" id="subtopicField" hidden>
             <span class="field__label">Sub-topics</span>
             <p class="hint" id="subtopicHelp">Choose at least one chapter first…</p>
             <div class="topic-checklist" id="subtopicChecklist"></div>
@@ -170,6 +176,34 @@
   <div class="grid" id="gridContainer"></div>
 </div>
 
+<div class="contact-overlay" id="contactOverlay" hidden>
+  <div class="contact-modal">
+    <div class="contact-modal__topbar">
+      <button type="button" class="quotes-modal__icon-btn" id="contactCloseBtn" title="Close">✕</button>
+    </div>
+    <h2 class="contact-modal__title">Get in touch</h2>
+    <p class="contact-modal__note">Thank you for using my Maths starter generator. If you have any comments about the questions, questions you'd like to add, or anything else you'd like to suggest, then drop me a message.<br><br>Thanks,<br>George<br>Maths Teacher at Jumeirah College</p>
+    <form id="contactForm">
+      <div class="field">
+        <label for="contactName">Your name (optional)</label>
+        <input type="text" id="contactName" name="name" autocomplete="name">
+      </div>
+      <div class="field">
+        <label for="contactEmail">Your email (optional, only if you'd like a reply)</label>
+        <input type="email" id="contactEmail" name="email" autocomplete="email">
+      </div>
+      <div class="field">
+        <label for="contactMessage">Message</label>
+        <textarea id="contactMessage" name="message" rows="5" required></textarea>
+      </div>
+      <div class="contact-modal__actions">
+        <button type="submit" class="btn btn--primary" id="contactSendBtn">Send message</button>
+      </div>
+      <p class="hint" id="contactStatus" hidden></p>
+    </form>
+  </div>
+</div>
+
 <div class="quotes-overlay" id="quotesOverlay" hidden>
   <div class="quotes-modal">
     <div class="quotes-modal__topbar">
@@ -184,7 +218,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/dataService.js"></script>
+<script src="js/analytics.js"></script>
 <script src="js/quotesModal.js"></script>
+<script src="js/contactModal.js"></script>
 <script src="js/poolBuilder.js"></script>
 <script src="js/selectionEngine.js"></script>
 <script src="js/studentPicker.js"></script>

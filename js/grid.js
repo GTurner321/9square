@@ -604,7 +604,20 @@ const Grid = (() => {
           .map(s => s.studentName)
       );
       shownElsewhere.add(state.studentName);
-      const replacement = StudentPicker.randomExcluding(config.students, shownElsewhere);
+      let replacement = StudentPicker.randomExcluding(config.students, shownElsewhere);
+
+      // With a small class (or once every square has been revealed via
+      // the global "show all" button), every other student may already
+      // be showing somewhere else on the grid, leaving no candidate
+      // that avoids all of them - that used to make refresh silently
+      // do nothing ("the choice is fixed"). Falling back to "just pick
+      // someone other than who's currently in THIS box" guarantees the
+      // click always changes something, even if that means briefly
+      // duplicating a name shown elsewhere.
+      if (!replacement) {
+        replacement = StudentPicker.randomExcluding(config.students, new Set([state.studentName]));
+      }
+
       if (replacement) state.studentName = replacement;
     }
     rerenderSquare(index);

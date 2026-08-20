@@ -12,6 +12,31 @@ const CONFIG = {
 
   DF_REFS_SHEET_URL: 'https://docs.google.com/spreadsheets/d/11OmFm5H_AHGHPGFbjY3X6-VAVuiJWHZUR_W-bwZhhYk/edit?usp=sharing',
 
+  // --- Analytics (Supabase) ---
+  // Leave both blank to disable analytics entirely (Analytics.init()
+  // becomes a no-op). See analytics-setup.sql / README for how to
+  // create the table and get these values from your Supabase project
+  // (Project Settings -> API). The anon key is safe to expose here -
+  // row-level security on the table only allows INSERT, never SELECT,
+  // so this key can add rows but can't be used to read data back.
+  SUPABASE_URL: 'https://kwonkpphuoczmahkyltq.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_Al3Tpa2ymhl_r7xZQxeRCA_EZsG4VRm',   // Settings -> API Keys in Supabase: the "Publishable key"
+                            // (sb_publishable_...) on newer projects, or the legacy
+                            // "anon / public" key on older ones. NEVER use the
+                            // "Secret key" / service_role key here - that one must
+                            // stay private and never appear in this file.
+
+  // --- Contact form (Formspree) ---
+  // Sign up free at formspree.io, create a form pointed at your email,
+  // and paste its endpoint ID here (the part after "https://formspree.io/f/").
+  // Leave blank to disable the contact button.
+  FORMSPREE_FORM_ID: '',
+
+  // --- Buy me a coffee ---
+  // A Ko-fi, Buy Me a Coffee, or Stripe Payment Link URL. Leave blank
+  // to disable the coffee button.
+  COFFEE_URL: 'https://ko-fi.com/gturner123',
+
   // Minimum number of level-tagged questions (level 1-3) a pool needs
   // before level-specific selection is meaningful. Currently unused by
   // setup.js (level select is always fully enabled), but still read by

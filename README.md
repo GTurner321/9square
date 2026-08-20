@@ -14,6 +14,49 @@
 5. Source: **Deploy from a branch**, Branch: `main`, folder: `/ (root)` → **Save**.
 6. GitHub gives you a URL, usually `https://<yourusername>.github.io/question-grid/` — allow a minute or two the first time.
 
+## New setup steps (analytics, contact form, coffee button)
+
+Three optional features are wired into the code but need a bit of
+account setup before they'll do anything — until then they're silent
+no-ops and everything else works exactly as before.
+
+### 1. Usage analytics (Supabase)
+
+Tracks, anonymously: site loads, distinct sessions, quizzes generated,
+and time spent actually visible on screen (checked in 2-minute
+intervals via `document.visibilityState`, not just "tab open").
+
+**No cookies, no persistent tracking**: the only per-visit id is a
+random token in `sessionStorage`, which the browser deletes the moment
+the tab closes. Nothing links one visit to the next, so there's
+nothing to ask cookie-consent for.
+
+Setup:
+1. Create a free project at [supabase.com](https://supabase.com).
+2. In the SQL editor, run `analytics-setup.sql` (included in this repo) — it creates the `events` table with insert-only row-level security.
+3. Project Settings -> API: copy the **Project URL** and the **anon / public key** (NOT the `service_role` key).
+4. Paste them into `js/config.js` as `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+5. To check the numbers, use the SQL editor again — example queries are commented at the bottom of `analytics-setup.sql`.
+
+### 2. Contact button (paper airplane icon)
+
+Sends a message to you without your email address ever appearing in
+the page's code — it goes via [Formspree](https://formspree.io):
+1. Sign up free (50 submissions/month on the free plan) and create a form; confirm gt301277@gmail.com as the recipient when Formspree emails you to verify it.
+2. Copy the form's endpoint ID (the part after `https://formspree.io/f/`).
+3. Paste it into `js/config.js` as `FORMSPREE_FORM_ID`.
+
+### 3. Coffee button
+
+Opens `CONFIG.COFFEE_URL` in a new tab — point it at whichever payment
+link you set up:
+- **[Ko-fi](https://ko-fi.com)** — 0% platform fee on one-off "buy a coffee" payments (Stripe/PayPal's own ~2.9%+ processing fee still applies, that's unavoidable anywhere). Easiest to set up; your page URL is just `https://ko-fi.com/<yourusername>`.
+- **Buy Me a Coffee** — similar, but takes a 5% platform fee on top of processing.
+- **Stripe Payment Link** — most control and lowest fees (~2.9%+30¢, no platform cut), but a little more setup in the Stripe dashboard.
+
+Ko-fi is probably the path of least resistance. Once you have a URL,
+paste it into `js/config.js` as `COFFEE_URL`.
+
 ## Current status
 
 **Both the setup page and the 9-square grid are built and wired together.**
@@ -23,7 +66,8 @@ Google Sheet + Apps Script backend — no server involved.
 Setup page — three ways to choose a set of questions, picked via tabs:
 - **Pearson book**: pick a book, then multi-select chapters. Each chapter's
   hidden Dr Frost ref numbers (from `pearson_books.csv`) are unioned and
-  used to filter `practice_set.csv`.
+  used to filter `practice_set.csv`. Chapters stays hidden until a book is
+  ticked; Sub-topics stays hidden until a chapter is ticked.
 - **Dr Frost skills**: type skill numbers directly, comma-separated
   (e.g. `112, 115`). A "look up skill numbers" link points at your shared
   reference sheet once `DF_REFS_SHEET_URL` is set in `js/config.js`.
@@ -37,6 +81,7 @@ Also on the setup page:
 - Question level dropdown (full mix / progressive / single level)
 - Pasted student list, deduped, with save/reuse of class lists
 - Generate hands everything off to the grid
+- Header (left of fullscreen): coffee-cup button (opens your payment link) and paper-airplane button (opens a contact popup, sends via Formspree)
 
 Grid view:
 - 16 squares, filled from the fetched bank only (no further network calls - survives a dropped connection)
@@ -45,7 +90,7 @@ Grid view:
 - Per-square icons: ✓ answer, ☰ answer choices, ? hint, i explanation - each only appears if that data exists for the question; only one panel open at a time
 - Answer choices: click one, correct highlights green, both wrong ones show red with a strike-through, with a short correct/incorrect tone
 - ↻ refresh picks a different question for that square only, never duplicating what's showing elsewhere
-- Student banner (only shown if a class list was pasted): first reveal uses a fair round-robin so everyone's used once before anyone repeats; the icon becomes a refresh after reveal for a genuinely random re-pick (never clashing with names currently shown elsewhere)
+- Student banner (only shown if a class list was pasted): first reveal uses a fair round-robin so everyone's used once before anyone repeats; the icon becomes a refresh after reveal for a genuinely random re-pick (avoids names currently shown elsewhere when possible; if every other student is already showing somewhere — e.g. right after the global "reveal all students" button, on a small class — it falls back to just picking someone other than the current box's name, rather than getting stuck)
 - Header: back to setup, quote popup, reveal-all (shutters), 9↔4 square toggle, global student show/hide-all, save, fullscreen; a stopwatch (00:00, +1/-1 min, single play/pause toggle) sits inline in the header row
 - Covered squares show an embossed sum-to-9 expression (random per square); the centre square always shows the "9 SQUARE" title instead - purely cosmetic, the real question underneath is unaffected
 - The 9↔4 toggle hides 5 squares (keeping the 4 corners) without discarding them - switching back restores the hidden 5 exactly as they were. While in 4-square mode, the refresh (↻) button draws from those 5 hidden questions first, in reading order, before falling back to a normal random pick
@@ -59,7 +104,7 @@ index.html               Setup view + grid view markup
 css/styles.css            All styling
 csv/pearson_books.csv      Book -> chapter -> hidden Dr Frost ref numbers
 csv/practice_set.csv       The question bank
-js/config.js               CSV paths + tunable thresholds + Dr Frost sheet link
+js/config.js               CSV paths + tunable thresholds + Dr Frost sheet link + analytics/contact/coffee config
 js/dataService.js          Loads and normalises the two CSVs (via PapaParse)
 js/poolBuilder.js          Filters the practice set by book/chapters or by Dr Frost refs
 js/selectionEngine.js      Question picking: recency methods, level rules, duplicate-free refresh
@@ -70,6 +115,9 @@ js/timer.js                  Header stopwatch: 00:00 start, +1/-1 min, start/pau
 js/grid.js                  Renders and manages the 9 squares, shutters, pastel colours
 js/setup.js                 Setup page controller: the three selection-method tabs, students, saved starters
 js/app.js                   View switching + grid header controls
+js/analytics.js             Anonymous Supabase usage tracking (site loads, quizzes generated, time visible)
+js/contactModal.js          Contact popup, submits to Formspree
+analytics-setup.sql         Run once in Supabase's SQL editor to create the analytics table
 ```
 
 ## Worth testing once it's live

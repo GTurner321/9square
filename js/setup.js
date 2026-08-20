@@ -45,6 +45,7 @@ const Setup = (() => {
     el.commonQuizFields = document.getElementById('commonQuizFields');
 
     el.bookChecklist = document.getElementById('bookChecklist');
+    el.chaptersField = document.getElementById('chaptersField');
     el.chapterChecklist = document.getElementById('chapterChecklist');
     el.chapterHelp = document.getElementById('chapterHelp');
     el.subtopicField = document.getElementById('subtopicField');
@@ -312,6 +313,11 @@ const Setup = (() => {
 
     currentChapterFlatItems = renderGroupedChecklist(el.chapterChecklist, groups, 'Select all', false);
 
+    // Chapters (and, in turn, sub-topics) stay hidden entirely until
+    // there's actually a book to show chapters for, rather than
+    // displaying an empty checklist with a "choose a book" placeholder.
+    el.chaptersField.hidden = selectedBooks.length === 0;
+
     if (!selectedBooks.length) {
       el.chapterChecklist.innerHTML = '<p class="hint">Choose at least one book above.</p>';
     }
@@ -333,7 +339,7 @@ const Setup = (() => {
     // list would be too large to be a useful filter, so it's hidden
     // and the pool is built from every sub-topic under the selected
     // chapters directly (equivalent to "everything ticked").
-    if (selectedBooks.length === 1) {
+    if (selectedBooks.length === 1 && chapterPairs.length > 0) {
       el.subtopicField.hidden = false;
       const book = selectedBooks[0];
       const chapterNames = chapterPairs.map(p => p.chapter);
