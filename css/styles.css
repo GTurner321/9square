@@ -873,6 +873,16 @@ sup {
   vertical-align: baseline;
 }
 
+/* A fraction never gets split across two lines because it's a flex
+   container (browsers always treat it as one atomic box). A bare
+   base + <sup>/<sub> has no such protection by default - nowrap
+   guarantees the same "stays together or wraps as a whole" behaviour
+   for exponents/subscripts, e.g. "10" and "^-4" can no longer end up
+   on separate lines from each other. */
+.pow-group {
+  white-space: nowrap;
+}
+
 .radical {
   display: inline-flex;
   align-items: center;
