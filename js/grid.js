@@ -111,10 +111,25 @@ const Grid = (() => {
     // stacked fraction sitting in superscript position, so ^{...}/_{...}
     // need to claim their braces before the generic {a/b} fraction
     // regex gets a chance to see them.
-    text = text.replace(/\^(\{[^{}]+\}|-?[A-Za-z0-9])/g, (m, exp) =>
-      `<sup>${exp.startsWith('{') ? exp.slice(1, -1) : exp}</sup>`);
-    text = text.replace(/_(\{[^{}]+\}|[A-Za-z0-9])/g, (m, sub) =>
-      `<sub>${sub.startsWith('{') ? sub.slice(1, -1) : sub}</sub>`);
+    //
+    // The base is captured along with the ^/_ so the two can be
+    // wrapped together in a no-wrap span: a fraction never gets split
+    // across two lines because it's a flex container (always treated
+    // as one atomic box), but a bare base + <sup> is just two separate
+    // bits of inline text with nothing stopping a line-break landing
+    // between them - e.g. "10" ending one line and "^-4" starting the
+    // next, which is exactly what produces jumbled-looking output.
+    const BASE = '(?:\\([^()]*\\)|[A-Za-z0-9.]+)';
+    text = text.replace(new RegExp(BASE + '\\^(\\{[^{}]+\\}|-?[A-Za-z0-9])', 'g'), (m, exp) => {
+      const base = m.slice(0, m.indexOf('^'));
+      const expInner = exp.startsWith('{') ? exp.slice(1, -1) : exp;
+      return `<span class="pow-group">${base}<sup>${expInner}</sup></span>`;
+    });
+    text = text.replace(new RegExp(BASE + '_(\\{[^{}]+\\}|[A-Za-z0-9])', 'g'), (m, sub) => {
+      const base = m.slice(0, m.indexOf('_'));
+      const subInner = sub.startsWith('{') ? sub.slice(1, -1) : sub;
+      return `<span class="pow-group">${base}<sub>${subInner}</sub></span>`;
+    });
 
     // Any {...} left with a slash inside is a fraction. Per the
     // authoring rules, {a/b} is only ever used standalone (never mixed
@@ -713,14 +728,14 @@ const Grid = (() => {
   function autosizeElement(el, maxRem, minRem, measureSelf) {
     const container = measureSelf ? el : el.parentElement;
 
-    // A stacked column vector like [a/b] is visually much taller than a
-    // line of plain text (two short rows stacked inside one "line"),
-    // which can make this loop hit its usual floor before the line has
-    // actually narrowed enough to stop wrapping onto a second line -
-    // wrapping is worse for a vector-bearing line than going smaller,
-    // so those get a lower floor to prioritise staying on one line.
-    const hasVector = !!el.querySelector('.vector');
-    const effectiveMinRem = hasVector ? Math.min(minRem, 0.45) : minRem;
+    // A stacked column vector like [a/b], or a base+power/subscript
+    // group held together with nowrap, can each be visually taller or
+    // wider than a line of plain text at the same font-size - both can
+    // make this loop hit its usual floor before the line has actually
+    // narrowed enough to stop wrapping, and wrapping mid-line is worse
+    // than going smaller, so these get a lower floor.
+    const hasWideAtomic = !!(el.querySelector('.vector') || el.querySelector('.pow-group'));
+    const effectiveMinRem = hasWideAtomic ? Math.min(minRem, 0.45) : minRem;
 
     let size = maxRem;
     el.style.fontSize = size + 'rem';
