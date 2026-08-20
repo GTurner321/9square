@@ -1031,23 +1031,29 @@ sup {
 .square__shutter {
   position: absolute;
   inset: 0;
-  /* Metal-plate effect: several closely-related grey stops repeating
-     on a diagonal, so adjacent bands blend into each other rather than
-     reading as two flat stripes - same technique as the shared style
-     guide's brushed-metal button background, adapted to this shutter's
-     own grey family. */
-  background: repeating-linear-gradient(
+  /* Metal-plate effect: a single gradient (not a repeating one) with
+     many grey stops that each blend into the next across the full
+     square, so there's no "tile" boundary anywhere for a seam to show
+     up at - previously this used repeating-linear-gradient with an
+     explicit background-size, which forced the pattern to restart
+     (and visibly jump, since its own first/last stops didn't match)
+     wherever that fixed-size tile boundary happened to land inside a
+     square. A plain gradient can't do that: it always spans the whole
+     element exactly once, whatever size that element is. */
+  background: linear-gradient(
     120deg,
-    #C6C6BC 0px,
-    #B7B7AD 10px,
-    #C6C6BC 30px,
-    #AEAEA3 55px,
-    #9F9F94 80px,
-    #AEAEA3 95px,
-    #C6C6BC 120px,
-    #B7B7AD 135px
+    #D8D8CE 0%,
+    #B7B7AD 11%,
+    #C9C9BF 21%,
+    #9F9F94 32%,
+    #C2C2B8 42%,
+    #8C8C82 52%,
+    #B0B0A5 62%,
+    #D0D0C6 73%,
+    #9F9F94 83%,
+    #C9C9BF 92%,
+    #B7B7AD 100%
   );
-  background-size: 420px 100%;
   cursor: pointer;
   z-index: 5;
   display: flex;
@@ -1067,15 +1073,19 @@ sup {
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.45),
     inset 0 -2px 4px rgba(0, 0, 0, 0.2);
-  /* A subtle "still here, not yet opened" pulse - stops on its own the
-     moment the shutter is removed from the DOM on click, no JS needed
-     to cancel it. */
-  animation: shutter-pulse 5s ease-in-out infinite;
 }
 
-@keyframes shutter-pulse {
-  0%, 92%, 100% { transform: scale(1); }
-  96% { transform: scale(1.025); }
+/* One-shot "still here, not yet opened" pulse - JS (grid.js) picks one
+   random still-shuttered square every 7 seconds and toggles this class
+   on just that square, rather than every shutter pulsing at once, and
+   stops entirely the moment any shutter is actually clicked. */
+.square__shutter--pulsing {
+  animation: shutter-pulse-once 1.8s ease-in-out;
+}
+
+@keyframes shutter-pulse-once {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.035); }
 }
 
 .square__shutter-text {

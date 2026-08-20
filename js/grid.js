@@ -264,6 +264,7 @@ const Grid = (() => {
     refreshQueue = [];
     globalRevealed = false;
     render();
+    startShutterPulse();
   }
 
   /**
@@ -291,6 +292,36 @@ const Grid = (() => {
 
   function visibleIndices() {
     return gridMode === '4' ? CORNER_INDICES : [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  }
+
+  // Draws attention to an untouched grid before anyone's clicked
+  // anything yet: every 7 seconds, one still-shuttered square (picked
+  // at random) gets a subtle one-shot pulse. Stops for good the moment
+  // any shutter is actually clicked (see onGridClick) - it's an
+  // invitation to start, not an ongoing distraction.
+  let pulseIntervalId = null;
+
+  function startShutterPulse() {
+    stopShutterPulse();
+    pulseIntervalId = setInterval(() => {
+      const shutters = el.container.querySelectorAll('.square__shutter');
+      if (!shutters.length) {
+        stopShutterPulse();
+        return;
+      }
+      const target = shutters[Math.floor(Math.random() * shutters.length)];
+      target.classList.add('square__shutter--pulsing');
+      target.addEventListener('animationend', () => {
+        target.classList.remove('square__shutter--pulsing');
+      }, { once: true });
+    }, 7000);
+  }
+
+  function stopShutterPulse() {
+    if (pulseIntervalId) {
+      clearInterval(pulseIntervalId);
+      pulseIntervalId = null;
+    }
   }
 
   function render() {
@@ -464,6 +495,7 @@ const Grid = (() => {
     const shutter = e.target.closest('.square__shutter');
     if (shutter) {
       state.shuttered = false;
+      stopShutterPulse(); // the attention-grabbing pulse has done its job
       rerenderSquare(index);
       return;
     }
