@@ -97,6 +97,11 @@ const Grid = (() => {
   // inside a root, etc.) - rare enough at this level to leave out
   // rather than write a recursive parser for it.
 
+  // Shared "base" pattern for anything that can be an exponent's or
+  // subscript's base: a run of letters/digits/decimal points, or a
+  // single-level parenthesised group like "(x+1)".
+  const BASE_PATTERN = '(?:\\([^()]*\\)|[A-Za-z0-9.]+)';
+
   function renderMath(rawText) {
     let text = escapeHtml(rawText == null ? '' : String(rawText));
 
@@ -105,6 +110,18 @@ const Grid = (() => {
       `<span class="radical"><span class="radical__sym">√</span><span class="radical__body">${inner}</span></span>`);
     text = text.replace(/cbrt\{([^{}]+)\}/g, (m, inner) =>
       `<span class="radical radical--cube"><span class="radical__sym">∛</span><span class="radical__body">${inner}</span></span>`);
+
+    // Squared/cubed get a real Unicode glyph (², ³) instead of a
+    // constructed <sup>, ahead of the general exponent pass below.
+    // Unlike other superscript characters, ² and ³ (U+00B2/U+00B3) sit
+    // in the Latin-1 Supplement block - as universally supported as any
+    // character gets, nowhere near as patchy as superscript letters or
+    // ⁴-⁹. As a plain character with no separate positioned element,
+    // it can't detach from its base across a line-break and needs no
+    // extra line-height buffer at all - genuinely immune to the
+    // wrapping issue, not just harder to trigger.
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^([23])(?![0-9])', 'g'), (m, base, digit) =>
+      base + (digit === '2' ? '\u00B2' : '\u00B3'));
 
     // Exponents and subscripts next, and specifically before the
     // fraction pass below - x^{1/3} is a superscripted "1/3", not a
@@ -119,7 +136,7 @@ const Grid = (() => {
     // bits of inline text with nothing stopping a line-break landing
     // between them - e.g. "10" ending one line and "^-4" starting the
     // next, which is exactly what produces jumbled-looking output.
-    const BASE = '(?:\\([^()]*\\)|[A-Za-z0-9.]+)';
+    const BASE = BASE_PATTERN;
     text = text.replace(new RegExp(BASE + '\\^(\\{[^{}]+\\}|-?[A-Za-z0-9])', 'g'), (m, exp) => {
       const base = m.slice(0, m.indexOf('^'));
       const expInner = exp.startsWith('{') ? exp.slice(1, -1) : exp;
