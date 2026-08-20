@@ -1031,9 +1031,23 @@ sup {
 .square__shutter {
   position: absolute;
   inset: 0;
+  /* Metal-plate effect: several closely-related grey stops repeating
+     on a diagonal, so adjacent bands blend into each other rather than
+     reading as two flat stripes - same technique as the shared style
+     guide's brushed-metal button background, adapted to this shutter's
+     own grey family. */
   background: repeating-linear-gradient(
-    45deg, #BEBEB4, #BEBEB4 8px, #9F9F94 8px, #9F9F94 16px
+    120deg,
+    #C6C6BC 0px,
+    #B7B7AD 10px,
+    #C6C6BC 30px,
+    #AEAEA3 55px,
+    #9F9F94 80px,
+    #AEAEA3 95px,
+    #C6C6BC 120px,
+    #B7B7AD 135px
   );
+  background-size: 420px 100%;
   cursor: pointer;
   z-index: 5;
   display: flex;
@@ -1053,15 +1067,29 @@ sup {
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.45),
     inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  /* A subtle "still here, not yet opened" pulse - stops on its own the
+     moment the shutter is removed from the DOM on click, no JS needed
+     to cancel it. */
+  animation: shutter-pulse 5s ease-in-out infinite;
+}
+
+@keyframes shutter-pulse {
+  0%, 92%, 100% { transform: scale(1); }
+  96% { transform: scale(1.025); }
 }
 
 .square__shutter-text {
-  font-family: Tahoma, Geneva, Verdana, var(--font-body);
+  /* Same family as the page's own "9 SQUARE" title, and deliberately
+     close in tone to the shutter's own grey stripes rather than a
+     contrasting color - the text should read as embossed texture on
+     the shutter, not as legible content someone might mistake for the
+     actual question underneath. */
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: 1.8rem;
   line-height: 1.15;
-  color: #5A5A52;
-  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.2), 1px 1px 1px rgba(255, 255, 255, 0.55);
+  color: #ABABA1;
+  text-shadow: -1px -1px 1px rgba(0, 0, 0, 0.18), 1px 1px 1px rgba(255, 255, 255, 0.45);
   letter-spacing: 0.02em;
 }
 
