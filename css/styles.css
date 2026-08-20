@@ -716,7 +716,7 @@ button:focus-visible {
   text-align: center;
   overflow: hidden;
   font-weight: 700;
-  line-height: 1.85;
+  line-height: 2.2;
 }
 
 /* Choices and answer split the content area top/bottom with the
@@ -750,7 +750,7 @@ button:focus-visible {
   justify-content: center;
   text-align: center;
   overflow: hidden;
-  line-height: 1.85;
+  line-height: 2.2;
 }
 
 /* Standalone answer reveal (question has no wrong1/wrong2, so there's
