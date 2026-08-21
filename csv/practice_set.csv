@@ -2328,32 +2328,19 @@
 2327,276j,276,2,No,A rectangle has perimeter 34cm. Its length is 5cm more than its width. Find the width.,6cm,11cm,17cm,"l+w=17 and l=w+5 give 2w+5=17, so w=6cm.",Use the perimeter formula and the length-width relationship together.,,,,,,,
 2328,276k,276,2,No,Find the point of intersection of y=2x+1 and y=-x+7.,"(2,5)","(5,2)","(1,7)","2x+1=-x+7 gives 3x=6, x=2. Then y=5.","Set the two equations equal to each other, then solve for x.",,,,,,,
 2329,276k,276,2,No,Find the point of intersection of y=3x-4 and y=x+2.,"(3,5)","(5,3)","(-4,2)","3x-4=x+2 gives 2x=6, x=3. Then y=5.","Set the two equations equal to each other, then solve for x.",,,,,,,
-2330,277a,277,1,No,"Round 0.7̇ to 2 decimal places.
-(note the recurrence dot)",0.78,0.77,0.7,"0.7̇ = 0.7777..., so to 2dp this is 0.78.",Look at the third decimal digit to decide whether to round up.,,,,,,,
-2331,277a,277,2,No,"Round 0.1̇4̇ to 3 decimal places.
-(note the recurrence dots)",0.141,0.142,0.14,"0.1̇4̇ = 0.141414..., so to 3dp this is 0.141.",Write out enough digits before rounding.,,,,,,,
-2332,277b,277,1,No,"Convert 0.4̇ to a fraction.
-(note the recurrence dot)",'4/9,'4/10,'9/4,"0.4̇ has one recurring digit, so the fraction is 4/9.",A single recurring digit d gives d/9.,,{4/9},{4/10},{9/4},,,
-2333,277b,277,1,No,"Convert 0.7̇ to a fraction.
-(note the recurrence dot)",'7/9,'7/10,'9/7,"0.7̇ has one recurring digit, so the fraction is 7/9.",A single recurring digit d gives d/9.,,{7/9},{7/10},{9/7},,,
-2334,277b,277,2,No,"Convert 0.2̇ to a fraction.
-(note the recurrence dot)",'2/9,'2/99,'1/9,"0.2̇ has one recurring digit, so the fraction is 2/9.",A single recurring digit d gives d/9.,,{2/9},{2/99},{1/9},,,
-2335,277c,277,1,No,"Convert 0.1̇3̇ to a fraction.
-(note the recurrence dots)",'13/99,'13/9,'13/100,"Two recurring digits give a denominator of 99, so the fraction is 13/99.",Two recurring digits give a denominator of 99.,,{13/99},{13/9},{13/100},,,
-2336,277c,277,2,No,"Convert 0.4̇2̇ to a fraction, giving your answer in its simplest form.
-(note the recurrence dots)",'14/33,'42/99,'21/50,"0.4̇2̇ = 42/99, which simplifies to 14/33.","Write over 99 first, then simplify.",,{14/33},{42/99},{21/50},,,
-2337,277c,277,3,No,"Convert 0.1̇42̇ to a fraction.
-(note the recurrence dots)",'142/999,'142/99,'142/990,"Three recurring digits give a denominator of 999, so the fraction is 142/999.",Three recurring digits give a denominator of 999.,,{142/999},{142/99},{142/990},,,
-2338,277d,277,2,No,"Convert 0.16̇ to a fraction, giving your answer in its simplest form.
-(note the recurrence dot)",'1/6,'16/90,'15/90,"(16-1)/90 = 15/90, which simplifies to 1/6.",Subtract the non-recurring part before dividing by 90.,,{1/6},{16/90},{15/90},,,
-2339,277d,277,3,No,"Convert 0.23̇ to a fraction, giving your answer in its simplest form.
-(note the recurrence dot)",'7/30,'23/90,'21/90,"(23-2)/90 = 21/90, which simplifies to 7/30.",Subtract the non-recurring part before dividing by 90.,,{7/30},{23/90},{21/90},,,
-2340,277e,277,2,No,"Work out 0.3̇ + 0.6̇.
-(note the recurrence dots)",1,0.9̇,0.99,"0.3̇ = 1/3 and 0.6̇ = 2/3, and 1/3 + 2/3 = 1.",Convert each to a fraction first.,,,,,,,
-2341,277f,277,3,No,"Work out 0.8̇ ÷ 0.4̇.
-(note the recurrence dots)",2,'2/9,0.5,"0.8̇ = 8/9 and 0.4̇ = 4/9, and (8/9) ÷ (4/9) = 2.","Convert each to a fraction, then divide.",,,,,,,
-2342,277g,277,3,No,"x = 0.5̇. Work out the value of 10x - x.
-(note the recurrence dot)",5,5.5,4.5,"10x = 5.5555... and x = 0.5555..., so 10x - x = 5.","Multiply x by 10 first, then subtract x.",,,,,,,
+2330,277a,277,1,No,Round 0.7̇ to 2 decimal places.,0.78,0.77,0.7,"0.7̇ = 0.7777..., so to 2dp this is 0.78.",Look at the third decimal digit to decide whether to round up.,,,,,,,
+2331,277a,277,2,No,Round 0.1̇4̇ to 3 decimal places.,0.141,0.142,0.14,"0.1̇4̇ = 0.141414..., so to 3dp this is 0.141.",Write out enough digits before rounding.,,,,,,,
+2332,277b,277,1,No,Convert 0.4̇ to a fraction.,'4/9,'4/10,'9/4,"0.4̇ has one recurring digit, so the fraction is 4/9.",A single recurring digit d gives d/9.,,{4/9},{4/10},{9/4},,,
+2333,277b,277,1,No,Convert 0.7̇ to a fraction.,'7/9,'7/10,'9/7,"0.7̇ has one recurring digit, so the fraction is 7/9.",A single recurring digit d gives d/9.,,{7/9},{7/10},{9/7},,,
+2334,277b,277,2,No,Convert 0.2̇ to a fraction.,'2/9,'2/99,'1/9,"0.2̇ has one recurring digit, so the fraction is 2/9.",A single recurring digit d gives d/9.,,{2/9},{2/99},{1/9},,,
+2335,277c,277,1,No,Convert 0.1̇3̇ to a fraction.,'13/99,'13/9,'13/100,"Two recurring digits give a denominator of 99, so the fraction is 13/99.",Two recurring digits give a denominator of 99.,,{13/99},{13/9},{13/100},,,
+2336,277c,277,2,No,"Convert 0.4̇2̇ to a fraction, giving your answer in its simplest form.",'14/33,'42/99,'21/50,"0.4̇2̇ = 42/99, which simplifies to 14/33.","Write over 99 first, then simplify.",,{14/33},{42/99},{21/50},,,
+2337,277c,277,3,No,Convert 0.1̇42̇ to a fraction.,'142/999,'142/99,'142/990,"Three recurring digits give a denominator of 999, so the fraction is 142/999.",Three recurring digits give a denominator of 999.,,{142/999},{142/99},{142/990},,,
+2338,277d,277,2,No,"Convert 0.16̇ to a fraction, giving your answer in its simplest form.",'1/6,'16/90,'15/90,"(16-1)/90 = 15/90, which simplifies to 1/6.",Subtract the non-recurring part before dividing by 90.,,{1/6},{16/90},{15/90},,,
+2339,277d,277,3,No,"Convert 0.23̇ to a fraction, giving your answer in its simplest form.",'7/30,'23/90,'21/90,"(23-2)/90 = 21/90, which simplifies to 7/30.",Subtract the non-recurring part before dividing by 90.,,{7/30},{23/90},{21/90},,,
+2340,277e,277,2,No,Work out 0.3̇ + 0.6̇.,1,0.9̇,0.99,"0.3̇ = 1/3 and 0.6̇ = 2/3, and 1/3 + 2/3 = 1.",Convert each to a fraction first.,,,,,,,
+2341,277f,277,3,No,Work out 0.8̇ ÷ 0.4̇.,2,'2/9,0.5,"0.8̇ = 8/9 and 0.4̇ = 4/9, and (8/9) ÷ (4/9) = 2.","Convert each to a fraction, then divide.",,,,,,,
+2342,277g,277,3,No,x = 0.5̇. Work out the value of 10x - x.,5,5.5,4.5,"10x = 5.5555... and x = 0.5555..., so 10x - x = 5.","Multiply x by 10 first, then subtract x.",,,,,,,
 2343,278a,278,1,No,"Reflect the point (2,5) in the line x=3.","(4,5)","(2,1)","(-2,5)","The x-coordinate reflects across x=3: 2*3-2=4, y stays 5.","Find how far the point is from the line, then go the same distance the other side.",,,,,,,
 2344,278a,278,2,No,"Reflect the point (1,4) in the line y=2.","(1,0)","(1,8)","(3,4)","The y-coordinate reflects across y=2: 2*2-4=0, x stays 1.",Only the y-coordinate changes for a horizontal mirror line.,,,,,,,
 2345,278a,278,3,No,"Reflect the point (-3,6) in the line x=-1.","(1,6)","(-5,6)","(-3,-8)","2*(-1)-(-3) = 1, y stays 6, so the image is (1,6).","Work out the distance from the point to the line, then double it.",,,,,,,
