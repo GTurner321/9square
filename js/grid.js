@@ -191,84 +191,17 @@ const Grid = (() => {
   // mean newline/backspace/hex-escape in a regex, not the literal
   // letters n, b, x - which would have silently broken glyph matching
   // for exactly the letters this feature exists to support.
-  const charClass = map => '[' + Object.keys(map).map(c => /[\]\\^-]/.test(c) ? '\\' + c : c).join('') + ']';
-
-  // Best-effort heuristic for keeping a spaced-out equation or
-  // expression - e.g. "y = 2x + 1" or "(x + 1) (x - 1)" - together as
-  // one unbreakable block, without requiring every question to be
-  // hand-annotated with special markers. The rule: split on
-  // whitespace, and treat any token that does NOT contain a run of 2+
-  // letters as "expression-like" (numbers, single-letter variables,
-  // operators, brackets, and combinations of these - "2x", "=", "(x+1)"
-  // all qualify; "Simplify", "the", "of" don't, since real words are
-  // exactly what this needs to NOT swallow). Consecutive
-  // expression-like tokens get grouped into one no-wrap block. A comma
-  // always closes a group even mid-run, since a comma is a natural,
-  // expected place for a list of separate items (e.g. "250000,
-  // 3.1×10^5, 199000") to wrap - only a genuinely spaced-out single
-  // expression should be forced to stay whole.
-  //
-  // This is inherently a heuristic, not a parser, so it has known
-  // blind spots - the clearest is a bracketed phrase that mixes real
-  // words with notation, e.g. "(x positive)": "positive" is correctly
-  // left out of the group (it's a real word), but that means the
-  // group boundary can still land awkwardly right next to the "(" that
-  // introduced it.
-  const WORD_RE = /[A-Za-z]{2,}/;
-  function groupExpressions(text) {
-    const parts = text.split(/( )/); // tokens and single spaces, alternating
-    let out = '';
-    let groupStart = -1;    // index into `out` where the current candidate group began, or -1 if not in one
-    let groupTokenCount = 0;
-
-    function isWordToken(token) {
-      // "sqrt"/"cbrt" are markup keywords, not English words - ignore
-      // them when checking, so e.g. "2 + sqrt{2}" still groups.
-      return WORD_RE.test(token.replace(/sqrt|cbrt/g, ''));
-    }
-
-    function closeGroup() {
-      // Spaces are always appended to `out` immediately as they're
-      // encountered below, never held back - a group is only ever
-      // applied retroactively, by wrapping the slice of `out` already
-      // written since groupStart. This is what a first version of this
-      // function got wrong: it deferred spaces to rejoin later via
-      // group.join(' '), but that rejoin only happened for a group
-      // that ended up 2+ tokens - a single-token "group" just discarded
-      // its trailing space outright, exactly the space-eating bug this
-      // feature was meant to avoid, not cause.
-      if (groupStart !== -1 && groupTokenCount >= 2) {
-        out = out.slice(0, groupStart) + '<span class="expr-group">' + out.slice(groupStart) + '</span>';
-      }
-      groupStart = -1;
-      groupTokenCount = 0;
-    }
-
-    for (let i = 0; i < parts.length; i++) {
-      const part = parts[i];
-      if (part === '') continue;
-      if (part === ' ') {
-        out += part;
-        continue;
-      }
-      if (isWordToken(part)) {
-        closeGroup();
-        out += part;
-      } else {
-        if (groupStart === -1) groupStart = out.length;
-        out += part;
-        groupTokenCount++;
-        if (/,$/.test(part)) closeGroup(); // a comma closes the group even though it's still expression-like
-      }
-    }
-    closeGroup();
-    return out;
-  }
+  // `exclude` (optional) drops specific characters from the class -
+  // used to keep ( and ) out of the "bare" alternative while still
+  // allowing them inside braces (see the exponent pass below).
+  const charClass = (map, exclude) => {
+    const excluded = exclude ? exclude.split('') : [];
+    const chars = Object.keys(map).filter(c => !excluded.includes(c));
+    return '[' + chars.map(c => /[\]\\^-]/.test(c) ? '\\' + c : c).join('') + ']';
+  };
 
   function renderMath(rawText) {
     let text = escapeHtml(rawText == null ? '' : String(rawText));
-
-    text = groupExpressions(text);
 
     // Roots first, since they also consume a {...} span.
     text = text.replace(/sqrt\{([^{}]+)\}/g, (m, inner) =>
@@ -294,11 +227,19 @@ const Grid = (() => {
     // the constructed-<sup> pass below uses for anything else - a bare
     // "x^2y" is "x² then a separate y", not "x to the power 2y"; that
     // needs braces, x^{2y}, to be unambiguous, same as it always has.
-    const supClass = charClass(SUP_EXTRA_GLYPH);
-    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^(\\{' + supClass + '+\\}|' + supClass + ')', 'g'), (m, base, exp) =>
+    // ( and ) are excluded from the BARE alternative specifically -
+    // "x^(-1/2)" used to match just the "(" as a complete one-character
+    // exponent (⁽), leaving "-1/2)" as stray literal text, since a
+    // standalone opening bracket with no matching close is never
+    // actually what was meant. They're still fine inside braces, where
+    // the boundary is unambiguous: x^{(2n)}.
+    const supBareClass = charClass(SUP_EXTRA_GLYPH, '()');
+    const supBracedClass = charClass(SUP_EXTRA_GLYPH);
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^(\\{' + supBracedClass + '+\\}|' + supBareClass + ')', 'g'), (m, base, exp) =>
       base + toGlyphs(exp.startsWith('{') ? exp.slice(1, -1) : exp, SUP_EXTRA_GLYPH));
-    const subClass = charClass(SUB_EXTRA_GLYPH);
-    text = text.replace(new RegExp('(' + BASE_PATTERN + ')_(\\{' + subClass + '+\\}|' + subClass + ')', 'g'), (m, base, sub) =>
+    const subBareClass = charClass(SUB_EXTRA_GLYPH, '()');
+    const subBracedClass = charClass(SUB_EXTRA_GLYPH);
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')_(\\{' + subBracedClass + '+\\}|' + subBareClass + ')', 'g'), (m, base, sub) =>
       base + toGlyphs(sub.startsWith('{') ? sub.slice(1, -1) : sub, SUB_EXTRA_GLYPH));
 
     // Exponents and subscripts next, and specifically before the
@@ -310,22 +251,28 @@ const Grid = (() => {
     // Everything left at this point has a letter somewhere in the
     // exponent/subscript (the purely-numeric cases were already
     // handled above), so it can't be done as plain glyphs and needs a
-    // constructed <sup>/<sub>. The base is captured along with the ^/_
-    // so the two can be wrapped together in a no-wrap span: a fraction
-    // never gets split across two lines because it's a flex container
-    // (always treated as one atomic box), but a bare base + <sup> is
-    // just two separate bits of inline text with nothing stopping a
-    // line-break landing between them.
+    // constructed <sup>/<sub>. A word joiner (U+2060, invisible,
+    // zero-width - designed for exactly this) sits between the base and
+    // the tag on each side, rather than wrapping both in a
+    // white-space:nowrap span: nowrap turned out to visually swallow a
+    // normal space sitting right against its boundary (confirmed by
+    // testing - "Simplify x^9" rendered as "Simplifyx⁹" in practice),
+    // and to fragment a wrapped sentence into oddly independently-
+    // centred pieces when the span was too wide to share a line with
+    // anything else. A word joiner has neither problem: it's not an
+    // element with a boundary at all, just a character that means
+    // "don't break the line here" and nothing else.
     const BASE = BASE_PATTERN;
+    const WJ = '\u2060';
     text = text.replace(new RegExp(BASE + '\\^(\\{[^{}]+\\}|-?[A-Za-z0-9])', 'g'), (m, exp) => {
       const base = m.slice(0, m.indexOf('^'));
       const expInner = exp.startsWith('{') ? exp.slice(1, -1) : exp;
-      return `<span class="pow-group">${base}<sup>${expInner}</sup></span>`;
+      return `${base}${WJ}<sup>${expInner}</sup>${WJ}`;
     });
     text = text.replace(new RegExp(BASE + '_(\\{[^{}]+\\}|[A-Za-z0-9])', 'g'), (m, sub) => {
       const base = m.slice(0, m.indexOf('_'));
       const subInner = sub.startsWith('{') ? sub.slice(1, -1) : sub;
-      return `<span class="pow-group">${base}<sub>${subInner}</sub></span>`;
+      return `${base}${WJ}<sub>${subInner}</sub>${WJ}`;
     });
 
     // Any {...} left with a slash inside is a fraction. Per the
@@ -433,6 +380,7 @@ const Grid = (() => {
         studentRevealed: false,
         shuttered: true,
         shutterGradient: randomShutterGradient(),
+        zoomOffsetRem: 0,
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
         shutterKind: null,
         shutterHtml: null
@@ -575,6 +523,10 @@ const Grid = (() => {
         ${state.activePanel ? renderPanel(q, state) : ''}
       </div>
       ${showHideToggle ? `<button class="square__hide-question-btn" data-action="toggle-question" title="${state.questionHidden ? 'Show question' : 'Hide question'}">${state.questionHidden ? ICON_EYE_SMALL : ICON_EYE_OFF_SMALL}</button>` : ''}
+      ${!state.shuttered ? `<div class="square__zoom-control" title="Adjust text size">
+        <button class="square__zoom-btn" data-action="zoom-in" title="Larger text">+</button>
+        <button class="square__zoom-btn" data-action="zoom-out" title="Smaller text">−</button>
+      </div>` : ''}
       <div class="square__footer">
         <div class="square__icons">
           ${showCalcIcon ? `<span class="icon icon--indicator" title="${isCalc ? 'Calculator allowed' : 'No calculator'}">${isCalc ? ICON_CALC : ICON_NO_CALC}</span>` : ''}
@@ -685,6 +637,21 @@ const Grid = (() => {
     if (hideQuestionBtn) {
       state.questionHidden = !state.questionHidden;
       rerenderSquare(index);
+      return;
+    }
+
+    // Offsets both ends of the automatic shrink range together (see
+    // autosizeSquare/autosizeElement) rather than replacing automatic
+    // sizing outright - the shrink-to-fit loop still runs and still
+    // prevents genuine overflow, this just biases where it lands.
+    // Resets to 0 on every new grid, same as any other per-square UI
+    // state - it's not saved as part of a quiz's descriptor.
+    const zoomBtn = e.target.closest('[data-action="zoom-in"], [data-action="zoom-out"]');
+    if (zoomBtn) {
+      const step = 0.08;
+      const delta = zoomBtn.dataset.action === 'zoom-in' ? step : -step;
+      state.zoomOffsetRem = Math.max(-0.5, Math.min(0.4, state.zoomOffsetRem + delta));
+      autosizeSquare(squareEl, state.zoomOffsetRem);
       return;
     }
 
@@ -918,7 +885,7 @@ const Grid = (() => {
     const oldEl = el.container.querySelector(`.square[data-index="${index}"]`);
     const newEl = renderSquare(squares[index], squareStates[index], index);
     oldEl.replaceWith(newEl);
-    autosizeSquare(newEl);
+    autosizeSquare(newEl, squareStates[index] ? squareStates[index].zoomOffsetRem : 0);
   }
 
   // ---------------- Text autosizing ----------------
@@ -928,11 +895,16 @@ const Grid = (() => {
   // since the boxes' pixel dimensions change.
 
   function autosizeAll() {
-    el.container.querySelectorAll('.square').forEach(autosizeSquare);
+    el.container.querySelectorAll('.square').forEach(squareEl => {
+      const index = Number(squareEl.dataset.index);
+      const state = squareStates[index];
+      autosizeSquare(squareEl, state ? state.zoomOffsetRem : 0);
+    });
   }
 
-  function autosizeSquare(squareEl) {
+  function autosizeSquare(squareEl, zoomOffsetRem) {
     if (!squareEl) return;
+    zoomOffsetRem = zoomOffsetRem || 0;
 
     // Answer box / panel text size first, since their footprint can
     // change how much vertical space is left for the question above
@@ -941,11 +913,17 @@ const Grid = (() => {
     const answerBox = squareEl.querySelector('.answer-box');
     if (answerBox) autosizeElement(answerBox, 1.15, 0.65);
 
+    // The manual +/- zoom control (question/hint/explanation only, per
+    // its own design - answer box, shutter art, and choice labels
+    // aren't in its scope) offsets both ends of the normal shrink
+    // range together, so the same automatic "shrink to fit, then keep
+    // going to avoid wrapping" behaviour still applies - it's just
+    // biased up or down from wherever the person has set it.
     const panelText = squareEl.querySelector('.panel-text');
-    if (panelText) autosizeElement(panelText, 1.15, 0.65);
+    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem);
 
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3, 0.7, true);
+    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true);
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
@@ -955,16 +933,25 @@ const Grid = (() => {
     });
   }
 
+  // Roughly, "does this element's content currently span more than one
+  // line" - compares its rendered height against a single line's
+  // height (from its own computed line-height), with a bit of slack
+  // for padding/rounding rather than an exact multiple.
+  function isWrapped(el) {
+    const lineHeightPx = parseFloat(getComputedStyle(el).lineHeight);
+    if (!lineHeightPx) return false;
+    return el.scrollHeight > lineHeightPx * 1.4;
+  }
+
   function autosizeElement(el, maxRem, minRem, measureSelf) {
     const container = measureSelf ? el : el.parentElement;
 
-    // A stacked column vector like [a/b], or a base+power/subscript
-    // group held together with nowrap, can each be visually taller or
-    // wider than a line of plain text at the same font-size - both can
+    // A stacked column vector like [a/b] can be visually taller or
+    // wider than a line of plain text at the same font-size, which can
     // make this loop hit its usual floor before the line has actually
     // narrowed enough to stop wrapping, and wrapping mid-line is worse
-    // than going smaller, so these get a lower floor.
-    const hasWideAtomic = !!(el.querySelector('.vector') || el.querySelector('.pow-group') || el.querySelector('.expr-group'));
+    // than going smaller, so it gets a lower floor.
+    const hasWideAtomic = !!el.querySelector('.vector');
     const effectiveMinRem = hasWideAtomic ? Math.min(minRem, 0.45) : minRem;
 
     let size = maxRem;
@@ -975,6 +962,23 @@ const Grid = (() => {
       size > effectiveMinRem &&
       guard < 40
     ) {
+      size -= 0.03;
+      el.style.fontSize = size + 'rem';
+      guard++;
+    }
+
+    // The loop above stops as soon as content merely fits the box -
+    // two lines that fit comfortably counts as "done" just as much as
+    // one line would, so it doesn't actually try to avoid wrapping on
+    // its own. This second pass does: if content still spans 2+ lines
+    // after the above, keep shrinking further, down to a lower
+    // absolute floor, specifically chasing one line. This is what
+    // zooming the whole browser out gives by accident (more headroom
+    // usually happens to land on fewer wrapped lines) - made
+    // deliberate instead of incidental.
+    const oneLineFloor = 0.4;
+    guard = 0;
+    while (isWrapped(el) && size > oneLineFloor && guard < 40) {
       size -= 0.03;
       el.style.fontSize = size + 'rem';
       guard++;

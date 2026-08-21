@@ -670,6 +670,45 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.6);
 }
 
+/* Positioned top-left, mirroring .square__hide-question-btn's top-right
+   spot - that corner was already taken, and the two only ever appear
+   together when a split panel is showing, so there's no clash either
+   way. */
+.square__zoom-control {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 4;
+  display: inline-flex;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 0.6;
+}
+
+.square__zoom-control:hover {
+  opacity: 1;
+}
+
+.square__zoom-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-size: 0.85rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.square__zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
 .square {
   position: relative;
   border: 1px solid var(--line);
@@ -873,23 +912,15 @@ sup {
   vertical-align: baseline;
 }
 
-/* A fraction never gets split across two lines because it's a flex
-   container (browsers always treat it as one atomic box). A bare
-   base + <sup>/<sub> has no such protection by default - nowrap
-   guarantees the same "stays together or wraps as a whole" behaviour
-   for exponents/subscripts, e.g. "10" and "^-4" can no longer end up
-   on separate lines from each other. */
-.pow-group {
-  white-space: nowrap;
-}
-
-/* A spaced-out equation/expression grouped by groupExpressions() in
-   grid.js (e.g. "y = 2x + 1", "(x + 1) (x - 1)") - same "stays
-   together or wraps as a whole" treatment as .pow-group, just for a
-   run of several tokens instead of a single base+modifier pair. */
-.expr-group {
-  white-space: nowrap;
-}
+/* A base + exponent/subscript is now held together with a word joiner
+   character (U+2060, invisible, zero-width) inserted directly in the
+   text itself, rather than a white-space:nowrap span - that approach
+   was found (via testing) to visually swallow a normal space sitting
+   right against its boundary, and to fragment a wrapped sentence into
+   independently-centred pieces when the span was too wide to share a
+   line with anything else. A word joiner has neither problem, since
+   it isn't an element with a boundary at all - see renderMath() in
+   grid.js. */
 
 .radical {
   display: inline-flex;
