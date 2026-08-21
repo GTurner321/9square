@@ -22,6 +22,54 @@ const Grid = (() => {
   const HIDDEN_INDICES = [1, 3, 4, 5, 7]; // reading order - the 5 squares dropped in 4-mode
   let refreshQueue = [];     // indices from HIDDEN_INDICES, consumed by refresh while in 4-mode
 
+  // Metal-plate palette for the shutter background: mostly the neutral
+  // greys the shutters have always used, plus two of the project's own
+  // chalk tones mixed in sparingly (--chalk-yellow-faded and
+  // --chalk-yellow-faded2 read as grey-brown/dark-grey in their own
+  // right, so they slot in as extra "grey" stops; --chalk-yellow itself
+  // is far brighter/warmer, so it's included just once, to occasionally
+  // catch as a faint aged-brass glint rather than dominate).
+  const SHUTTER_PALETTE = [
+    '#D8D8CE', '#C9C9BF', '#B7B7AD', '#B0B0A5', '#9F9F94', '#8C8C82', '#C2C2B8', '#D0D0C6',
+    '#8B826F', '#4E5357', // --chalk-yellow-faded, --chalk-yellow-faded2
+    '#F5E2A0' // --chalk-yellow, included once for an occasional subtle glint
+  ];
+
+  // Fixed so every shutter's "grain" runs the same direction, even
+  // though the colour sequence and band widths below are randomised
+  // per shutter - a shared angle is what makes them read as the same
+  // material despite each one looking otherwise different.
+  const SHUTTER_ANGLE_DEG = 120;
+
+  /**
+   * Builds one randomised metal-plate gradient string - a random
+   * sequence of colours drawn from SHUTTER_PALETTE and a random band
+   * width per stop (short to much wider), at the shared angle above -
+   * so every shutter looks like a slightly different sheet of brushed
+   * metal rather than all sharing one identical pattern.
+   */
+  function randomShutterGradient() {
+    const stopCount = 6 + Math.floor(Math.random() * 6); // 6-11 stops
+    let pos = 0;
+    const stops = [];
+    for (let i = 0; i < stopCount; i++) {
+      const color = SHUTTER_PALETTE[Math.floor(Math.random() * SHUTTER_PALETTE.length)];
+      stops.push(`${color} ${pos.toFixed(1)}%`);
+      pos += 3 + Math.random() * 24; // each band: anywhere from very short to much wider
+    }
+    return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
+  }
+
+  // Operator characters that read as too small/light in the shutter's
+  // display font (Josefin Sans draws +, minus, times, divide etc.
+  // noticeably smaller than its digits) - swapped to the body font and
+  // bumped slightly at render time instead, rather than changing the
+  // whole shutter font over a handful of symbol glyphs.
+  const SHUTTER_SYMBOL_RE = /[+\-−×÷√∛!]/g;
+  function wrapShutterSymbols(html) {
+    return html.replace(SHUTTER_SYMBOL_RE, ch => `<span class="shutter-symbol">${ch}</span>`);
+  }
+
   // Sum-to-9 expressions shown (embossed) on the shutter face of every
   // covered square except the centre one, which always shows the title
   // instead. Purely decorative - has no bearing on the real question
@@ -384,6 +432,7 @@ const Grid = (() => {
         studentName: hasStudents ? StudentPicker.next(studentQueue) : null,
         studentRevealed: false,
         shuttered: true,
+        shutterGradient: randomShutterGradient(),
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
         shutterKind: null,
         shutterHtml: null
@@ -537,7 +586,7 @@ const Grid = (() => {
         </div>
         ${hasStudents ? renderStudentChip(state) : ''}
       </div>
-      ${state.shuttered ? `<div class="square__shutter" data-shutter="true"><span class="square__shutter-text${state.shutterKind === 'title' ? ' square__shutter-text--title' : ''}">${state.shutterKind === 'title' ? '9 SQUARE' : state.shutterHtml}</span></div>` : ''}
+      ${state.shuttered ? `<div class="square__shutter" data-shutter="true" style="background: ${state.shutterGradient};"><span class="square__shutter-text${state.shutterKind === 'title' ? ' square__shutter-text--title' : ''}">${state.shutterKind === 'title' ? '9 SQUARE' : wrapShutterSymbols(state.shutterHtml)}</span></div>` : ''}
     `;
 
     return wrap;

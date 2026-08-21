@@ -1039,29 +1039,12 @@ sup {
 .square__shutter {
   position: absolute;
   inset: 0;
-  /* Metal-plate effect: a single gradient (not a repeating one) with
-     many grey stops that each blend into the next across the full
-     square, so there's no "tile" boundary anywhere for a seam to show
-     up at - previously this used repeating-linear-gradient with an
-     explicit background-size, which forced the pattern to restart
-     (and visibly jump, since its own first/last stops didn't match)
-     wherever that fixed-size tile boundary happened to land inside a
-     square. A plain gradient can't do that: it always spans the whole
-     element exactly once, whatever size that element is. */
-  background: linear-gradient(
-    120deg,
-    #D8D8CE 0%,
-    #B7B7AD 11%,
-    #C9C9BF 21%,
-    #9F9F94 32%,
-    #C2C2B8 42%,
-    #8C8C82 52%,
-    #B0B0A5 62%,
-    #D0D0C6 73%,
-    #9F9F94 83%,
-    #C9C9BF 92%,
-    #B7B7AD 100%
-  );
+  /* Background is set per-instance as an inline style (see
+     randomShutterGradient() in grid.js) so each shutter gets its own
+     randomised sequence of grey bands at randomised widths, rather
+     than every shutter sharing one identical static pattern. This is
+     just a fallback in case that inline style is ever missing. */
+  background: linear-gradient(120deg, #D8D8CE, #B7B7AD, #9F9F94, #C2C2B8, #B0B0A5);
   cursor: pointer;
   z-index: 5;
   display: flex;
@@ -1092,8 +1075,14 @@ sup {
 }
 
 @keyframes shutter-pulse-once {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.035); }
+  /* transform: scale() was clipped away to nothing here - .square has
+     overflow: hidden, and the shutter already fills it exactly via
+     inset: 0, so there's no room for it to visibly grow into. A
+     brightness pulse changes pixels within the shutter's existing box
+     instead of trying to exceed it, so it isn't affected by the
+     parent's clipping at all. */
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.3); }
 }
 
 .square__shutter-text {
@@ -1119,6 +1108,15 @@ sup {
   text-transform: uppercase;
   font-size: 1.35rem;
   letter-spacing: 0.1em;
+}
+
+/* +, minus, times, divide etc. read as noticeably smaller/lighter than
+   the surrounding digits in Josefin Sans - swapped to the body font
+   (better-proportioned symbol glyphs) and bumped slightly, rather than
+   changing the whole shutter font over a handful of characters. */
+.shutter-symbol {
+  font-family: var(--font-body);
+  font-size: 1.15em;
 }
 
 /* ---------- Responsive ---------- */
