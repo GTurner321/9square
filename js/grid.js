@@ -919,11 +919,15 @@ const Grid = (() => {
     // range together, so the same automatic "shrink to fit, then keep
     // going to avoid wrapping" behaviour still applies - it's just
     // biased up or down from wherever the person has set it.
+    // The trailing 2.2 is that element's CSS line-height (must be kept
+    // in sync with .panel-text / .square__question in styles.css) -
+    // see isWrapped() below for why it's passed in rather than read
+    // back from the DOM.
     const panelText = squareEl.querySelector('.panel-text');
-    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem);
+    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem, false, 2.2);
 
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true);
+    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true, 2.2);
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
@@ -935,15 +939,24 @@ const Grid = (() => {
 
   // Roughly, "does this element's content currently span more than one
   // line" - compares its rendered height against a single line's
-  // height (from its own computed line-height), with a bit of slack
-  // for padding/rounding rather than an exact multiple.
-  function isWrapped(el) {
-    const lineHeightPx = parseFloat(getComputedStyle(el).lineHeight);
-    if (!lineHeightPx) return false;
-    return el.scrollHeight > lineHeightPx * 1.4;
+  // height, with a bit of slack for padding/rounding rather than an
+  // exact multiple. lineHeightMultiplier is the element's own CSS
+  // line-height value, passed in explicitly rather than read back via
+  // getComputedStyle(el).lineHeight - that turned out to be unreliable
+  // for a *unitless* line-height (2.2, not "2.2em"/"35px"): resolving
+  // it correctly to a pixel value isn't consistent enough to trust, and
+  // getting it wrong here is exactly what caused text to shrink to the
+  // floor on every question rather than just when it was genuinely
+  // needed - font-size, by contrast, always resolves to a reliable
+  // pixel value.
+  function isWrapped(el, lineHeightMultiplier) {
+    const fontSizePx = parseFloat(getComputedStyle(el).fontSize);
+    if (!fontSizePx) return false;
+    const oneLinePx = fontSizePx * lineHeightMultiplier;
+    return el.scrollHeight > oneLinePx * 1.4;
   }
 
-  function autosizeElement(el, maxRem, minRem, measureSelf) {
+  function autosizeElement(el, maxRem, minRem, measureSelf, lineHeightMultiplier) {
     const container = measureSelf ? el : el.parentElement;
 
     // A stacked column vector like [a/b] can be visually taller or
@@ -975,13 +988,18 @@ const Grid = (() => {
     // absolute floor, specifically chasing one line. This is what
     // zooming the whole browser out gives by accident (more headroom
     // usually happens to land on fewer wrapped lines) - made
-    // deliberate instead of incidental.
-    const oneLineFloor = 0.4;
-    guard = 0;
-    while (isWrapped(el) && size > oneLineFloor && guard < 40) {
-      size -= 0.03;
-      el.style.fontSize = size + 'rem';
-      guard++;
+    // deliberate instead of incidental. Only runs when a
+    // lineHeightMultiplier was actually passed in (question/panel-text
+    // only) - without one, isWrapped() has no reliable "one line"
+    // reference to compare against.
+    if (lineHeightMultiplier) {
+      const oneLineFloor = 0.4;
+      guard = 0;
+      while (isWrapped(el, lineHeightMultiplier) && size > oneLineFloor && guard < 40) {
+        size -= 0.03;
+        el.style.fontSize = size + 'rem';
+        guard++;
+      }
     }
   }
 
