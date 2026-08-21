@@ -91,16 +91,19 @@ const Grid = (() => {
     return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
   }
 
-  // Band width range widens with lightness - pushed further toward
-  // both extremes again: light tones can now reach substantially wider
-  // bands than before, while dark tones (especially the very darkest)
-  // stay pinned close to the minimum. Cubic rather than quadratic, so
-  // the curve stays flat and narrow through most of the dark/mid range
-  // and only ramps up sharply right at the light end.
+  // Band width now peaks at the middle grey tone(s) and narrows
+  // symmetrically toward both extremes - not a light-to-dark ramp
+  // anymore, a light-to-dark-to-light "hump" centred between indices 3
+  // and 4 (the two middle entries in an 8-tone palette). Cubic falloff
+  // in both directions, so it stays wide only close to the middle and
+  // narrows sharply well before either extreme.
   function bandWidthFor(index) {
-    const lightnessRank = SHUTTER_PALETTE.length - index; // 8 = lightest, 1 = darkest
+    const middle = (SHUTTER_PALETTE.length - 1) / 2; // 3.5 for 8 entries
+    const maxDistance = middle; // furthest an index can be from the middle
+    const distance = Math.abs(index - middle);
+    const closeness = 1 - distance / maxDistance; // 1 at the middle, 0 at either extreme
     const minWidth = 2;
-    const maxWidth = 2 + Math.pow(lightnessRank / SHUTTER_PALETTE.length, 3) * 40;
+    const maxWidth = 2 + Math.pow(closeness, 3) * 40;
     return minWidth + Math.random() * (maxWidth - minWidth);
   }
 
