@@ -22,17 +22,14 @@ const Grid = (() => {
   const HIDDEN_INDICES = [1, 3, 4, 5, 7]; // reading order - the 5 squares dropped in 4-mode
   let refreshQueue = [];     // indices from HIDDEN_INDICES, consumed by refresh while in 4-mode
 
-  // Metal-plate palette for the shutter background: mostly the neutral
-  // greys the shutters have always used, plus two of the project's own
-  // chalk tones mixed in sparingly (--chalk-yellow-faded and
-  // --chalk-yellow-faded2 read as grey-brown/dark-grey in their own
-  // right, so they slot in as extra "grey" stops; --chalk-yellow itself
-  // is far brighter/warmer, so it's included just once, to occasionally
-  // catch as a faint aged-brass glint rather than dominate).
+  // Metal-plate palette for the shutter background - neutral greys,
+  // plus one project tone (--chalk-yellow-faded) kept back in as the
+  // darkest entry, since it reads as grey-brown in its own right.
+  // Sorted lightest to darkest so index distance in this array doubles
+  // as lightness distance, used by both the width bias and the
+  // clustering bias below.
   const SHUTTER_PALETTE = [
-    '#D8D8CE', '#C9C9BF', '#B7B7AD', '#B0B0A5', '#9F9F94', '#8C8C82', '#C2C2B8', '#D0D0C6',
-    '#8B826F', '#4E5357', // --chalk-yellow-faded, --chalk-yellow-faded2
-    '#F5E2A0' // --chalk-yellow, included once for an occasional subtle glint
+    '#D8D8CE', '#D0D0C6', '#C9C9BF', '#C2C2B8', '#B7B7AD', '#B0B0A5', '#9F9F94', '#8C8C82', '#8B826F'
   ];
 
   // Fixed so every shutter's "grain" runs the same direction, even
@@ -44,20 +41,55 @@ const Grid = (() => {
   /**
    * Builds one randomised metal-plate gradient string - a random
    * sequence of colours drawn from SHUTTER_PALETTE and a random band
-   * width per stop (short to much wider), at the shared angle above -
-   * so every shutter looks like a slightly different sheet of brushed
-   * metal rather than all sharing one identical pattern.
+   * width per stop, at the shared angle above - so every shutter looks
+   * like a slightly different sheet of brushed metal rather than all
+   * sharing one identical pattern. Two mild biases on top of the
+   * randomness: lighter tones tend toward wider bands and darker tones
+   * toward narrower ones, and each next colour has a slight preference
+   * for a similar lightness to the one before it (so light and dark
+   * bands each tend to cluster a little, rather than every band being
+   * an unrelated jump).
    */
   function randomShutterGradient() {
     const stopCount = 6 + Math.floor(Math.random() * 6); // 6-11 stops
     let pos = 0;
+    let prevIndex = null;
     const stops = [];
     for (let i = 0; i < stopCount; i++) {
-      const color = SHUTTER_PALETTE[Math.floor(Math.random() * SHUTTER_PALETTE.length)];
-      stops.push(`${color} ${pos.toFixed(1)}%`);
-      pos += 3 + Math.random() * 24; // each band: anywhere from very short to much wider
+      const index = pickPaletteIndex(prevIndex);
+      prevIndex = index;
+      stops.push(`${SHUTTER_PALETTE[index]} ${pos.toFixed(1)}%`);
+      pos += bandWidthFor(index);
     }
     return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
+  }
+
+  // Band width range widens with lightness - index 0 (lightest) can
+  // reach much wider bands than index 7 (darkest), though it's still
+  // random within that range, so a light band is occasionally narrow
+  // too rather than every light band being forced wide.
+  function bandWidthFor(index) {
+    const lightnessRank = SHUTTER_PALETTE.length - index; // 8 = lightest, 1 = darkest
+    const minWidth = 2;
+    const maxWidth = 4 + lightnessRank * 3; // darkest: up to 7, lightest: up to 28
+    return minWidth + Math.random() * (maxWidth - minWidth);
+  }
+
+  // Weighted pick that mildly favours a palette index close to the
+  // previous one (i.e. similar lightness, since the palette is sorted)
+  // over one far away - "mild" is the point, so the decay is gentle
+  // enough that it still jumps around freely, just clusters a little
+  // more often than pure chance would.
+  function pickPaletteIndex(prevIndex) {
+    if (prevIndex === null) return Math.floor(Math.random() * SHUTTER_PALETTE.length);
+    const weights = SHUTTER_PALETTE.map((_, i) => 1 / (1 + Math.abs(i - prevIndex) * 0.35));
+    const total = weights.reduce((a, b) => a + b, 0);
+    let r = Math.random() * total;
+    for (let i = 0; i < weights.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return i;
+    }
+    return weights.length - 1;
   }
 
   // Operator characters that read as too small/light in the shutter's
