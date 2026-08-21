@@ -157,6 +157,24 @@ body {
   overflow-y: auto;
 }
 
+/* Extra breathing room specifically on the side facing the middle
+   divider, so content doesn't sit right up against the strip labels. */
+.setup-side--quiz {
+  padding-right: 40px;
+}
+
+.setup-side--students {
+  padding-left: 40px;
+}
+
+@media (max-width: 820px) {
+  .setup-side--quiz,
+  .setup-side--students {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
 /* Each direct child block is capped and centred as a unit, rather than
    individually re-centring every label/input within it - keeps normal
    left-aligned reading order inside each block while the block itself
