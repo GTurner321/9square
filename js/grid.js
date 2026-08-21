@@ -32,6 +32,14 @@ const Grid = (() => {
     '#D5D5CB', '#CECEC4', '#C7C7BD', '#C0C0B6', '#B9B9AF', '#B2B2A8', '#ABABA1', '#A5A59B'
   ];
 
+  // Occasional very narrow accent lines - a touch darker than the
+  // palette's own darkest tone, or a touch lighter than its own
+  // lightest - that can appear right next to (never instead of) their
+  // respective end of the palette, like the thin highlight/shadow line
+  // real brushed metal often shows at a tonal transition.
+  const SHUTTER_ACCENT_DARK = '#919187';
+  const SHUTTER_ACCENT_LIGHT = '#E9E9DF';
+
   // Fixed so every shutter's "grain" runs the same direction, even
   // though the colour sequence and band widths below are randomised
   // per shutter - a shared angle is what makes them read as the same
@@ -49,17 +57,36 @@ const Grid = (() => {
    * preference for a similar lightness to the one before it - darker
    * picks don't share that preference, so dark bands no longer tend to
    * cluster with other dark bands, only light-with-light does.
+   *
+   * Stops are generated in a loop until they actually reach 100% width,
+   * rather than a fixed stop count - a fixed count (tuned for the
+   * originally wider bands) stopped covering the full box once bands
+   * were narrowed down: CSS just extends the last stop's colour to
+   * fill whatever's left past 100%, which is exactly what produced the
+   * "only the first 20% has any texture, then it's flat" look.
    */
   function randomShutterGradient() {
-    const stopCount = 6 + Math.floor(Math.random() * 6); // 6-11 stops
     let pos = 0;
     let prevIndex = null;
     const stops = [];
-    for (let i = 0; i < stopCount; i++) {
+    let guard = 0;
+    while (pos < 100 && guard < 60) {
+      guard++;
       const index = pickPaletteIndex(prevIndex);
       prevIndex = index;
       stops.push(`${SHUTTER_PALETTE[index]} ${pos.toFixed(1)}%`);
       pos += bandWidthFor(index);
+
+      // A narrow accent line has a modest chance of following directly
+      // after a genuinely darkest/lightest pick specifically - not
+      // after every dark/light-ish band, just the two true extremes.
+      if (index === SHUTTER_PALETTE.length - 1 && Math.random() < 0.18) {
+        stops.push(`${SHUTTER_ACCENT_DARK} ${pos.toFixed(1)}%`);
+        pos += 1 + Math.random() * 2;
+      } else if (index === 0 && Math.random() < 0.18) {
+        stops.push(`${SHUTTER_ACCENT_LIGHT} ${pos.toFixed(1)}%`);
+        pos += 1 + Math.random() * 2;
+      }
     }
     return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
   }
