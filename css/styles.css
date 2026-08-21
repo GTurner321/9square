@@ -867,7 +867,7 @@ sub {
 
 sup {
   position: relative;
-  top: -0.35em;
+  top: -0.6em;
   font-size: 0.62em;
   line-height: 0;
   vertical-align: baseline;
@@ -880,6 +880,14 @@ sup {
    for exponents/subscripts, e.g. "10" and "^-4" can no longer end up
    on separate lines from each other. */
 .pow-group {
+  white-space: nowrap;
+}
+
+/* A spaced-out equation/expression grouped by groupExpressions() in
+   grid.js (e.g. "y = 2x + 1", "(x + 1) (x - 1)") - same "stays
+   together or wraps as a whole" treatment as .pow-group, just for a
+   run of several tokens instead of a single base+modifier pair. */
+.expr-group {
   white-space: nowrap;
 }
 

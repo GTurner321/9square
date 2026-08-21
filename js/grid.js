@@ -102,8 +102,125 @@ const Grid = (() => {
   // single-level parenthesised group like "(x+1)".
   const BASE_PATTERN = '(?:\\([^()]*\\)|[A-Za-z0-9.]+)';
 
+  // Per-digit superscript/subscript glyph maps (Unicode has a real
+  // character for every digit 0-9 plus a minus sign, in both forms -
+  // ²/³ are the well-known ones, but ⁰¹⁴⁵⁶⁷⁸⁹⁻ and ₀-₉₋ exist too and
+  // are just as widely supported, being either Latin-1 Supplement or
+  // the dedicated Superscripts/Subscripts block. Building an exponent
+  // like "x^23" or "10^-4" out of these (x²³, 10⁻⁴) is genuinely
+  // immune to every problem a constructed <sup> has: nothing to sit
+  // too low (it's real running text, not a manually offset box),
+  // nothing to detach from its base across a line-break (no separate
+  // element exists to detach), and no line-wrap point for a space to
+  // land invisibly next to (same reason).
+  const SUP_GLYPH = { '0': '\u2070', '1': '\u00B9', '2': '\u00B2', '3': '\u00B3', '4': '\u2074', '5': '\u2075', '6': '\u2076', '7': '\u2077', '8': '\u2078', '9': '\u2079', '-': '\u207B' };
+  const SUB_GLYPH = { '0': '\u2080', '1': '\u2081', '2': '\u2082', '3': '\u2083', '4': '\u2084', '5': '\u2085', '6': '\u2086', '7': '\u2087', '8': '\u2088', '9': '\u2089', '-': '\u208B' };
+
+  // A second, smaller set: +, =, ( and ) also have real glyphs in the
+  // very same well-supported Unicode block as the digits above (so
+  // just as safe to use), and a handful of the algebra letters most
+  // likely to turn up as an exponent (a, b, c, n, x, y) have assigned
+  // superscript codepoints too. Subscript letters are deliberately
+  // left out of this second set even though a few exist (a e i o r u v
+  // x) - notably NOT n, which is missing from Unicode entirely, and
+  // "u_n"/"a_n" sequence notation is probably the single most common
+  // subscript in this curriculum. Having some subscript letters render
+  // as glyphs and others silently fall back would be more confusing
+  // than useful, so subscript letters stay on the constructed <sub>
+  // fallback across the board.
+  const SUP_EXTRA_GLYPH = Object.assign({}, SUP_GLYPH, {
+    '+': '\u207A', '=': '\u207C', '(': '\u207D', ')': '\u207E',
+    'a': '\u1D43', 'b': '\u1D47', 'c': '\u1D9C', 'n': '\u207F', 'x': '\u02E3', 'y': '\u02B8'
+  });
+  const SUB_EXTRA_GLYPH = Object.assign({}, SUB_GLYPH, {
+    '+': '\u208A', '=': '\u208C', '(': '\u208D', ')': '\u208E'
+  });
+
+  const toGlyphs = (chars, map) => chars.split('').map(c => map[c] || c).join('');
+  // Only ], \, ^, and - are actually special inside a [...] character
+  // class - escaping every character indiscriminately (including
+  // plain letters) is a real bug, not just unnecessary: \n, \b, and \x
+  // mean newline/backspace/hex-escape in a regex, not the literal
+  // letters n, b, x - which would have silently broken glyph matching
+  // for exactly the letters this feature exists to support.
+  const charClass = map => '[' + Object.keys(map).map(c => /[\]\\^-]/.test(c) ? '\\' + c : c).join('') + ']';
+
+  // Best-effort heuristic for keeping a spaced-out equation or
+  // expression - e.g. "y = 2x + 1" or "(x + 1) (x - 1)" - together as
+  // one unbreakable block, without requiring every question to be
+  // hand-annotated with special markers. The rule: split on
+  // whitespace, and treat any token that does NOT contain a run of 2+
+  // letters as "expression-like" (numbers, single-letter variables,
+  // operators, brackets, and combinations of these - "2x", "=", "(x+1)"
+  // all qualify; "Simplify", "the", "of" don't, since real words are
+  // exactly what this needs to NOT swallow). Consecutive
+  // expression-like tokens get grouped into one no-wrap block. A comma
+  // always closes a group even mid-run, since a comma is a natural,
+  // expected place for a list of separate items (e.g. "250000,
+  // 3.1×10^5, 199000") to wrap - only a genuinely spaced-out single
+  // expression should be forced to stay whole.
+  //
+  // This is inherently a heuristic, not a parser, so it has known
+  // blind spots - the clearest is a bracketed phrase that mixes real
+  // words with notation, e.g. "(x positive)": "positive" is correctly
+  // left out of the group (it's a real word), but that means the
+  // group boundary can still land awkwardly right next to the "(" that
+  // introduced it.
+  const WORD_RE = /[A-Za-z]{2,}/;
+  function groupExpressions(text) {
+    const parts = text.split(/( )/); // tokens and single spaces, alternating
+    let out = '';
+    let groupStart = -1;    // index into `out` where the current candidate group began, or -1 if not in one
+    let groupTokenCount = 0;
+
+    function isWordToken(token) {
+      // "sqrt"/"cbrt" are markup keywords, not English words - ignore
+      // them when checking, so e.g. "2 + sqrt{2}" still groups.
+      return WORD_RE.test(token.replace(/sqrt|cbrt/g, ''));
+    }
+
+    function closeGroup() {
+      // Spaces are always appended to `out` immediately as they're
+      // encountered below, never held back - a group is only ever
+      // applied retroactively, by wrapping the slice of `out` already
+      // written since groupStart. This is what a first version of this
+      // function got wrong: it deferred spaces to rejoin later via
+      // group.join(' '), but that rejoin only happened for a group
+      // that ended up 2+ tokens - a single-token "group" just discarded
+      // its trailing space outright, exactly the space-eating bug this
+      // feature was meant to avoid, not cause.
+      if (groupStart !== -1 && groupTokenCount >= 2) {
+        out = out.slice(0, groupStart) + '<span class="expr-group">' + out.slice(groupStart) + '</span>';
+      }
+      groupStart = -1;
+      groupTokenCount = 0;
+    }
+
+    for (let i = 0; i < parts.length; i++) {
+      const part = parts[i];
+      if (part === '') continue;
+      if (part === ' ') {
+        out += part;
+        continue;
+      }
+      if (isWordToken(part)) {
+        closeGroup();
+        out += part;
+      } else {
+        if (groupStart === -1) groupStart = out.length;
+        out += part;
+        groupTokenCount++;
+        if (/,$/.test(part)) closeGroup(); // a comma closes the group even though it's still expression-like
+      }
+    }
+    closeGroup();
+    return out;
+  }
+
   function renderMath(rawText) {
     let text = escapeHtml(rawText == null ? '' : String(rawText));
+
+    text = groupExpressions(text);
 
     // Roots first, since they also consume a {...} span.
     text = text.replace(/sqrt\{([^{}]+)\}/g, (m, inner) =>
@@ -111,17 +228,30 @@ const Grid = (() => {
     text = text.replace(/cbrt\{([^{}]+)\}/g, (m, inner) =>
       `<span class="radical radical--cube"><span class="radical__sym">∛</span><span class="radical__body">${inner}</span></span>`);
 
-    // Squared/cubed get a real Unicode glyph (², ³) instead of a
-    // constructed <sup>, ahead of the general exponent pass below.
-    // Unlike other superscript characters, ² and ³ (U+00B2/U+00B3) sit
-    // in the Latin-1 Supplement block - as universally supported as any
-    // character gets, nowhere near as patchy as superscript letters or
-    // ⁴-⁹. As a plain character with no separate positioned element,
-    // it can't detach from its base across a line-break and needs no
-    // extra line-height buffer at all - genuinely immune to the
-    // wrapping issue, not just harder to trigger.
-    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^([23])(?![0-9])', 'g'), (m, base, digit) =>
-      base + (digit === '2' ? '\u00B2' : '\u00B3'));
+    // Purely-numeric exponents/subscripts (any length, optional
+    // leading minus - "9", "23", "-4" all qualify) become real Unicode
+    // glyphs rather than a constructed <sup>/<sub>, for every reason
+    // laid out above SUP_GLYPH/SUB_GLYPH. Runs before the general
+    // exponent/subscript pass below so it gets first claim on anything
+    // it can fully render as plain text.
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^(\\{-?[0-9]+\\}|-?[0-9]+)', 'g'), (m, base, exp) =>
+      base + toGlyphs(exp.startsWith('{') ? exp.slice(1, -1) : exp, SUP_GLYPH));
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')_(\\{-?[0-9]+\\}|-?[0-9]+)', 'g'), (m, base, sub) =>
+      base + toGlyphs(sub.startsWith('{') ? sub.slice(1, -1) : sub, SUB_GLYPH));
+
+    // Second glyph pass: braced content built entirely from the wider
+    // safe set (digits, +, =, (, ), and - for superscript only - a, b,
+    // c, n, x, y) also becomes plain glyphs. A bare (non-braced)
+    // exponent/subscript only ever gets ONE glyph here, same rule as
+    // the constructed-<sup> pass below uses for anything else - a bare
+    // "x^2y" is "x² then a separate y", not "x to the power 2y"; that
+    // needs braces, x^{2y}, to be unambiguous, same as it always has.
+    const supClass = charClass(SUP_EXTRA_GLYPH);
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')\\^(\\{' + supClass + '+\\}|' + supClass + ')', 'g'), (m, base, exp) =>
+      base + toGlyphs(exp.startsWith('{') ? exp.slice(1, -1) : exp, SUP_EXTRA_GLYPH));
+    const subClass = charClass(SUB_EXTRA_GLYPH);
+    text = text.replace(new RegExp('(' + BASE_PATTERN + ')_(\\{' + subClass + '+\\}|' + subClass + ')', 'g'), (m, base, sub) =>
+      base + toGlyphs(sub.startsWith('{') ? sub.slice(1, -1) : sub, SUB_EXTRA_GLYPH));
 
     // Exponents and subscripts next, and specifically before the
     // fraction pass below - x^{1/3} is a superscripted "1/3", not a
@@ -129,13 +259,15 @@ const Grid = (() => {
     // need to claim their braces before the generic {a/b} fraction
     // regex gets a chance to see them.
     //
-    // The base is captured along with the ^/_ so the two can be
-    // wrapped together in a no-wrap span: a fraction never gets split
-    // across two lines because it's a flex container (always treated
-    // as one atomic box), but a bare base + <sup> is just two separate
-    // bits of inline text with nothing stopping a line-break landing
-    // between them - e.g. "10" ending one line and "^-4" starting the
-    // next, which is exactly what produces jumbled-looking output.
+    // Everything left at this point has a letter somewhere in the
+    // exponent/subscript (the purely-numeric cases were already
+    // handled above), so it can't be done as plain glyphs and needs a
+    // constructed <sup>/<sub>. The base is captured along with the ^/_
+    // so the two can be wrapped together in a no-wrap span: a fraction
+    // never gets split across two lines because it's a flex container
+    // (always treated as one atomic box), but a bare base + <sup> is
+    // just two separate bits of inline text with nothing stopping a
+    // line-break landing between them.
     const BASE = BASE_PATTERN;
     text = text.replace(new RegExp(BASE + '\\^(\\{[^{}]+\\}|-?[A-Za-z0-9])', 'g'), (m, exp) => {
       const base = m.slice(0, m.indexOf('^'));
@@ -783,7 +915,7 @@ const Grid = (() => {
     // make this loop hit its usual floor before the line has actually
     // narrowed enough to stop wrapping, and wrapping mid-line is worse
     // than going smaller, so these get a lower floor.
-    const hasWideAtomic = !!(el.querySelector('.vector') || el.querySelector('.pow-group'));
+    const hasWideAtomic = !!(el.querySelector('.vector') || el.querySelector('.pow-group') || el.querySelector('.expr-group'));
     const effectiveMinRem = hasWideAtomic ? Math.min(minRem, 0.45) : minRem;
 
     let size = maxRem;
