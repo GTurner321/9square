@@ -127,39 +127,91 @@ body {
 .card {
   flex: 1;
   min-height: 0;
-  background: var(--panel);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 18px;
+  /* No boxed panel appearance here anymore (no background, border, or
+     padding) - the setup content sits directly on the page background
+     instead, per request to remove the container box around it. The
+     outer .setup wrapper still has its own padding, so there's still
+     breathing room at the page edges without this box supplying it. */
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-/* ---------- Two-column setup layout ---------- */
+/* ---------- Split setup layout: divider with rotated side labels ---------- */
 
-.setup-columns {
+.setup-split {
   display: flex;
-  gap: 56px;
-  align-items: flex-start;
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
 }
 
-.setup-col {
+.setup-side {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 14px;
+  padding: 8px 16px;
+  overflow-y: auto;
 }
 
-.setup-col--students > .field__label {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: var(--ink);
+/* Each direct child block is capped and centred as a unit, rather than
+   individually re-centring every label/input within it - keeps normal
+   left-aligned reading order inside each block while the block itself
+   sits centred in its side of the page. */
+.setup-side > * {
+  width: 100%;
+  max-width: 420px;
+}
+
+.setup-divider {
+  display: flex;
+  align-items: stretch;
+  flex-shrink: 0;
+}
+
+.setup-divider__strip {
+  width: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.setup-divider__line {
+  width: 1px;
+  background: var(--line);
+}
+
+.setup-divider__label {
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 0.82rem;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+/* Rotating a normal horizontal line of text 90deg clockwise makes it
+   read top-to-bottom ("downward"); -90deg (anticlockwise) makes it
+   read bottom-to-top ("upward") - matches the two sides' requested
+   reading directions without needing separate vertical-writing-mode
+   markup. */
+.setup-divider__label--down {
+  transform: rotate(90deg);
+}
+
+.setup-divider__label--up {
+  transform: rotate(-90deg);
 }
 
 @media (max-width: 820px) {
-  .setup-columns { flex-direction: column; }
+  .setup-split { flex-direction: column; }
+  .setup-divider { flex-direction: row; }
+  .setup-divider__strip { width: auto; height: 34px; }
+  .setup-divider__line { width: auto; height: 1px; }
+  .setup-divider__label--down,
+  .setup-divider__label--up { transform: none; }
 }
 
 /* ---------- Students button row ---------- */
@@ -752,20 +804,16 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Left, not center: justify-content above still centres the text as
-     a whole block when it's one line (the vast majority of cases -
-     a single line's box is exactly as wide as its content, so left vs
-     center makes no visible difference there at all). The difference
-     only shows up once content wraps to 2+ lines, which is exactly
-     where centering each line independently caused trouble: an
-     unavoidable forced break around something wide/tall mid-sentence
-     (a vector, most often - it has to stay a small stacked block, it
-     can't be turned into plain glyphs the way an exponent could) used
-     to scatter the surrounding fragments into oddly, independently
-     re-centred pieces with no relation to each other's horizontal
-     position. Left-aligning wrapped lines reads as normal text instead
-     regardless of what forced the break. */
-  text-align: left;
+  /* Reverted back to center per explicit feedback - left-aligning
+     wrapped lines fixed the vector-scattering issue but made normal
+     multi-line wrapped questions look left-justified rather than
+     centred, which matters more often than the vector case does.
+     Worth retesting the vector/parallelogram example against this
+     reverted version - if the scattering is still happening, that
+     points to text-align not having been the true root cause after
+     all (or not the only one), and a more targeted fix specific to
+     vectors is needed instead of this blanket setting. */
+  text-align: center;
   overflow: hidden;
   font-weight: 700;
   line-height: 2.2;
@@ -800,8 +848,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Same reasoning as .square__question above. */
-  text-align: left;
+  /* Reverted to center - see .square__question for why. */
+  text-align: center;
   overflow: hidden;
   line-height: 2.2;
 }

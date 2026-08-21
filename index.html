@@ -33,10 +33,9 @@
 <main class="setup">
   <div class="card">
 
-    <div class="setup-columns">
+    <div class="setup-split">
 
-      <div class="setup-col setup-col--quiz">
-        <span class="field__label">Add Questions</span>
+      <div class="setup-side setup-side--quiz">
 
         <div class="method-tabs" id="methodTabs">
           <button type="button" class="method-tab" data-method="pearsonBook">Pearson book</button>
@@ -94,12 +93,30 @@
             </select>
             <p class="hint" id="levelCountHint" hidden></p>
           </div>
+
+          <div class="field field--spaced">
+            <label for="calculatorSelect">Calculator use</label>
+            <select id="calculatorSelect">
+              <option value="mixed" selected>Mixed</option>
+              <option value="noncalc">Non-calculator</option>
+              <option value="calc">Calculator</option>
+            </select>
+          </div>
         </div>
 
       </div>
 
-      <div class="setup-col setup-col--students">
-        <span class="field__label">Add Students</span>
+      <div class="setup-divider" aria-hidden="true">
+        <div class="setup-divider__strip">
+          <span class="setup-divider__label setup-divider__label--down">ADD QUESTIONS</span>
+        </div>
+        <div class="setup-divider__line"></div>
+        <div class="setup-divider__strip">
+          <span class="setup-divider__label setup-divider__label--up">ADD STUDENTS</span>
+        </div>
+      </div>
+
+      <div class="setup-side setup-side--students">
 
         <div class="method-tabs" id="studentMethodTabs">
           <button type="button" class="method-tab" data-method="fresh">Start fresh</button>

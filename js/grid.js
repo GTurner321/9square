@@ -64,14 +64,16 @@ const Grid = (() => {
     return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
   }
 
-  // Band width range widens with lightness, and sharply so (quadratic,
-  // not linear) - the darkest tone (rank 1) tops out barely above the
-  // 2 minimum, while the lightest (rank 8) can reach a genuinely wide
-  // band, per the "much narrower" preference for dark tones.
+  // Band width range widens with lightness. Both ends were tightened
+  // further per feedback: dark/mid tones should be much narrower still
+  // (not just narrower than light ones), and even the lightest tone
+  // shouldn't reach as wide as it previously could - the whole curve
+  // sits inside a smaller overall ceiling than before, still ramping
+  // up toward the light end but far more gently.
   function bandWidthFor(index) {
     const lightnessRank = SHUTTER_PALETTE.length - index; // 8 = lightest, 1 = darkest
     const minWidth = 2;
-    const maxWidth = 2 + lightnessRank * lightnessRank * 0.45;
+    const maxWidth = 2 + Math.pow(lightnessRank / SHUTTER_PALETTE.length, 2) * 10;
     return minWidth + Math.random() * (maxWidth - minWidth);
   }
 

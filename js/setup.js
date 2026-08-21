@@ -62,6 +62,8 @@ const Setup = (() => {
     el.levelSelect = document.getElementById('levelSelect');
     el.levelCountHint = document.getElementById('levelCountHint');
 
+    el.calculatorSelect = document.getElementById('calculatorSelect');
+
     el.studentMethodTabs = document.getElementById('studentMethodTabs');
     el.panelStudentsFresh = document.getElementById('panelStudentsFresh');
     el.panelStudentsSaved = document.getElementById('panelStudentsSaved');
@@ -86,6 +88,7 @@ const Setup = (() => {
     el.savedQuizSelect.addEventListener('change', onSavedQuizChange);
     el.savedGroupSelect.addEventListener('change', onSavedGroupChange);
     el.levelSelect.addEventListener('change', updateLevelCount);
+    el.calculatorSelect.addEventListener('change', onSelectionChanged);
 
     el.addStudentsBtn.addEventListener('click', onAddStudents);
     el.saveClassListBtn.addEventListener('click', onSaveClassList);
@@ -522,13 +525,18 @@ const Setup = (() => {
    * doesn't build a pool live - it's reconstructed on load instead).
    */
   function getCurrentPool() {
+    let pool;
     if (currentMethod === 'pearsonBook') {
-      return PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
+      pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
+    } else if (currentMethod === 'dfRefs') {
+      pool = PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
+    } else {
+      return [];
     }
-    if (currentMethod === 'dfRefs') {
-      return PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
-    }
-    return [];
+    const calcMode = el.calculatorSelect.value;
+    if (calcMode === 'noncalc') return pool.filter(q => q.calculator === 'No');
+    if (calcMode === 'calc') return pool.filter(q => q.calculator === 'Yes');
+    return pool;
   }
 
   /**
@@ -595,12 +603,23 @@ const Setup = (() => {
     // levels and hand it "mix" instead, which then just draws from
     // whatever's left.
     let questions = pool;
+
+    // Calculator use is filtered the same way - "Mixed" (the default)
+    // leaves the pool untouched, including any rows that don't have
+    // the column tagged at all.
+    const calcMode = el.calculatorSelect.value;
+    if (calcMode === 'noncalc') {
+      questions = questions.filter(q => q.calculator === 'No');
+    } else if (calcMode === 'calc') {
+      questions = questions.filter(q => q.calculator === 'Yes');
+    }
+
     let levelMode = el.levelSelect.value;
     if (levelMode === 'levels12') {
-      questions = pool.filter(q => q.level === 1 || q.level === 2);
+      questions = questions.filter(q => q.level === 1 || q.level === 2);
       levelMode = 'mix';
     } else if (levelMode === 'levels23') {
-      questions = pool.filter(q => q.level === 2 || q.level === 3);
+      questions = questions.filter(q => q.level === 2 || q.level === 3);
       levelMode = 'mix';
     }
 
