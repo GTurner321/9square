@@ -752,7 +752,20 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  /* Left, not center: justify-content above still centres the text as
+     a whole block when it's one line (the vast majority of cases -
+     a single line's box is exactly as wide as its content, so left vs
+     center makes no visible difference there at all). The difference
+     only shows up once content wraps to 2+ lines, which is exactly
+     where centering each line independently caused trouble: an
+     unavoidable forced break around something wide/tall mid-sentence
+     (a vector, most often - it has to stay a small stacked block, it
+     can't be turned into plain glyphs the way an exponent could) used
+     to scatter the surrounding fragments into oddly, independently
+     re-centred pieces with no relation to each other's horizontal
+     position. Left-aligning wrapped lines reads as normal text instead
+     regardless of what forced the break. */
+  text-align: left;
   overflow: hidden;
   font-weight: 700;
   line-height: 2.2;
@@ -787,7 +800,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  /* Same reasoning as .square__question above. */
+  text-align: left;
   overflow: hidden;
   line-height: 2.2;
 }
