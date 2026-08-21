@@ -22,14 +22,14 @@ const Grid = (() => {
   const HIDDEN_INDICES = [1, 3, 4, 5, 7]; // reading order - the 5 squares dropped in 4-mode
   let refreshQueue = [];     // indices from HIDDEN_INDICES, consumed by refresh while in 4-mode
 
-  // Metal-plate palette for the shutter background - neutral greys,
-  // plus one project tone (--chalk-yellow-faded) kept back in as the
-  // darkest entry, since it reads as grey-brown in its own right.
-  // Sorted lightest to darkest so index distance in this array doubles
-  // as lightness distance, used by both the width bias and the
-  // clustering bias below.
+  // Metal-plate palette for the shutter background - lightest to
+  // darkest. Darker tones were pulled up several steps lighter than
+  // before (previously ran all the way down to a near-charcoal ~127
+  // average brightness; the floor now sits around ~165) per request to
+  // lighten/remove the darkest tones, rather than literally deleting
+  // entries and ending up with fewer stops to work with.
   const SHUTTER_PALETTE = [
-    '#D8D8CE', '#D0D0C6', '#C9C9BF', '#C2C2B8', '#B7B7AD', '#B0B0A5', '#9F9F94', '#8C8C82', '#8B826F'
+    '#D5D5CB', '#CECEC4', '#C7C7BD', '#C0C0B6', '#B9B9AF', '#B2B2A8', '#ABABA1', '#A5A59B'
   ];
 
   // Fixed so every shutter's "grain" runs the same direction, even
@@ -43,12 +43,12 @@ const Grid = (() => {
    * sequence of colours drawn from SHUTTER_PALETTE and a random band
    * width per stop, at the shared angle above - so every shutter looks
    * like a slightly different sheet of brushed metal rather than all
-   * sharing one identical pattern. Two mild biases on top of the
-   * randomness: lighter tones tend toward wider bands and darker tones
-   * toward narrower ones, and each next colour has a slight preference
-   * for a similar lightness to the one before it (so light and dark
-   * bands each tend to cluster a little, rather than every band being
-   * an unrelated jump).
+   * sharing one identical pattern. Biases on top of the randomness:
+   * darker tones lean strongly toward narrow bands (lighter tones can
+   * reach much wider ones), and a lighter-or-equal pick has a mild
+   * preference for a similar lightness to the one before it - darker
+   * picks don't share that preference, so dark bands no longer tend to
+   * cluster with other dark bands, only light-with-light does.
    */
   function randomShutterGradient() {
     const stopCount = 6 + Math.floor(Math.random() * 6); // 6-11 stops
@@ -64,25 +64,29 @@ const Grid = (() => {
     return `linear-gradient(${SHUTTER_ANGLE_DEG}deg, ${stops.join(', ')})`;
   }
 
-  // Band width range widens with lightness - index 0 (lightest) can
-  // reach much wider bands than index 7 (darkest), though it's still
-  // random within that range, so a light band is occasionally narrow
-  // too rather than every light band being forced wide.
+  // Band width range widens with lightness, and sharply so (quadratic,
+  // not linear) - the darkest tone (rank 1) tops out barely above the
+  // 2 minimum, while the lightest (rank 8) can reach a genuinely wide
+  // band, per the "much narrower" preference for dark tones.
   function bandWidthFor(index) {
     const lightnessRank = SHUTTER_PALETTE.length - index; // 8 = lightest, 1 = darkest
     const minWidth = 2;
-    const maxWidth = 4 + lightnessRank * 3; // darkest: up to 7, lightest: up to 28
+    const maxWidth = 2 + lightnessRank * lightnessRank * 0.45;
     return minWidth + Math.random() * (maxWidth - minWidth);
   }
 
   // Weighted pick that mildly favours a palette index close to the
   // previous one (i.e. similar lightness, since the palette is sorted)
-  // over one far away - "mild" is the point, so the decay is gentle
-  // enough that it still jumps around freely, just clusters a little
-  // more often than pure chance would.
+  // - but only among indices at or lighter than the previous one.
+  // Indices darker than the previous pick are weighted uniformly, with
+  // no distance preference at all, so dark tones no longer cluster with
+  // other dark tones the way light tones still mildly do with other
+  // light tones.
   function pickPaletteIndex(prevIndex) {
     if (prevIndex === null) return Math.floor(Math.random() * SHUTTER_PALETTE.length);
-    const weights = SHUTTER_PALETTE.map((_, i) => 1 / (1 + Math.abs(i - prevIndex) * 0.35));
+    const weights = SHUTTER_PALETTE.map((_, i) =>
+      i <= prevIndex ? 1 / (1 + (prevIndex - i) * 0.35) : 1
+    );
     const total = weights.reduce((a, b) => a + b, 0);
     let r = Math.random() * total;
     for (let i = 0; i < weights.length; i++) {
@@ -412,7 +416,13 @@ const Grid = (() => {
         studentRevealed: false,
         shuttered: true,
         shutterGradient: randomShutterGradient(),
-        zoomOffsetRem: 0,
+        // Question/hint/explanation each remember their own zoom level
+        // independently (switching between them doesn't reset the
+        // others - going back to a previously-zoomed one picks up
+        // where it was left). Answer/choices were never in the zoom
+        // control's scope, so they don't get an entry here - they just
+        // render at their normal size.
+        zoomOffsets: { question: 0, hint: 0, explain: 0 },
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
         shutterKind: null,
         shutterHtml: null
@@ -425,7 +435,10 @@ const Grid = (() => {
     refreshQueue = [];
     globalRevealed = false;
     render();
-    startShutterPulse();
+    // Disabled per request - startShutterPulse()/stopShutterPulse() are
+    // left fully intact below in case this gets switched back on later,
+    // this is just the one call site that turns it on.
+    // startShutterPulse();
   }
 
   /**
@@ -676,14 +689,20 @@ const Grid = (() => {
     // autosizeSquare/autosizeElement) rather than replacing automatic
     // sizing outright - the shrink-to-fit loop still runs and still
     // prevents genuine overflow, this just biases where it lands.
-    // Resets to 0 on every new grid, same as any other per-square UI
-    // state - it's not saved as part of a quiz's descriptor.
+    // Resets to 0 on every new grid (or a refresh of this square), same
+    // as any other per-square UI state - it's not saved as part of a
+    // quiz's descriptor. Adjusts whichever of question/hint/explain is
+    // currently on screen (see questionZoomKey) - each remembers its
+    // own level independently, so switching to a different one shows
+    // it at its own last-set size, not whatever was just clicked.
     const zoomBtn = e.target.closest('[data-action="zoom-in"], [data-action="zoom-out"]');
     if (zoomBtn) {
       const step = 0.08;
       const delta = zoomBtn.dataset.action === 'zoom-in' ? step : -step;
-      state.zoomOffsetRem = Math.max(-0.5, Math.min(0.4, state.zoomOffsetRem + delta));
-      autosizeSquare(squareEl, state.zoomOffsetRem);
+      const key = questionZoomKey(state);
+      const current = state.zoomOffsets[key] || 0;
+      state.zoomOffsets[key] = Math.max(-0.4, Math.min(0.9, current + delta));
+      autosizeSquare(squareEl, state);
       return;
     }
 
@@ -840,7 +859,16 @@ const Grid = (() => {
       shuttered: false, // a square already interacted with (refreshed) stays unshuttered
       color: squareStates[index].color,
       shutterKind: squareStates[index].shutterKind,
-      shutterHtml: squareStates[index].shutterHtml
+      shutterHtml: squareStates[index].shutterHtml,
+      // Fresh content gets a fresh zoom level, same reasoning as a
+      // whole new grid - this was also missing outright before, which
+      // was the actual cause of zoom silently breaking after a
+      // refresh: state.zoomOffsetRem became undefined, then
+      // undefined + delta evaluated to NaN on the next click, which -
+      // once stored - stayed NaN forever after (NaN + anything is
+      // still NaN), even though the render code's `|| 0` fallback
+      // masked it by always visually defaulting back to 0.
+      zoomOffsets: { question: 0, hint: 0, explain: 0 }
     };
     rerenderSquare(index);
   }
@@ -917,7 +945,7 @@ const Grid = (() => {
     const oldEl = el.container.querySelector(`.square[data-index="${index}"]`);
     const newEl = renderSquare(squares[index], squareStates[index], index);
     oldEl.replaceWith(newEl);
-    autosizeSquare(newEl, squareStates[index] ? squareStates[index].zoomOffsetRem : 0);
+    autosizeSquare(newEl, squareStates[index]);
   }
 
   // ---------------- Text autosizing ----------------
@@ -929,14 +957,25 @@ const Grid = (() => {
   function autosizeAll() {
     el.container.querySelectorAll('.square').forEach(squareEl => {
       const index = Number(squareEl.dataset.index);
-      const state = squareStates[index];
-      autosizeSquare(squareEl, state ? state.zoomOffsetRem : 0);
+      autosizeSquare(squareEl, squareStates[index]);
     });
   }
 
-  function autosizeSquare(squareEl, zoomOffsetRem) {
+  // Which of state.zoomOffsets applies to the question element right
+  // now - hint/explain fully replace the question (so their own key
+  // applies), but choices/answer split the box with the question still
+  // showing above, and were never in the zoom control's scope, so the
+  // question's own key applies then too, same as when no panel is open
+  // at all.
+  function questionZoomKey(state) {
+    return (state && (state.activePanel === 'hint' || state.activePanel === 'explain'))
+      ? state.activePanel
+      : 'question';
+  }
+
+  function autosizeSquare(squareEl, state) {
     if (!squareEl) return;
-    zoomOffsetRem = zoomOffsetRem || 0;
+    const zoomOffsets = (state && state.zoomOffsets) || {};
 
     // Answer box / panel text size first, since their footprint can
     // change how much vertical space is left for the question above
@@ -949,12 +988,18 @@ const Grid = (() => {
     // fighting the manual zoom control below, since it would shrink
     // things back down regardless of where +/- had set the starting
     // size). Sizing is purely: fit the box, then apply whatever manual
-    // zoomOffsetRem the person has clicked to.
+    // offset the person has clicked to for whichever of
+    // question/hint/explain is currently showing - each remembers its
+    // own independently (see questionZoomKey above and the click
+    // handler in onGridClick).
+    const panelKey = state ? state.activePanel : null;
+    const panelOffset = (panelKey && zoomOffsets[panelKey]) || 0;
     const panelText = squareEl.querySelector('.panel-text');
-    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem);
+    if (panelText) autosizeElement(panelText, 1.15 + panelOffset, 0.65 + panelOffset);
 
+    const questionOffset = zoomOffsets[questionZoomKey(state)] || 0;
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true);
+    if (question) autosizeElement(question, 1.3 + questionOffset, 0.7 + questionOffset, true);
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
