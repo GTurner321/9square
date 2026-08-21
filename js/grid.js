@@ -913,21 +913,13 @@ const Grid = (() => {
     const answerBox = squareEl.querySelector('.answer-box');
     if (answerBox) autosizeElement(answerBox, 1.15, 0.65);
 
-    // The manual +/- zoom control (question/hint/explanation only, per
-    // its own design - answer box, shutter art, and choice labels
-    // aren't in its scope) offsets both ends of the normal shrink
-    // range together, so the same automatic "shrink to fit, then keep
-    // going to avoid wrapping" behaviour still applies - it's just
-    // biased up or down from wherever the person has set it.
-    // The trailing 2.2 is that element's CSS line-height (must be kept
-    // in sync with .panel-text / .square__question in styles.css) -
-    // see isWrapped() below for why it's passed in rather than read
-    // back from the DOM.
+    // The trailing `true` opts into the "prefer one line" behaviour
+    // below (question/panel-text only, per its own design).
     const panelText = squareEl.querySelector('.panel-text');
-    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem, false, 2.2);
+    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem, false, true);
 
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true, 2.2);
+    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true, true);
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
@@ -937,26 +929,30 @@ const Grid = (() => {
     });
   }
 
-  // Roughly, "does this element's content currently span more than one
-  // line" - compares its rendered height against a single line's
-  // height, with a bit of slack for padding/rounding rather than an
-  // exact multiple. lineHeightMultiplier is the element's own CSS
-  // line-height value, passed in explicitly rather than read back via
-  // getComputedStyle(el).lineHeight - that turned out to be unreliable
-  // for a *unitless* line-height (2.2, not "2.2em"/"35px"): resolving
-  // it correctly to a pixel value isn't consistent enough to trust, and
-  // getting it wrong here is exactly what caused text to shrink to the
-  // floor on every question rather than just when it was genuinely
-  // needed - font-size, by contrast, always resolves to a reliable
-  // pixel value.
-  function isWrapped(el, lineHeightMultiplier) {
-    const fontSizePx = parseFloat(getComputedStyle(el).fontSize);
-    if (!fontSizePx) return false;
-    const oneLinePx = fontSizePx * lineHeightMultiplier;
-    return el.scrollHeight > oneLinePx * 1.4;
+  // Does this element's text actually span more than one rendered
+  // line? Measured directly off the text's own geometry via a Range,
+  // rather than inferred from the element's box size - .square__question
+  // is flex:1, so its own scrollHeight reflects the space the flex
+  // layout allocated it (which can be much taller than the text
+  // actually needs), not how tall the rendered text is. Comparing
+  // against that indirectly (via scrollHeight/line-height math, tried
+  // twice now) kept being unreliable for exactly that reason; distinct
+  // row positions from getClientRects() are the text's real, measured
+  // layout, not an inference from surrounding box sizing.
+  function isWrapped(el) {
+    try {
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const rects = Array.from(range.getClientRects()).filter(r => r.width > 0 || r.height > 0);
+      if (rects.length <= 1) return false;
+      const tops = new Set(rects.map(r => Math.round(r.top)));
+      return tops.size > 1;
+    } catch (e) {
+      return false;
+    }
   }
 
-  function autosizeElement(el, maxRem, minRem, measureSelf, lineHeightMultiplier) {
+  function autosizeElement(el, maxRem, minRem, measureSelf, preferOneLine) {
     const container = measureSelf ? el : el.parentElement;
 
     // A stacked column vector like [a/b] can be visually taller or
@@ -988,14 +984,12 @@ const Grid = (() => {
     // absolute floor, specifically chasing one line. This is what
     // zooming the whole browser out gives by accident (more headroom
     // usually happens to land on fewer wrapped lines) - made
-    // deliberate instead of incidental. Only runs when a
-    // lineHeightMultiplier was actually passed in (question/panel-text
-    // only) - without one, isWrapped() has no reliable "one line"
-    // reference to compare against.
-    if (lineHeightMultiplier) {
+    // deliberate instead of incidental. Scoped to question/panel-text
+    // only via preferOneLine.
+    if (preferOneLine) {
       const oneLineFloor = 0.4;
       guard = 0;
-      while (isWrapped(el, lineHeightMultiplier) && size > oneLineFloor && guard < 40) {
+      while (isWrapped(el) && size > oneLineFloor && guard < 40) {
         size -= 0.03;
         el.style.fontSize = size + 'rem';
         guard++;
