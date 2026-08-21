@@ -913,13 +913,16 @@ const Grid = (() => {
     const answerBox = squareEl.querySelector('.answer-box');
     if (answerBox) autosizeElement(answerBox, 1.15, 0.65);
 
-    // The trailing `true` opts into the "prefer one line" behaviour
-    // below (question/panel-text only, per its own design).
+    // No automatic "prefer one line" behaviour here (removed - it kept
+    // fighting the manual zoom control below, since it would shrink
+    // things back down regardless of where +/- had set the starting
+    // size). Sizing is purely: fit the box, then apply whatever manual
+    // zoomOffsetRem the person has clicked to.
     const panelText = squareEl.querySelector('.panel-text');
-    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem, false, true);
+    if (panelText) autosizeElement(panelText, 1.15 + zoomOffsetRem, 0.65 + zoomOffsetRem);
 
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true, true);
+    if (question) autosizeElement(question, 1.3 + zoomOffsetRem, 0.7 + zoomOffsetRem, true);
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
@@ -929,30 +932,7 @@ const Grid = (() => {
     });
   }
 
-  // Does this element's text actually span more than one rendered
-  // line? Measured directly off the text's own geometry via a Range,
-  // rather than inferred from the element's box size - .square__question
-  // is flex:1, so its own scrollHeight reflects the space the flex
-  // layout allocated it (which can be much taller than the text
-  // actually needs), not how tall the rendered text is. Comparing
-  // against that indirectly (via scrollHeight/line-height math, tried
-  // twice now) kept being unreliable for exactly that reason; distinct
-  // row positions from getClientRects() are the text's real, measured
-  // layout, not an inference from surrounding box sizing.
-  function isWrapped(el) {
-    try {
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      const rects = Array.from(range.getClientRects()).filter(r => r.width > 0 || r.height > 0);
-      if (rects.length <= 1) return false;
-      const tops = new Set(rects.map(r => Math.round(r.top)));
-      return tops.size > 1;
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function autosizeElement(el, maxRem, minRem, measureSelf, preferOneLine) {
+  function autosizeElement(el, maxRem, minRem, measureSelf) {
     const container = measureSelf ? el : el.parentElement;
 
     // A stacked column vector like [a/b] can be visually taller or
@@ -974,26 +954,6 @@ const Grid = (() => {
       size -= 0.03;
       el.style.fontSize = size + 'rem';
       guard++;
-    }
-
-    // The loop above stops as soon as content merely fits the box -
-    // two lines that fit comfortably counts as "done" just as much as
-    // one line would, so it doesn't actually try to avoid wrapping on
-    // its own. This second pass does: if content still spans 2+ lines
-    // after the above, keep shrinking further, down to a lower
-    // absolute floor, specifically chasing one line. This is what
-    // zooming the whole browser out gives by accident (more headroom
-    // usually happens to land on fewer wrapped lines) - made
-    // deliberate instead of incidental. Scoped to question/panel-text
-    // only via preferOneLine.
-    if (preferOneLine) {
-      const oneLineFloor = 0.4;
-      guard = 0;
-      while (isWrapped(el) && size > oneLineFloor && guard < 40) {
-        size -= 0.03;
-        el.style.fontSize = size + 'rem';
-        guard++;
-      }
     }
   }
 
