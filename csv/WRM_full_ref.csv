@@ -1,0 +1,763 @@
+﻿Year/Course,Term,Unit,Block,Small Step,DF Topic Refs,DF Topic Names (review)
+Year 7,Autumn,Algebraic Thinking,Sequences,Describe and continue a sequence given diagrammatically,135;203,"Introduction to sequences | Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Sequences,Predict and check the next term(s) of a sequence,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Sequences,Represent sequences in tabular and graphical forms,,
+Year 7,Autumn,Algebraic Thinking,Sequences,Recognise the difference between linear and non-linear sequences,202,Distinguishing between different types of sequences
+Year 7,Autumn,Algebraic Thinking,Sequences,Continue numerical linear sequences,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Sequences,Continue numerical non-linear sequences,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Sequences,Explain the term-to-term rule of numerical sequences in words,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Sequences,Find missing numbers within sequences,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,"Given a numerical input, find the output of a single function machine",133,Function machines
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Use inverse operations to find the input given the output,133,Function machines
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Use diagrams and letters to generalise number operations,198;134,Forming linear algebraic expressions and formulae from a given context | Algebraic thinking
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Use diagrams and letters with single function machines,133,Function machines
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Find the function machine given a simple expression,195,"Function machines involving decimals, negative numbers and algebraic inputs"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Substitute values into single operation expressions,136,"Basic substitution with positive integers (limited to addition, subtraction, division and multiplication)"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Find numerical inputs and outputs for a series of two function machines,133,Function machines
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Use diagrams and letters with a series of two function machines,195,"Function machines involving decimals, negative numbers and algebraic inputs"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Find the function machines given a two-step expression,195,"Function machines involving decimals, negative numbers and algebraic inputs"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Substitute values into two-step expressions,136,"Basic substitution with positive integers (limited to addition, subtraction, division and multiplication)"
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Generate sequences given an algebraic rule,204,Generating terms of a sequence given a position-to-term rule
+Year 7,Autumn,Algebraic Thinking,Understand and use notation,Represent one- and two-step functions graphically,,
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,Understand the meaning of equality,,
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,"Understand and use fact families, numerically and algebraically",199,Solving linear equations where the variable appears on one side of the equation only
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,Solve one-step linear equations involving +/- using inverse operations,199,Solving linear equations where the variable appears on one side of the equation only
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,Solve one-step linear equations involving x/div using inverse operations,199,Solving linear equations where the variable appears on one side of the equation only
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,Understand the meaning of like and unlike terms,193,Collecting like terms
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,Understand the meaning of equivalence,,
+Year 7,Autumn,Algebraic Thinking,Equality and Equivalence,"Simplify algebraic expressions by collecting like terms, using the identity symbol",193,Collecting like terms
+Year 7,Autumn,Place Value and Proportion,Place Value,Recognise the place value of any number in an integer up to one billion,,
+Year 7,Autumn,Place Value and Proportion,Place Value,Understand and write integers up to one billion in words and figures,,
+Year 7,Autumn,Place Value and Proportion,Place Value,Work out intervals on a number line,,
+Year 7,Autumn,Place Value and Proportion,Place Value,Position integers on a number line,14;93,Reading integer values off a scale | Halfway between two numbers
+Year 7,Autumn,Place Value and Proportion,Place Value,Round integers to the nearest power of ten,37,"Rounding a number to nearest 10, 100, 1000 and beyond"
+Year 7,Autumn,Place Value and Proportion,Place Value,"Compare two numbers using =, <>, <, >, <=, >=",,
+Year 7,Autumn,Place Value and Proportion,Place Value,Order a list of integers,,
+Year 7,Autumn,Place Value and Proportion,Place Value,Find the range of a set of numbers,207,"Mode, median, range from listed data"
+Year 7,Autumn,Place Value and Proportion,Place Value,Find the median of a set of numbers,207,"Mode, median, range from listed data"
+Year 7,Autumn,Place Value and Proportion,Place Value,Understand place value for decimals,69,"Decimal place value, including basic fraction and decimal equivalence"
+Year 7,Autumn,Place Value and Proportion,Place Value,Position decimals on a number line,69,"Decimal place value, including basic fraction and decimal equivalence"
+Year 7,Autumn,Place Value and Proportion,Place Value,Compare and order any number up to one billion,86;71,Comparing and ordering positive and negative numbers | Compare decimals
+Year 7,Autumn,Place Value and Proportion,Place Value,Round a number to 1 significant figure,187,Rounding a number to a given number of significant figures
+Year 7,Autumn,Place Value and Proportion,Place Value,"Write 10, 100, 1000 etc. as powers of ten",301,Conversion of large numbers to and from standard form/scientific notation
+Year 7,Autumn,Place Value and Proportion,Place Value,Write positive integers in the form A x 10^n,301,Conversion of large numbers to and from standard form/scientific notation
+Year 7,Autumn,Place Value and Proportion,Place Value,Investigate negative powers of ten,302,Conversion of small numbers to and from standard form/scientific notation
+Year 7,Autumn,Place Value and Proportion,Place Value,Write decimals in the form A x 10^n,302,Conversion of small numbers to and from standard form/scientific notation
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Represent tenths and hundredths as diagrams,69;68,"Decimal place value, including basic fraction and decimal equivalence | Recognising and using tenths, hundredths and thousandths"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Represent tenths and hundredths on number lines,69,"Decimal place value, including basic fraction and decimal equivalence"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Interchange between fractional and decimal number lines,69,"Decimal place value, including basic fraction and decimal equivalence"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Convert between fractions and decimals - tenths and hundredths,69,"Decimal place value, including basic fraction and decimal equivalence"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Convert between fractions and decimals - fifths and quarters,104,"Fraction and decimal equivalence for halves, quarters and fifths"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Convert between fractions and decimals - eighths and thousandths,172,"Converting between any terminating decimal, fraction and percentage less than 100%"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Understand the meaning of percentage using a hundred square,106;105,Basic percentage and decimal equivalence | Understanding percentages as values out of 100
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,"Convert fluently between simple fractions, decimals and percentages",172;175,"Converting between any terminating decimal, fraction and percentage less than 100% | Comparing and ordering fractions, decimal and percentages"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Use and interpret pie charts,131,Pie charts with simple fractions and percentages
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Represent any fraction as a diagram,54,Recognising and using fractions with denominators to 12
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Represent fractions on number lines,,
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Identify and use simple equivalent fractions,98,Fractional equivalence using factors and multiples
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,Understand fractions as division,92,Completing divisions with remainders as fractions and decimals
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,"Convert fluently between fractions, decimals and percentages",172,"Converting between any terminating decimal, fraction and percentage less than 100%"
+Year 7,Autumn,Place Value and Proportion,FDP Equivalence,"Explore fractions above one, decimals and percentages",174,"Converting between terminating decimals, fractions and percentages greater than 100%"
+Year 7,Spring,Application of Number,Addition and Subtraction,Properties of addition and subtraction,,
+Year 7,Spring,Application of Number,Addition and Subtraction,Mental strategies for addition and subtraction,39;72,Mental addition and subtraction strategies | Number bonds with decimals
+Year 7,Spring,Application of Number,Addition and Subtraction,Use formal methods for addition of integers,40,Column addition
+Year 7,Spring,Application of Number,Addition and Subtraction,Use formal methods for addition of decimals,74,Adding and subtracting decimal numbers
+Year 7,Spring,Application of Number,Addition and Subtraction,Use formal methods for subtraction of integers,41,Column subtraction
+Year 7,Spring,Application of Number,Addition and Subtraction,Use formal methods for subtraction of decimals,74,Adding and subtracting decimal numbers
+Year 7,Spring,Application of Number,Addition and Subtraction,"Choose the most appropriate method: mental, formal written or calculator",,
+Year 7,Spring,Application of Number,Addition and Subtraction,Solve problems in the context of perimeter,79;180,Perimeter of a 2D shape by adding lengths | Perimeter of rectilinear shapes
+Year 7,Spring,Application of Number,Addition and Subtraction,Solve financial maths problems,73,"Making up monetary values with coins and notes, with decimal notation (GBP/Euro/Dollars)"
+Year 7,Spring,Application of Number,Addition and Subtraction,Solve problems involving tables and timetables,113,Reading and using timetables and distance charts
+Year 7,Spring,Application of Number,Addition and Subtraction,Solve problems with frequency trees,241,Frequency trees
+Year 7,Spring,Application of Number,Addition and Subtraction,Solve problems with bar charts and line charts,65,Bar charts and vertical line charts
+Year 7,Spring,Application of Number,Addition and Subtraction,Add and subtract numbers given in standard form,303,Adding or subtracting numbers in standard form/scientific notation
+Year 7,Spring,Application of Number,Multiplication and Division,Properties of multiplication and division,,
+Year 7,Spring,Application of Number,Multiplication and Division,Understand and use factors,53,Factors of a number
+Year 7,Spring,Application of Number,Multiplication and Division,Understand and use multiples,52,Multiples of a number
+Year 7,Spring,Application of Number,Multiplication and Division,Multiply and divide integers and decimals by powers of 10,70,"Multiplying and dividing by 10, 100, 1000, including decimals"
+Year 7,Spring,Application of Number,Multiplication and Division,Multiply by 0.1 and 0.01,70,"Multiplying and dividing by 10, 100, 1000, including decimals"
+Year 7,Spring,Application of Number,Multiplication and Division,Convert metric units,107;15;108,"Converting between metric units of measure | Measuring using scales of lengths, mass and capacity | Equivalence of metric and imperial units (inches, pints, pounds and miles)"
+Year 7,Spring,Application of Number,Multiplication and Division,Use formal methods to multiply integers,66;67,Short column multiplication | Long column multiplication
+Year 7,Spring,Application of Number,Multiplication and Division,Use formal methods to multiply decimals,122;123,Multiplying a decimal (up to 2dp) by an integer | Multiplying decimal numbers
+Year 7,Spring,Application of Number,Multiplication and Division,Use formal methods to divide integers,89;90;91,Completing short divisions with no remainders | Completing long divisions with no remainders | Completing divisions with remainders as integers
+Year 7,Spring,Application of Number,Multiplication and Division,Use formal methods to divide decimals,124;125,Dividing a decimal (up to 2dp) by an integer | Dividing by decimal numbers
+Year 7,Spring,Application of Number,Multiplication and Division,Understand and use order of operations,115,Order of operations (no powers and roots)
+Year 7,Spring,Application of Number,Multiplication and Division,Solve problems using the area of rectangles and parallelograms,138;139,Area of a rectangle by using the formula | Area of a parallelogram
+Year 7,Spring,Application of Number,Multiplication and Division,Solve problems using the area of triangles,140,Area of a triangle
+Year 7,Spring,Application of Number,Multiplication and Division,Solve problems using the area of trapezia,184,Area of trapeziums
+Year 7,Spring,Application of Number,Multiplication and Division,Solve problems using the mean,132,Mean as an average
+Year 7,Spring,Application of Number,Multiplication and Division,Explore multiplication and division in algebraic expressions,,
+Year 7,Spring,Fractions and Percentages of Amounts,Fractions & Percentages of Amounts,Find a fraction of a given amount,57,Fractions of an amount
+Year 7,Spring,Fractions and Percentages of Amounts,Fractions & Percentages of Amounts,Use a given fraction to find the whole and/or other fractions,,
+Year 7,Spring,Fractions and Percentages of Amounts,Fractions & Percentages of Amounts,Find a percentage of a given amount using mental methods,130,"Calculating a simple percentage of an amount, using chunking"
+Year 7,Spring,Fractions and Percentages of Amounts,Fractions & Percentages of Amounts,Find a percentage of a given amount using a calculator,218;219,"Percentage of an amount, by multiplying by an equivalent fraction | Percentage of an amount, using decimal multipliers"
+Year 7,Spring,Fractions and Percentages of Amounts,Fractions & Percentages of Amounts,Solve problems with fractions greater than 1 and percentages greater than 100%,217,"Percentage of an amount, greater than 100%, by chunking"
+Year 7,Spring,Directed Number,Directed Number,Understand and use representations of directed numbers,85,Counting up and down with negative numbers
+Year 7,Spring,Directed Number,Directed Number,Order directed numbers using lines and appropriate symbols,86,Comparing and ordering positive and negative numbers
+Year 7,Spring,Directed Number,Directed Number,Perform calculations that cross zero,87,Using negative numbers in context
+Year 7,Spring,Directed Number,Directed Number,Add directed numbers,155,Adding or subtracting a mixture of positive and negative numbers
+Year 7,Spring,Directed Number,Directed Number,Subtract directed numbers,155,Adding or subtracting a mixture of positive and negative numbers
+Year 7,Spring,Directed Number,Directed Number,Multiplication of directed numbers,156,Multiplying or dividing a mixture of positive and negative numbers
+Year 7,Spring,Directed Number,Directed Number,Multiplication and division of directed numbers,156,Multiplying or dividing a mixture of positive and negative numbers
+Year 7,Spring,Directed Number,Directed Number,Use a calculator for directed number calculations,,
+Year 7,Spring,Directed Number,Directed Number,Evaluate algebraic expressions with directed number,197,"Substitution with decimals, negative integers and fractions"
+Year 7,Spring,Directed Number,Directed Number,Introduction to two-step equations,199,Solving linear equations where the variable appears on one side of the equation only
+Year 7,Spring,Directed Number,Directed Number,Solve two-step equations,199,Solving linear equations where the variable appears on one side of the equation only
+Year 7,Spring,Directed Number,Directed Number,Use order of operations with directed numbers,115,Order of operations (no powers and roots)
+Year 7,Spring,Directed Number,Directed Number,Roots of positive numbers,157,Roots and further powers
+Year 7,Spring,Directed Number,Directed Number,Explore higher powers and roots,157;200;258,Roots and further powers | Solving equations involving integer powers and their roots as inverses | Solving equations involving integer powers or roots
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Understand representations of fractions,,
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Convert between mixed numbers and fractions,101,Converting between mixed numbers and improper fractions
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract unit fractions with the same denominator,56,Adding and subtracting fractions with the same denominator
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract fractions with the same denominator,56,Adding and subtracting fractions with the same denominator
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract fractions from integers expressing the answer as a single fraction,,
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Understand and use equivalent fractions,98;99;116,Fractional equivalence using factors and multiples | Comparing and ordering fractions where the denominators are multiples of each other | Comparing and ordering fractions with different denominators.
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract fractions where denominators share a simple common multiple,100;103,Adding and subtracting fractions where the denominators are multiples of each other | Adding and subtracting mixed numbers where one denominator is a multiple of another
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract fractions with any denominator,117,Adding and subtracting fractions with any denominator
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract improper fractions and mixed numbers,118;102,Adding and subtracting mixed numbers with different denominators | Adding and subtracting mixed numbers with the same denominator
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Use fractions in algebraic contexts,,
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Use equivalence to add and subtract decimals and fractions,,
+Year 7,Spring,Fractional Thinking,Fractional Thinking,Add and subtract simple algebraic fractions,,
+Year 7,Summer,Lines and Angles,Construction and Measuring,Understand and use letter and labelling conventions for geometric figures,179,Geometric notation for shapes and lines
+Year 7,Summer,Lines and Angles,Construction and Measuring,Draw and measure line segments including geometric figures,137,Drawing 2D shapes to scale given dimensions and angles
+Year 7,Summer,Lines and Angles,Construction and Measuring,Understand angles as a measure of turn,76,Types of angle
+Year 7,Summer,Lines and Angles,Construction and Measuring,Classify angles,76,Types of angle
+Year 7,Summer,Lines and Angles,Construction and Measuring,Measure angles up to 180 degrees,109,Measuring and drawing non-reflex angles in degrees with a protractor
+Year 7,Summer,Lines and Angles,Construction and Measuring,Draw angles up to 180 degrees,109,Measuring and drawing non-reflex angles in degrees with a protractor
+Year 7,Summer,Lines and Angles,Construction and Measuring,Draw and measure angles between 180 and 360 degrees,111,Measuring and drawing reflex angles in degrees with a protractor
+Year 7,Summer,Lines and Angles,Construction and Measuring,Identify perpendicular and parallel lines,63,"Identifying vertical, horizontal, parallel and perpendicular lines"
+Year 7,Summer,Lines and Angles,Construction and Measuring,Recognise types of triangle,77;148,Types of quadrilaterals and triangles | Properties of triangle lengths
+Year 7,Summer,Lines and Angles,Construction and Measuring,Recognise types of quadrilateral,77,Types of quadrilaterals and triangles
+Year 7,Summer,Lines and Angles,Construction and Measuring,Identify polygons up to a decagon,78,Properties of polygons
+Year 7,Summer,Lines and Angles,Construction and Measuring,Construct triangles using SSS,286,Drawing and constructing triangles
+Year 7,Summer,Lines and Angles,Construction and Measuring,"Construct triangles using SSS, SAS and ASA",286,Drawing and constructing triangles
+Year 7,Summer,Lines and Angles,Construction and Measuring,Construct more complex polygons,137,Drawing 2D shapes to scale given dimensions and angles
+Year 7,Summer,Lines and Angles,Construction and Measuring,Interpret simple pie charts using proportion,131,Pie charts with simple fractions and percentages
+Year 7,Summer,Lines and Angles,Construction and Measuring,Interpret pie charts using a protractor,246,Pie charts with any proportion
+Year 7,Summer,Lines and Angles,Construction and Measuring,Draw pie charts,246,Pie charts with any proportion
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Understand and use the sum of angles at a point,110,Sum of the angles on a straight line and angles around a point
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Understand and use the sum of angles on a straight line,110,Sum of the angles on a straight line and angles around a point
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Understand and use the equality of vertically opposite angles,147,Vertically opposite angles
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Know and apply the sum of angles in a triangle,149;150,Sum of angles in a triangle | Base angles of an isosceles triangle
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Know and apply the sum of angles in a quadrilateral,151,Sum of angles in a quadrilateral
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Solve angle problems using properties of triangles and quadrilaterals,149;151,Sum of angles in a triangle | Sum of angles in a quadrilateral
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Solve complex angle problems,110;149;151,Sum of the angles on a straight line and angles around a point | Sum of angles in a triangle | Sum of angles in a quadrilateral
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Find and use the angle sum of any polygon,261,Interior and exterior angles of regular and irregular polygons
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Investigate angles in parallel lines,262,"Alternate, corresponding and co-interior angles"
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Understand and use parallel line angle rules,262,"Alternate, corresponding and co-interior angles"
+Year 7,Summer,Lines and Angles,Geometric Reasoning,Use known facts to obtain simple proofs,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Know and use mental addition and subtraction strategies for integers,39,Mental addition and subtraction strategies
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Know and use mental multiplication and division strategies for integers,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Know and use mental arithmetic strategies for decimals,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Know and use mental arithmetic strategies for fractions,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Use factors to simplify calculations,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Use estimation as a method for checking mental calculations,188,Estimating by rounding
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Use known number facts to derive other facts,48,Related number facts with place value
+Year 7,Summer,Reasoning with Number,Developing Number Sense,Use known algebraic facts to derive other facts,,
+Year 7,Summer,Reasoning with Number,Developing Number Sense,"Know when to use a mental strategy, formal written method or a calculator",,
+Year 7,Summer,Reasoning with Number,Sets and Probability,Identify and represent sets,242,Construct Venn diagrams
+Year 7,Summer,Reasoning with Number,Sets and Probability,Interpret and create Venn diagrams,242,Construct Venn diagrams
+Year 7,Summer,Reasoning with Number,Sets and Probability,Understand and use the intersection of sets,243,"Union, intersection and complements of sets, including the universal and empty sets"
+Year 7,Summer,Reasoning with Number,Sets and Probability,Understand and use the union of sets,243,"Union, intersection and complements of sets, including the universal and empty sets"
+Year 7,Summer,Reasoning with Number,Sets and Probability,Understand and use the complement of a set,243,"Union, intersection and complements of sets, including the universal and empty sets"
+Year 7,Summer,Reasoning with Number,Sets and Probability,Know and use the vocabulary of probability,247,Probabilities using worded terms or placed on a number line between 0 and 1
+Year 7,Summer,Reasoning with Number,Sets and Probability,Generate sample spaces for single events,249,Sample space diagrams
+Year 7,Summer,Reasoning with Number,Sets and Probability,Calculate the probability of a single event,248,Theoretical probabilities using counts
+Year 7,Summer,Reasoning with Number,Sets and Probability,Understand and use the probability scale,247,Probabilities using worded terms or placed on a number line between 0 and 1
+Year 7,Summer,Reasoning with Number,Sets and Probability,Know that the sum of probabilities of all possible outcomes is 1,247;250,Probabilities using worded terms or placed on a number line between 0 and 1 | Probabilities of mutually exclusive events
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Find and use multiples,52,Multiples of a number
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Identify factors of numbers and expressions,53;163,Factors of a number | Divisibility laws from 3 to 11 and dealing with larger divisors
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Recognise and identify prime numbers,97,Prime numbers
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Recognise square and triangular numbers,88,"Power notation and calculate simple powers, e.g. squares, cubes"
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Find common factors of a set of numbers including the HCF,96;95,Highest Common Factor and Lowest Common Multiple by listing | Common factors by listing
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Find common multiples of a set of numbers including the LCM,96;94,Highest Common Factor and Lowest Common Multiple by listing | Common multiples by listing
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Write a number as a product of its prime factors,161;164,"Prime factorisation of a number | Properties of a number based on its prime factorisation (e.g. identify factors, if it is square, trailing zeroes)"
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Use a Venn diagram to calculate the HCF and LCM,162,Lowest Common Multiple or Highest Common Factor by prime factorisation
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Make and test conjectures,,
+Year 7,Summer,Reasoning with Number,Prime Numbers and Proof,Use counterexamples to disprove a conjecture,,
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Understand the meaning and representation of ratio,224,Simplifying ratios and forming ratios from a given context
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Understand and use ratio notation,128,Multiplicative scaling with integer scale factors and ratio notation
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Solve problems involving ratios of the form 1:n (or n:1),225,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given"
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Solve proportional problems involving the ratio m:n,225,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given"
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Divide a value into a given ratio,225,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given"
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Express ratios in their simplest integer form,224,Simplifying ratios and forming ratios from a given context
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Express ratios in the form 1:n,224,Simplifying ratios and forming ratios from a given context
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Compare ratios and related fractions,226,"Relationship between fractions, percentages and ratio"
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Understand pi as the ratio between diameter and circumference,209,Circumference of a full circle
+Year 8,Autumn,Proportional Reasoning,Ratio and Scale,Understand gradient of a line as a ratio,270,Gradient of a line
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Solve problems involving direct proportion,176,Multiplicative scaling and numerical proportion relationships
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Explore conversion graphs,178,Conversion graphs
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Convert between currencies,177,Exchange rates
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Explore direct proportion graphs,178,Conversion graphs
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Explore relationships between similar shapes,291,Properties of similar shapes
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Understand scale factors as multiplicative representations,128,Multiplicative scaling with integer scale factors and ratio notation
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Draw and interpret scale diagrams,283,Scale drawings including map scales
+Year 8,Autumn,Proportional Reasoning,Multiplicative Change,Interpret maps using scale factors and ratios,283,Scale drawings including map scales
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Represent multiplication of fractions,120,Multiplying proper fractions with no simplifying
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Multiply a fraction by an integer,119,Multiplying fractions and mixed numbers by an integer
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Find the product of a pair of unit fractions,120,Multiplying proper fractions with no simplifying
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Find the product of a pair of any fractions,165,Further multiplying proper fractions (including simplification)
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Divide an integer by a fraction,166,Dividing proper and improper fractions
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Divide a fraction by a unit fraction,166;121,Dividing proper and improper fractions | Dividing fractions by integers
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Understand and use the reciprocal,159,Reciprocals
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Divide any pair of fractions,166,Dividing proper and improper fractions
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Multiply and divide improper and mixed fractions,167;168,Multiplying fractions involving a mixed number | Dividing fractions involving a mixed number
+Year 8,Autumn,Proportional Reasoning,Multiplying and Dividing Fractions,Multiply and divide algebraic fractions,,
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Work with coordinates in all four quadrants,152;83,Coordinates in all four quadrants | Coordinates in the first quadrant
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Identify and draw lines that are parallel to the axes,273,Drawing a line from its equation
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Recognise and use the line y = x,271,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Recognise and use lines of the form y = kx,271,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Link y = kx to direct proportion problems,,
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Explore the gradient of the line y = kx,270,Gradient of a line
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Recognise and use lines of the form y = x + a,271,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)
+Year 8,Autumn,Representations,Working in the Cartesian Plane,"Explore graphs with negative gradient (y=-kx, y=a-x, x+y=a)",270,Gradient of a line
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Link graphs to linear sequences,,
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Plot graphs of the form y = mx + c,273,Drawing a line from its equation
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Explore non-linear graphs,,
+Year 8,Autumn,Representations,Working in the Cartesian Plane,Find the midpoint of a line segment,265;266,Midpoint of two points | Splitting a line segment in a ratio
+Year 8,Autumn,Representations,Representing Data,Draw and interpret scatter graphs,244,Scatter graphs/scatterplots and correlation
+Year 8,Autumn,Representations,Representing Data,Understand and describe linear correlation,244,Scatter graphs/scatterplots and correlation
+Year 8,Autumn,Representations,Representing Data,Draw and use line of best fit,245,Line of best fit
+Year 8,Autumn,Representations,Representing Data,Identify non-linear relationships,,
+Year 8,Autumn,Representations,Representing Data,Identify different types of data,344,Types of data
+Year 8,Autumn,Representations,Representing Data,Read and interpret ungrouped frequency tables,235,Reading and interpreting ungrouped frequency tables
+Year 8,Autumn,Representations,Representing Data,Read and interpret grouped frequency tables,,
+Year 8,Autumn,Representations,Representing Data,Represent grouped discrete data,,
+Year 8,Autumn,Representations,Representing Data,Represent continuous data grouped into equal classes,,
+Year 8,Autumn,Representations,Representing Data,Represent data in two-way tables,238,Two-way tables
+Year 8,Autumn,Representations,Tables and Probability,Construct sample spaces for 1 or more events,249,Sample space diagrams
+Year 8,Autumn,Representations,Tables and Probability,Find probabilities from a sample space,249,Sample space diagrams
+Year 8,Autumn,Representations,Tables and Probability,Find probabilities from two-way tables,238,Two-way tables
+Year 8,Autumn,Representations,Tables and Probability,Find probabilities from Venn diagrams,355,Probabilities from Venn diagrams of frequencies (no set notation)
+Year 8,Autumn,Representations,Tables and Probability,Use the product rule for finding the total number of possible outcomes,381,Product rule for counting (Fundamental Counting Principle)
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Form algebraic expressions,198,Forming linear algebraic expressions and formulae from a given context
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Use directed number with algebra,197,"Substitution with decimals, negative integers and fractions"
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Multiply out a single bracket,252,Expanding a single bracket
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Factorise into a single bracket,253,Factorising out a single term
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Expand multiple single brackets and simplify,252,Expanding a single bracket
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Expand a pair of binomials,299,Expanding double brackets
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities","Solve equations, including with brackets",254,"Solving linear equations where the variable appears on one side of the equation only, including brackets"
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Form and solve equations with brackets,254;259,"Solving linear equations where the variable appears on one side of the equation only, including brackets | Forming and solving linear equations from a given context (excluding angles)"
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Understand and solve simple inequalities,339;309,Solving linear inequalities in one variable | Understanding algebraic statements of inequality
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Form and solve inequalities,342,Forming and solving linear inequalities from a given context
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Solve equations and inequalities with unknowns on both sides,257;340,Solving linear equations where the variable appears on both sides of the equation | Solving linear inequalities with one variable on both sides
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities",Form and solve equations and inequalities with unknowns on both sides,259;342,Forming and solving linear equations from a given context (excluding angles) | Forming and solving linear inequalities from a given context
+Year 8,Spring,Algebraic Techniques,"Brackets, Equations and Inequalities","Identify and use formulae, expressions, identities and equations",190,Algebraic terminology
+Year 8,Spring,Algebraic Techniques,Sequences,Generate sequences given a rule in words,203,"Describing, generating and continuing sequences using term-to-term rules"
+Year 8,Spring,Algebraic Techniques,Sequences,Generate sequences given a simple algebraic rule,204,Generating terms of a sequence given a position-to-term rule
+Year 8,Spring,Algebraic Techniques,Sequences,Generate sequences given a complex algebraic rule,204,Generating terms of a sequence given a position-to-term rule
+Year 8,Spring,Algebraic Techniques,Sequences,Find the rule for the nth term of a linear sequence,205,nth term formula for arithmetic sequences (no standard formulae)
+Year 8,Spring,Algebraic Techniques,Indices,Adding and subtracting expressions with indices,193,Collecting like terms
+Year 8,Spring,Algebraic Techniques,Indices,Simplifying algebraic expressions by multiplying indices,194;158;191,Algebraic index laws (basic) | Numerical index laws (basic) | Multiplying single algebraic terms (no index laws)
+Year 8,Spring,Algebraic Techniques,Indices,Simplifying algebraic expressions by dividing indices,194;192,Algebraic index laws (basic) | Dividing single algebraic terms (no index laws)
+Year 8,Spring,Algebraic Techniques,Indices,Using the addition law for indices,194,Algebraic index laws (basic)
+Year 8,Spring,Algebraic Techniques,Indices,Using the addition and subtraction law for indices,194,Algebraic index laws (basic)
+Year 8,Spring,Algebraic Techniques,Indices,Exploring powers of powers,194;358,Algebraic index laws (basic) | Expressing a power using a different base
+Year 8,Spring,Developing Number,Fractions and Percentages,"Convert fluently between key fractions, decimals and percentages",172,"Converting between any terminating decimal, fraction and percentage less than 100%"
+Year 8,Spring,Developing Number,Fractions and Percentages,"Calculate key fractions, decimals and percentages of an amount without a calculator",57;130,"Fractions of an amount | Calculating a simple percentage of an amount, using chunking"
+Year 8,Spring,Developing Number,Fractions and Percentages,"Calculate fractions, decimals and percentages of an amount using calculator methods",219,"Percentage of an amount, using decimal multipliers"
+Year 8,Spring,Developing Number,Fractions and Percentages,Convert between decimals and percentages greater than 100%,174,"Converting between terminating decimals, fractions and percentages greater than 100%"
+Year 8,Spring,Developing Number,Fractions and Percentages,Percentage decrease with a multiplier,221,"Value after a general percentage change, using decimal multipliers"
+Year 8,Spring,Developing Number,Fractions and Percentages,Calculate percentage increase and decrease using a multiplier,221,"Value after a general percentage change, using decimal multipliers"
+Year 8,Spring,Developing Number,Fractions and Percentages,Express one number as a fraction or a percentage of another without a calculator,214,Determining what percentage one number is of another
+Year 8,Spring,Developing Number,Fractions and Percentages,Express one number as a fraction or a percentage of another using calculator methods,214,Determining what percentage one number is of another
+Year 8,Spring,Developing Number,Fractions and Percentages,Work with percentage change,215,Percentage change
+Year 8,Spring,Developing Number,Fractions and Percentages,Choose appropriate methods to solve percentage problems,,
+Year 8,Spring,Developing Number,Fractions and Percentages,Find the original amount given the percentage less than 100%,223;222,Reverse percentage problems using decimal multipliers | Reverse percentage problems using chunking
+Year 8,Spring,Developing Number,Fractions and Percentages,Find the original amount given the percentage greater than 100%,223,Reverse percentage problems using decimal multipliers
+Year 8,Spring,Developing Number,Fractions and Percentages,Choose appropriate methods to solve complex percentage problems,,
+Year 8,Spring,Developing Number,Standard Form,Investigate positive powers of 10,301,Conversion of large numbers to and from standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Work with numbers greater than 1 in standard form,301,Conversion of large numbers to and from standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Investigate negative powers of 10,302,Conversion of small numbers to and from standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Work with numbers between 0 and 1 in standard form,302,Conversion of small numbers to and from standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Compare and order numbers in standard form,301;302,Conversion of large numbers to and from standard form/scientific notation | Conversion of small numbers to and from standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Mentally calculate with numbers in standard form,,
+Year 8,Spring,Developing Number,Standard Form,Add and subtract numbers in standard form,303,Adding or subtracting numbers in standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Multiply and divide numbers in standard form,304,Multiplying and dividing numbers in standard form/scientific notation
+Year 8,Spring,Developing Number,Standard Form,Use a calculator to work with numbers in standard form,160,Using a scientific calculator
+Year 8,Spring,Developing Number,Standard Form,Understand and use negative indices,298,Negative indices
+Year 8,Spring,Developing Number,Standard Form,Understand and use fractional indices,,
+Year 8,Spring,Developing Number,Number Sense,"Round numbers to powers of 10, and 1 significant figure",37;187,"Rounding a number to nearest 10, 100, 1000 and beyond | Rounding a number to a given number of significant figures"
+Year 8,Spring,Developing Number,Number Sense,Round numbers to a given number of decimal places,75,Rounding a number to a given number of decimal places
+Year 8,Spring,Developing Number,Number Sense,Estimate the answer to a calculation,188;186,Estimating by rounding | Estimating measures in context
+Year 8,Spring,Developing Number,Number Sense,Understand and use error interval notation,189;216,Rounding errors (round-off errors) | Percentage error and relative error
+Year 8,Spring,Developing Number,Number Sense,Calculate using the order of operations,115,Order of operations (no powers and roots)
+Year 8,Spring,Developing Number,Number Sense,Calculate with money,127,Calculating with money in decimal notation (GBP/EUR/USD)
+Year 8,Spring,Developing Number,Number Sense,Convert metric measures of length,107,Converting between metric units of measure
+Year 8,Spring,Developing Number,Number Sense,Convert metric units of weight and capacity,107,Converting between metric units of measure
+Year 8,Spring,Developing Number,Number Sense,Convert metric units of area,323,Converting between units of area and volume
+Year 8,Spring,Developing Number,Number Sense,Convert metric units of volume,323,Converting between units of area and volume
+Year 8,Spring,Developing Number,Number Sense,Solve problems involving time and the calendar,59,Time conversions
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Understand and use basic angles rules and notation,110,Sum of the angles on a straight line and angles around a point
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Investigate angles between parallel lines and the transversal,262,"Alternate, corresponding and co-interior angles"
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Identify and calculate with alternate and corresponding angles,262,"Alternate, corresponding and co-interior angles"
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,"Identify and calculate with co-interior, alternate and corresponding angles",262,"Alternate, corresponding and co-interior angles"
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Solve complex problems with parallel line angles,262,"Alternate, corresponding and co-interior angles"
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Construct triangles and special quadrilaterals,286,Drawing and constructing triangles
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Investigate the properties of special quadrilaterals,77,Types of quadrilaterals and triangles
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Identify and calculate with sides and angles in special quadrilaterals,151,Sum of angles in a quadrilateral
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Understand and use the properties of diagonals of quadrilaterals,,
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Understand and use the sum of exterior angles of any polygon,261,Interior and exterior angles of regular and irregular polygons
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Calculate and use the sum of the interior angles in any polygon,261,Interior and exterior angles of regular and irregular polygons
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Calculate missing interior angles in regular polygons,261,Interior and exterior angles of regular and irregular polygons
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Prove simple geometric facts,,
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Construct an angle bisector,284,Constructions with lines and angles
+Year 8,Summer,Developing Geometry,Angles in Parallel Lines and Polygons,Construct a perpendicular bisector of a line segment,284,Constructions with lines and angles
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,"Calculate the area of triangles, rectangles and parallelograms",138;139;140,Area of a rectangle by using the formula | Area of a parallelogram | Area of a triangle
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Calculate the area of a trapezium,184;183,Area of trapeziums | Area of kites
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Calculate the perimeter and area of compound shapes (1),181;182,Area of composite rectilinear shapes | Area of composite shapes using rectangles and triangles
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Investigate the area of a circle,210,Area of a full circle
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Calculate the area of a circle and parts of a circle without a calculator,211,Area or perimeter of simple fractions of circles
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Calculate the area of a circle and parts of a circle with a calculator,211,Area or perimeter of simple fractions of circles
+Year 8,Summer,Developing Geometry,Area of Trapezia and Circles,Calculate the perimeter and area of compound shapes (2),212;213;185,Perimeter of compound shapes that includes curved edges | Area of composite shapes involving circles | Related shape problems
+Year 8,Summer,Developing Geometry,Line Symmetry and Reflection,Recognise line symmetry,,
+Year 8,Summer,Developing Geometry,Line Symmetry and Reflection,Reflect a shape in a horizontal or vertical line 1 (shapes touching the line),153,Reflecting a shape on axes using a given mirror line
+Year 8,Summer,Developing Geometry,Line Symmetry and Reflection,Reflect a shape in a horizontal or vertical line 2 (shapes not touching the line),153,Reflecting a shape on axes using a given mirror line
+Year 8,Summer,Developing Geometry,Line Symmetry and Reflection,Reflect a shape in a diagonal line 1 (shapes touching the line),153,Reflecting a shape on axes using a given mirror line
+Year 8,Summer,Developing Geometry,Line Symmetry and Reflection,Reflect a shape in a diagonal line 2 (shapes not touching the line),153,Reflecting a shape on axes using a given mirror line
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Set up a statistical enquiry,346;352,Data collection methods (excluding experiments) | Planning a statistical enquiry
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Design and criticise questionnaires,346,Data collection methods (excluding experiments)
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,"Draw and interpret pictograms, bar charts and vertical line charts",31;65,Pictograms | Bar charts and vertical line charts
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Draw and interpret multiple bar charts,239,Dual and stacked bar charts
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Draw and interpret pie charts,246,Pie charts with any proportion
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Draw and interpret line graphs,65,Bar charts and vertical line charts
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Choose the most appropriate diagram for given set of data,316,Analysing graphical representations
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Represent and interpret grouped quantitative data,,
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Find and interpret the range,207,"Mode, median, range from listed data"
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Compare distributions using charts,403,Comparing data sets using different representations
+Year 8,Summer,Reasoning with Data,The Data Handling Cycle,Identify misleading graphs,,
+Year 8,Summer,Reasoning with Data,Measures of Location,"Understand and use the mean, median and mode",132;207,"Mean as an average | Mode, median, range from listed data"
+Year 8,Summer,Reasoning with Data,Measures of Location,Choose the most appropriate average,,
+Year 8,Summer,Reasoning with Data,Measures of Location,Find the mean from an ungrouped frequency table,236;208;237,"Mean from ungrouped frequency tables | Combining means or dealing with changes to a mean | Median, mode and range from ungrouped frequency tables"
+Year 8,Summer,Reasoning with Data,Measures of Location,Find the mean from a grouped frequency table,312,Estimating the mean from grouped frequency tables
+Year 8,Summer,Reasoning with Data,Measures of Location,Identify outliers,536,Outliers
+Year 8,Summer,Reasoning with Data,Measures of Location,Compare distributions using averages and the range,403,Comparing data sets using different representations
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,"Lines parallel to the axes, y = x and y = -x",63;271,"Identifying vertical, horizontal, parallel and perpendicular lines | Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)"
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Using tables of values,267,Plotting a straight line from a table of values
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Compare gradients,270,Gradient of a line
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Compare intercepts,269,x and y intercepts of a line
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Understand and use y = mx + c,271;268;274,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c) | Relationship between a line and its equation | Equations of parallel lines
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Write an equation in the form y = mx + c,272,Determining the equation of a straight line in slope-intercept or standard form
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Find the equation of a line from a graph,272,Determining the equation of a straight line in slope-intercept or standard form
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Interpret gradient and intercepts of real-life graphs,270;269,Gradient of a line | x and y intercepts of a line
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Model real-life graphs involving inverse proportion,386,Algebraic direct and inverse proportion
+Year 9,Autumn,Reasoning with Algebra,Straight Line Graphs,Explore perpendicular lines,445,Equations of perpendicular lines
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Solve one- and two-step equations and inequalities,199;339,Solving linear equations where the variable appears on one side of the equation only | Solving linear inequalities in one variable
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Solve one- and two-step equations and inequalities with brackets,254;339,"Solving linear equations where the variable appears on one side of the equation only, including brackets | Solving linear inequalities in one variable"
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Inequalities with negative numbers,339,Solving linear inequalities in one variable
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Solve equations with unknowns on both sides,257,Solving linear equations where the variable appears on both sides of the equation
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Solve inequalities with unknowns on both sides,340;341,Solving linear inequalities with one variable on both sides | Solving two-ended linear inequalities and combining inequalities
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Solving equations and inequalities in context,259;342,Forming and solving linear equations from a given context (excluding angles) | Forming and solving linear inequalities from a given context
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Substituting into formulae and equations,196;197,"Further substitution with positive integers (including powers, roots and brackets) | Substitution with decimals, negative integers and fractions"
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Rearrange formulae (one-step),201,"Changing the subject where the variable appears once only, excluding brackets"
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Rearrange formulae (two-step),260,"Changing the subject of a formula where the subject appears once only, including brackets, powers and roots"
+Year 9,Autumn,Reasoning with Algebra,Forming and Solving Equations,Rearrange complex formulae including brackets and squares,260;391,"Changing the subject of a formula where the subject appears once only, including brackets, powers and roots | Changing the subject of a formula where the subject appears multiple times"
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,"Factors, Multiples and Primes",52;53;97,Multiples of a number | Factors of a number | Prime numbers
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,True or False?,453,Testing conjectures and identifying counterexamples
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,"Always, Sometimes, Never true",453,Testing conjectures and identifying counterexamples
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Show that,454,Algebraic proofs involving integers
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Conjectures about number,453,Testing conjectures and identifying counterexamples
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Expand a pair of binomials,299,Expanding double brackets
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Conjectures with algebra,453,Testing conjectures and identifying counterexamples
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Explore the 100 grid,,
+Year 9,Autumn,Reasoning with Algebra,Testing Conjectures,Expand three binomials,300,Expanding three (or more) brackets
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Know names of 2-D and 3-D shapes,146,Platonic solids
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Recognise prisms,142,Properties of prisms and cylinders
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Accurate nets of cuboids and other 3-D shapes,143,Nets of 3D shapes
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Sketch and recognise nets of cuboids and other 3-D shapes,143,Nets of 3D shapes
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Plans and elevations,228,"Front elevation, side elevation and plan of a 3D shape"
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Find area of 2-D shapes,138;139;140,Area of a rectangle by using the formula | Area of a parallelogram | Area of a triangle
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Surface area of cubes and cuboids,232,Surface area of a cuboid and prisms
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Surface area of triangular prisms,232,Surface area of a cuboid and prisms
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Surface area of a cylinder,234,Surface area of a cylinder
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Volume of cubes and cuboids,145;230,Volume of a cube or cuboid | Problem solving involving volume of a cuboid
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,Volume of other 3-D shapes - prisms and cylinders,231;233,Volume of a prism | Volume of a cylinder
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Three-Dimensional Shapes,"Explore volumes of cones, pyramids and spheres",405,"Volume of a pyramid, cone or sphere"
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Draw and measure angles,109;111,Measuring and drawing non-reflex angles in degrees with a protractor | Measuring and drawing reflex angles in degrees with a protractor
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct and interpret scale drawings,283,Scale drawings including map scales
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Locus of distance from a point,285,Loci
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Locus of distance from a straight line/shape,285,Loci
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Locus equidistant from two points,285,Loci
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct a perpendicular bisector,284,Constructions with lines and angles
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct a perpendicular from a point,284,Constructions with lines and angles
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct a perpendicular to a point,284,Constructions with lines and angles
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Locus of distance from two lines,285,Loci
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct an angle bisector,284,Constructions with lines and angles
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Construct triangles from given information,286;320,Drawing and constructing triangles | Further constructions involving relationships of triangles and circles
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Identify congruent figures,290,Properties of congruent shapes
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Explore congruent triangles,471,"Proving triangle congruence using SSS, SAS, ASA and RHS"
+Year 9,Autumn,Constructing in 2 and 3 Dimensions,Constructions and Congruency,Identify congruent triangles,290,Properties of congruent shapes
+Year 9,Spring,Reasoning with Number,Numbers,"Integers, real and rational numbers",,
+Year 9,Spring,Reasoning with Number,Numbers,Understand and use surds,334,Simplifying surds
+Year 9,Spring,Reasoning with Number,Numbers,Work with directed number,85;155;156,Counting up and down with negative numbers | Adding or subtracting a mixture of positive and negative numbers | Multiplying or dividing a mixture of positive and negative numbers
+Year 9,Spring,Reasoning with Number,Numbers,Solve problems with integers,,
+Year 9,Spring,Reasoning with Number,Numbers,Solve problems with decimals,74;122;124,Adding and subtracting decimal numbers | Multiplying a decimal (up to 2dp) by an integer | Dividing a decimal (up to 2dp) by an integer
+Year 9,Spring,Reasoning with Number,Numbers,HCF and LCM,96;162,Highest Common Factor and Lowest Common Multiple by listing | Lowest Common Multiple or Highest Common Factor by prime factorisation
+Year 9,Spring,Reasoning with Number,Numbers,Adding and subtracting fractions,100;117;118,Adding and subtracting fractions where the denominators are multiples of each other | Adding and subtracting fractions with any denominator | Adding and subtracting mixed numbers with different denominators
+Year 9,Spring,Reasoning with Number,Numbers,Multiplying and dividing fractions,120;165;166,Multiplying proper fractions with no simplifying | Further multiplying proper fractions (including simplification) | Dividing proper and improper fractions
+Year 9,Spring,Reasoning with Number,Numbers,Solving problems with fractions,,
+Year 9,Spring,Reasoning with Number,Numbers,Numbers in standard form,301;302,Conversion of large numbers to and from standard form/scientific notation | Conversion of small numbers to and from standard form/scientific notation
+Year 9,Spring,Reasoning with Number,Using Percentages,"Use the equivalence of fractions, decimals and percentages",172;174,"Converting between any terminating decimal, fraction and percentage less than 100% | Converting between terminating decimals, fractions and percentages greater than 100%"
+Year 9,Spring,Reasoning with Number,Using Percentages,Calculate percentage increase and decrease,221;169,"Value after a general percentage change, using decimal multipliers | Fractional increase and decrease"
+Year 9,Spring,Reasoning with Number,Using Percentages,Express a change as a percentage,215,Percentage change
+Year 9,Spring,Reasoning with Number,Using Percentages,Solve 'reverse' percentage problems,223;170,Reverse percentage problems using decimal multipliers | Fractional original value problems
+Year 9,Spring,Reasoning with Number,Using Percentages,Recognise and solve percentage problems (non-calculator),130;220,"Calculating a simple percentage of an amount, using chunking | Value after a simple percentage change, using non-calculator methods"
+Year 9,Spring,Reasoning with Number,Using Percentages,Recognise and solve percentage problems (calculator),219,"Percentage of an amount, using decimal multipliers"
+Year 9,Spring,Reasoning with Number,Using Percentages,Solve problems with repeated percentage change,359,Calculating values after compound percentage changes
+Year 9,Spring,Reasoning with Number,Maths and Money,Solve problems with bills and bank statements,,
+Year 9,Spring,Reasoning with Number,Maths and Money,Calculate simple interest,360,Financial maths (excluding compound interest)
+Year 9,Spring,Reasoning with Number,Maths and Money,Calculate compound interest,359;361,Calculating values after compound percentage changes | Compound percentage problems with unknown period or step percentage change
+Year 9,Spring,Reasoning with Number,Maths and Money,Solve problems with Value Added Tax,360,Financial maths (excluding compound interest)
+Year 9,Spring,Reasoning with Number,Maths and Money,Calculate wages and taxes,360,Financial maths (excluding compound interest)
+Year 9,Spring,Reasoning with Number,Maths and Money,Solve problems with exchange rates,177,Exchange rates
+Year 9,Spring,Reasoning with Number,Maths and Money,Solve unit pricing problems,,
+Year 9,Spring,Reasoning with Geometry,Deduction,Angles in parallel lines,262,"Alternate, corresponding and co-interior angles"
+Year 9,Spring,Reasoning with Geometry,Deduction,Solving angles problems (using chains of reasoning),110;149;151;262,"Sum of the angles on a straight line and angles around a point | Sum of angles in a triangle | Sum of angles in a quadrilateral | Alternate, corresponding and co-interior angles"
+Year 9,Spring,Reasoning with Geometry,Deduction,Angles problems with algebra,110;149;151;262;263,"Sum of the angles on a straight line and angles around a point | Sum of angles in a triangle | Sum of angles in a quadrilateral | Alternate, corresponding and co-interior angles | Algebraic expressions and equations using angle facts"
+Year 9,Spring,Reasoning with Geometry,Deduction,Conjectures with angles,453,Testing conjectures and identifying counterexamples
+Year 9,Spring,Reasoning with Geometry,Deduction,Conjectures with shapes,453,Testing conjectures and identifying counterexamples
+Year 9,Spring,Reasoning with Geometry,Deduction,Link constructions and geometrical reasoning,284;285,Constructions with lines and angles | Loci
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Identify the order of rotational symmetry of a shape,280,Rotational symmetry
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Compare and contrast rotational symmetry with line symmetry,280,Rotational symmetry
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Rotate a shape about a point on a shape,281,Rotating a shape by a given angle around a given point
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Rotate a shape about a point not on a shape,281,Rotating a shape by a given angle around a given point
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Translate points and shapes by a given vector,374;154,Translations of shapes by a vector | Translating a shape on axes using directional language
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Compare rotation and reflection of shapes,282;279,Describing a rotation | Describing a reflection
+Year 9,Spring,Reasoning with Geometry,Rotation and Translation,Find the result of a series of transformations,,
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Squares and square roots,88;157,"Power notation and calculate simple powers, e.g. squares, cubes | Roots and further powers"
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Identify the hypotenuse of a right-angled triangle,288,Pythagoras' theorem in 2D (excluding surds)
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Determine whether a triangle is right-angled,288,Pythagoras' theorem in 2D (excluding surds)
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Calculate the hypotenuse of a right-angled triangle,288,Pythagoras' theorem in 2D (excluding surds)
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Calculate missing sides in right-angled triangles,288,Pythagoras' theorem in 2D (excluding surds)
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Use Pythagoras theorem on coordinate axes,289,Distance between two points given their coordinates
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Explore proofs of Pythagoras' theorem,,
+Year 9,Spring,Reasoning with Geometry,Pythagoras' Theorem,Use Pythagoras' theorem in 3-D shapes,410,Pythagoras' theorem in 3D shapes
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Recognise enlargement and similarity,291;129,Properties of similar shapes | Similar shapes with integer scale factors
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Enlarge a shape by a positive integer scale factor,294;295,Describing an enlargement/dilation for a positive integer scale factor | Enlarging/dilating a shape by a given positive integer scale factor
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Enlarge a shape by a positive integer scale factor from a point,294;295,Describing an enlargement/dilation for a positive integer scale factor | Enlarging/dilating a shape by a given positive integer scale factor
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Enlarge a shape by a positive fractional scale factor,296;297,Describing an enlargement/dilation for a positive fractional scale factor | Enlarging/dilating a shape by a positive fractional scale factor
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Enlarge a shape by a negative scale factor,376;377,Enlargement/dilation of shapes by a negative scale factor | Describing enlargements/dilations for a negative scale factor
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Work out missing sides and angles in a pair of given similar shapes,292,Determine unknown lengths in similar shapes
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Solve problems with similar triangles,292,Determine unknown lengths in similar shapes
+Year 9,Summer,Reasoning with Proportion,Enlargement and Similarity,Explore ratios in right-angled triangles,321;322,Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Solve problems with direct proportion,176,Multiplicative scaling and numerical proportion relationships
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Direct proportion and conversion graphs,178,Conversion graphs
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Solve problems with inverse proportion,386,Algebraic direct and inverse proportion
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Graphs of inverse relationships,386,Algebraic direct and inverse proportion
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Solve ratio problems given the whole or a part,225,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given"
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Solve 'best buy' problems,,
+Year 9,Summer,Reasoning with Proportion,Ratio and Proportion,Solve problems ratio and algebra,227,Combining ratios and proportions into a single ratio
+Year 9,Summer,Rates,Rates,"Solve speed, distance and time problems without a calculator",325;326,Speed calculations for a single journey | Speed calculations for multiple journeys or a journey in stages
+Year 9,Summer,Rates,Rates,"Solve speed, distance and time problems with a calculator",325;326,Speed calculations for a single journey | Speed calculations for multiple journeys or a journey in stages
+Year 9,Summer,Rates,Rates,Use distance/time graphs,327,Constructing and reading distance-time graphs
+Year 9,Summer,Rates,Rates,"Solve problems with density, mass and volume",328,Density
+Year 9,Summer,Rates,Rates,Solve flow problems and their graphs,330,"Other compound measures (excluding speed, pressure and density)"
+Year 9,Summer,Rates,Rates,Rates of change and their units,330,"Other compound measures (excluding speed, pressure and density)"
+Year 9,Summer,Rates,Rates,Convert compound units,331,Convert between units for compound measures
+Year 9,Summer,Probability,Probability,Single event probability,247;248,Probabilities using worded terms or placed on a number line between 0 and 1 | Theoretical probabilities using counts
+Year 9,Summer,Probability,Probability,Relative frequency - include convergence,251,"Experimental probabilities, expectation and bias"
+Year 9,Summer,Probability,Probability,Expected outcomes,251,"Experimental probabilities, expectation and bias"
+Year 9,Summer,Probability,Probability,Independent events,353,Probability of independent and successive independent events (including tree diagrams)
+Year 9,Summer,Probability,Probability,Use tree diagrams,353,Probability of independent and successive independent events (including tree diagrams)
+Year 9,Summer,Probability,Probability,Use tree diagrams to solve 'without replacement' problems,354,"Successive dependent events, i.e. sampling without replacement (including tree diagrams)"
+Year 9,Summer,Probability,Probability,Use diagrams to work out probabilities,355;356,Probabilities from Venn diagrams of frequencies (no set notation) | Probabilities from Venn diagrams of frequencies (using set notation)
+Year 9,Summer,Algebraic Representation,Algebraic Representation,Draw and interpret quadratic graphs,366;368,Plotting quadratic graphs from a table of values | Quadratic graphs and their features
+Year 9,Summer,Algebraic Representation,Algebraic Representation,"Interpret graphs, including reciprocal and piece-wise",422,Plotting reciprocal graphs
+Year 9,Summer,Algebraic Representation,Algebraic Representation,Investigate graphs of simultaneous equations,275,Solving linear simultaneous equations/systems of equations using graphical methods
+Year 9,Summer,Algebraic Representation,Algebraic Representation,Represent inequalities,456,"Inequalities in two variables, including their representation on a plane."
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Enlarge a shape by a positive integer scale factor,294;295,Describing an enlargement/dilation for a positive integer scale factor | Enlarging/dilating a shape by a given positive integer scale factor
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Enlarge a shape by a fractional scale factor,296;297,Describing an enlargement/dilation for a positive fractional scale factor | Enlarging/dilating a shape by a positive fractional scale factor
+"Year 10, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Enlarge a shape by a negative scale factor,376;377,Enlargement/dilation of shapes by a negative scale factor | Describing enlargements/dilations for a negative scale factor
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Identify similar shapes,291,Properties of similar shapes
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Work out missing sides and angles in a pair given similar shapes,292,Determine unknown lengths in similar shapes
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Use parallel line rules to work out missing angles,262,"Alternate, corresponding and co-interior angles"
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Establish a pair of triangles are similar,291,Properties of similar shapes
+"Year 10, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Explore areas of similar shapes,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Explore volumes of similar shapes,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Solve mixed problems involving similar shapes,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Understand the difference between congruence and similarity,290;291,Properties of congruent shapes | Properties of similar shapes
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Understand and use conditions for congruent triangles,471,"Proving triangle congruence using SSS, SAS, ASA and RHS"
+"Year 10, GCSE Higher",Autumn,Similarity,"Congruence, Similarity and Enlargement",Prove a pair of triangles are congruent,471,"Proving triangle congruence using SSS, SAS, ASA and RHS"
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Explore ratio in similar right-angled triangles,321;322,Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,"Work fluently with the hypotenuse, opposite and adjacent sides",321;322,Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Use the tangent ratio to find missing side lengths,321,Trigonometry to determine side lengths in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Use the sine and cosine ratio to find missing side lengths,321,Trigonometry to determine side lengths in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,"Use sine, cosine and tangent to find missing side lengths",321,Trigonometry to determine side lengths in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,"Use sine, cosine and tangent to find missing angles",322,Trigonometry to determine angles in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Calculate sides in right-angled triangles using Pythagoras' Theorem,288;338,Pythagoras' theorem in 2D (excluding surds) | Pythagoras' Theorem with surds
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Select the appropriate method to solve right-angled triangle problems,321;322,Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Similarity,Trigonometry,Work with key angles in right-angled triangles,321;322;412,Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle | Exact trigonometric values
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Use trigonometry in 3-D shapes,411;470,Trigonometry in 3D shapes (right-angled only) | 3D shape problems involving non-right-angled trigonometry
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Use the formula 1/2 ab sinC to find the area of a triangle,467,Area of a triangle using two lengths and the angle between them
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Understand and use the sine rule to find missing lengths,465,Sine rule (Law of Sines)
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Understand and use the sine rule to find missing angles,465,Sine rule (Law of Sines)
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Understand and use the cosine rule to find missing lengths,466,Cosine rule (Law of Cosines)
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Understand and use the cosine rule to find missing angles,466,Cosine rule (Law of Cosines)
+"Year 10, GCSE Higher",Autumn,Similarity,Trigonometry,Choosing and using the sine and cosine rules,465;466,Sine rule (Law of Sines) | Cosine rule (Law of Cosines)
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Understand the meaning of a solution,,
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Form and solve one-step and two-step equations,199;254,"Solving linear equations where the variable appears on one side of the equation only | Solving linear equations where the variable appears on one side of the equation only, including brackets"
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Form and solve one-step and two-step inequalities,339,Solving linear inequalities in one variable
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Show solutions to inequalities on a number line,339,Solving linear inequalities in one variable
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Interpret representations on number lines as inequalities,339,Solving linear inequalities in one variable
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Represent solutions to inequalities using set notation,457,Set builder notation
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Draw straight line graphs,267;273,Plotting a straight line from a table of values | Drawing a line from its equation
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Find solutions to equations using straight line graphs,421,Using graphs to count solutions and find approximate solutions to equations
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Represent solutions to single inequalities on a graph,456,"Inequalities in two variables, including their representation on a plane."
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Represent solutions to multiple inequalities on a graph,456,"Inequalities in two variables, including their representation on a plane."
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Form and solve equations with unknowns on both sides,257;259,Solving linear equations where the variable appears on both sides of the equation | Forming and solving linear equations from a given context (excluding angles)
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Form and solve inequalities with unknowns on both sides,340;342,Solving linear inequalities with one variable on both sides | Forming and solving linear inequalities from a given context
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Form and solve more complex equations and inequalities,257;340,Solving linear equations where the variable appears on both sides of the equation | Solving linear inequalities with one variable on both sides
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,"Solve quadratic equations by factorisation (also Foundation; Higher covers now, Core covers in Y11)",367,Solving quadratic equations by factorisation
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Equations and Inequalities,Solve quadratic inequalities in one variable,458,Solving quadratic inequalities
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Understand that equations can have more than one solution,,
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,"Determine whether a given (x,y) is a solution to a pair of linear simultaneous equations",276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by substituting a known variable,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by substituting an expression,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations using graphs,275,Solving linear simultaneous equations/systems of equations using graphical methods
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by subtracting equations,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by adding equations,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Use a given equation to derive related facts,,
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by adjusting one equation,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of linear simultaneous equations by adjusting both equations,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Foundation, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Form a pair of linear simultaneous equations from given information,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Form and solve a pair of linear simultaneous equations from given information,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,"Determine whether a given (x,y) is a solution to both a linear and quadratic equation",419,Solving non-linear simultaneous equations/systems of equations by substitution
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,"Solve a pair of simultaneous equations (one linear, one quadratic) using graphs",275;419,Solving linear simultaneous equations/systems of equations using graphical methods | Solving non-linear simultaneous equations/systems of equations by substitution
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,"Solve a pair of simultaneous equations (one linear, one quadratic) algebraically",419,Solving non-linear simultaneous equations/systems of equations by substitution
+"Year 10, GCSE Higher",Autumn,Developing Algebra,Simultaneous Equations,Solve a pair of simultaneous equations involving a third unknown,486,Simultaneous equations/systems of equations involving 3 variables
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Use cardinal directions and related angles,264,Bearings (excluding trigonometry)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Draw and interpret scale diagrams,283,Scale drawings including map scales
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Understand and represent bearings,264,Bearings (excluding trigonometry)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Measure and read bearings,264,Bearings (excluding trigonometry)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Make scale drawings using bearings,264;283,Bearings (excluding trigonometry) | Scale drawings including map scales
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Calculate bearings using angles rules,264,Bearings (excluding trigonometry)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Angles and Bearings,Solve bearings problems using Pythagoras and trigonometry,264;321;322,Bearings (excluding trigonometry) | Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+"Year 10, GCSE Higher",Spring,Geometry,Angles and Bearings,Solve bearings problems using the sine and cosine rules,469,Bearings problems involving non-right-angled trigonometry
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Working with Circles,Recognise and label parts of a circle,317;141,"Further terms in relation to circles, including chord and segment | Basic terms in relation to circles"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Working with Circles,Calculate fractional parts of a circle,211,Area or perimeter of simple fractions of circles
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Working with Circles,Calculate the length of an arc,318,Arc length of more general sectors
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Working with Circles,Calculate the area of a sector,319,Area of more general sectors
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Circle theorem: Angles at the centre and circumference,442,Circle theorems
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Circle theorem: Angles in a semicircle,442,Circle theorems
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Circle theorem: Angles in the same segment,442,Circle theorems
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Circle theorem: Angles in a cyclic quadrilateral,442,Circle theorems
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Working with Circles,Understand and use the volume of a cylinder and cone,233;405,"Volume of a cylinder | Volume of a pyramid, cone or sphere"
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Understand and use the volume of a sphere,405,"Volume of a pyramid, cone or sphere"
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Understand and use the surface area of a sphere,406,Surface area of a cone or sphere/hemisphere
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Understand and use the surface area of a cylinder and cone,234;406;408,Surface area of a cylinder | Surface area of a cone or sphere/hemisphere | Surface area of more complex compound 3D shapes
+"Year 10, GCSE Higher",Spring,Geometry,Working with Circles,Solve area and volume problems involving similar shapes,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Vectors,Understand and represent vectors,372,Column vector notation
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Vectors,Use and read vector notation,372;472,Column vector notation | Converting a vector between component form and magnitude and direction form
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Vectors,Draw and understand vectors multiplied by a scalar,373;475,"Adding, subtracting and scaling column vectors | Solving vector problems by introduction of a scalar"
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Draw and understand addition of vectors,373,"Adding, subtracting and scaling column vectors"
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Draw and understand addition and subtraction of vectors,373,"Adding, subtracting and scaling column vectors"
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Explore vector journeys in shapes,473,Vectors using variables
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Geometry,Vectors,Explore quadrilaterals using vectors,473,Vectors using variables
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Understand parallel vectors,474,Parallel vectors and straight line proofs using vectors
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Explore collinear points using vectors,474,Parallel vectors and straight line proofs using vectors
+"Year 10, GCSE Higher",Spring,Geometry,Vectors,Use vectors to construct geometric arguments and proofs,474,Parallel vectors and straight line proofs using vectors
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Compare quantities using a ratio,224,Simplifying ratios and forming ratios from a given context
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Link ratios and fractions,226,"Relationship between fractions, percentages and ratio"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Share in a ratio (given total or one part),225,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Use ratios and fractions to make comparisons,226,"Relationship between fractions, percentages and ratio"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Link ratios and graphs,270,Gradient of a line
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Solve problems with currency conversion,177,Exchange rates
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Link ratios and scales,283,Scale drawings including map scales
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Use and interpret ratios of the form 1:n and n:1,224,Simplifying ratios and forming ratios from a given context
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Solve 'best buy' problems,,
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Combine a set of ratios,227,Combining ratios and proportions into a single ratio
+"Year 10, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Link ratio and algebra,227;464,Combining ratios and proportions into a single ratio | Algebraic techniques for ratio problems
+"Year 10, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Ratio in area problems,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Ratio in volume problems,324,"Relationship between scale factors of length, area and volume"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Ratios and Fractions,Mixed ratio problems,225;227,"Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given | Combining ratios and proportions into a single ratio"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,"Convert and compare fractions, decimals and percentages",172;174,"Converting between any terminating decimal, fraction and percentage less than 100% | Converting between terminating decimals, fractions and percentages greater than 100%"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Work out percentages of amounts (with and without a calculator),130;219,"Calculating a simple percentage of an amount, using chunking | Percentage of an amount, using decimal multipliers"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Increase and decrease by a given percentage,220;221,"Value after a simple percentage change, using non-calculator methods | Value after a general percentage change, using decimal multipliers"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Express one number as a percentage of another,214,Determining what percentage one number is of another
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Calculate simple and compound interest,360;359,Financial maths (excluding compound interest) | Calculating values after compound percentage changes
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Repeated percentage change,359,Calculating values after compound percentage changes
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Find the original value after a percentage change,223,Reverse percentage problems using decimal multipliers
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Solve problems involving growth and decay,359,Calculating values after compound percentage changes
+"Year 10, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,Understand iterative processes,440,General iterative processes
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Percentages and Interest,"Solve problems involving percentages, ratios and fractions",226,"Relationship between fractions, percentages and ratio"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,"Know how to add, subtract and multiply fractions",117;120,Adding and subtracting fractions with any denominator | Multiplying proper fractions with no simplifying
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Find probabilities using equally likely outcomes,248,Theoretical probabilities using counts
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Use the property that probabilities sum to 1,247,Probabilities using worded terms or placed on a number line between 0 and 1
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Using experimental data to estimate probabilities,251,"Experimental probabilities, expectation and bias"
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,"Find probabilities from tables, Venn diagrams and frequency trees",238;241;355,Two-way tables | Frequency trees | Probabilities from Venn diagrams of frequencies (no set notation)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Construct and interpret sample spaces for more than one event,249,Sample space diagrams
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Calculate probability with independent events,353;463,Probability of independent and successive independent events (including tree diagrams) | Algebraic probability problems involving independent/dependent events
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Use tree diagrams for independent events,353,Probability of independent and successive independent events (including tree diagrams)
+"Year 10, GCSE Foundation, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Use tree diagrams for dependent events,354,"Successive dependent events, i.e. sampling without replacement (including tree diagrams)"
+"Year 10, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Construct and interpret conditional probabilities (Tree diagrams),357,Conditional probability (no set notation)
+"Year 10, GCSE Higher",Spring,Proportions and Proportional Change,Probability,Construct and interpret conditional probabilities (Venn diagrams and two-way tables),357;356,Conditional probability (no set notation) | Probabilities from Venn diagrams of frequencies (using set notation)
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Understand populations and samples,345;348;349,Populations and censuses versus sampling | Simple random sampling | Non-random sampling
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct a stratified sample,350,Stratified sampling
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Primary and secondary data,346,Data collection methods (excluding experiments)
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret frequency tables and frequency polygons,235;315,Reading and interpreting ungrouped frequency tables | Frequency polygons
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret two-way tables,238,Two-way tables
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret line and bar charts (including composite bar charts),65;239,Bar charts and vertical line charts | Dual and stacked bar charts
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret pie charts,246,Pie charts with any proportion
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Criticise charts and graphs,,
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct histograms,314;401,Histograms of equal class width | Histograms and frequency density (unequal class widths)
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Interpret histograms,314;401,Histograms of equal class width | Histograms and frequency density (unequal class widths)
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Find and interpret averages from a list,132;207,"Mean as an average | Mode, median, range from listed data"
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Find and interpret averages from a table,236;312,Mean from ungrouped frequency tables | Estimating the mean from grouped frequency tables
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret time series graphs,400,Time series and moving averages
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret stem-and-leaf diagrams,240,Stem-and-leaf diagrams
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret cumulative frequency diagrams,398,Cumulative frequency graphs
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Use cumulative frequency diagrams to find measures,398,Cumulative frequency graphs
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret box plots,399;396,Box plots / box and whisker diagrams (excluding outliers) | Quartiles from discrete data
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Compare distributions using charts and measures,403,Comparing data sets using different representations
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Compare distributions using complex charts and measures,403;402,"Comparing data sets using different representations | Understanding the shape of data, including skewness"
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Construct and interpret scatter graphs,244,Scatter graphs/scatterplots and correlation
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Delving into Data,Delving into Data,Draw and use a line of best fit,245,Line of best fit
+"Year 10, GCSE Higher",Summer,Delving into Data,Delving into Data,Understand extrapolation,,
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Mental/written methods of integer/decimal addition and subtraction,39;40;41;74,Mental addition and subtraction strategies | Column addition | Column subtraction | Adding and subtracting decimal numbers
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Mental/written methods of integer/decimal multiplication and division,66;89;122;124,Short column multiplication | Completing short divisions with no remainders | Multiplying a decimal (up to 2dp) by an integer | Dividing a decimal (up to 2dp) by an integer
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,The four rules of fraction arithmetic,117;120;166,Adding and subtracting fractions with any denominator | Multiplying proper fractions with no simplifying | Dividing proper and improper fractions
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Exact answers,,
+"Year 10, GCSE Higher",Summer,Using Number,Non-calculator Methods,Rational and irrational numbers (convert recurring decimals here),173;277,Converting from a fraction to a recurring decimal or a percentage | Converting from a recurring decimal to a fraction
+"Year 10, GCSE Higher",Summer,Using Number,Non-calculator Methods,Understand and use surds,334,Simplifying surds
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Calculate with surds,335;336;337;392;393,Multiplying and dividing surds | Adding and subtracting surds | Expanding brackets with surds | Rationalising the denominator where the denominator consists of a single surd term | Rationalising the denominator where the denominator consists of a surd and a second term
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Rounding to decimal places and significant figures,75;187,Rounding a number to a given number of decimal places | Rounding a number to a given number of significant figures
+"Year 10, GCSE Higher",Summer,Using Number,Non-calculator Methods,Estimating answers to calculations,188,Estimating by rounding
+"Year 10, GCSE Higher",Summer,Using Number,Non-calculator Methods,Understand and use limits of accuracy,310;385,Upper and lower bound of rounded values or identifying an error interval | Tolerance
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Upper and lower bounds,310;384,Upper and lower bound of rounded values or identifying an error interval | Using lower and upper bounds within calculations to calculate a further lower/upper bound
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Use number sense,,
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Solve financial maths problems,360,Financial maths (excluding compound interest)
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Non-calculator Methods,Break down and solve multi-step problems,,
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Understand the difference between factors and multiples,52;53,Multiples of a number | Factors of a number
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Understand primes and express a number as a product of its prime factors,97;161,Prime numbers | Prime factorisation of a number
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Find the HCF and LCM of a set of numbers,96;162,Highest Common Factor and Lowest Common Multiple by listing | Lowest Common Multiple or Highest Common Factor by prime factorisation
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Describe and continue arithmetic and geometric sequences,203;370,"Describing, generating and continuing sequences using term-to-term rules | nth term formula for a geometric sequence (no standard formulae)"
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Explore other sequences,371,nth term formula more complicated sequences
+"Year 10, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Describe and continue sequences involving surds,334;336,Simplifying surds | Adding and subtracting surds
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Find the rule for the nth term of a linear sequence,205;206,nth term formula for arithmetic sequences (no standard formulae) | Determining if a term belongs in an arithmetic sequence
+"Year 10, GCSE Higher",Summer,Using Number,Types of Number and Sequences,Find the rule for the nth term of a quadratic sequence,369,nth term formula for a quadratic sequence
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Square and Cube numbers,88,"Power notation and calculate simple powers, e.g. squares, cubes"
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Calculate higher powers and roots,157,Roots and further powers
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Powers of ten and standard form,301;302,Conversion of large numbers to and from standard form/scientific notation | Conversion of small numbers to and from standard form/scientific notation
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,The addition and subtraction rules for indices,194,Algebraic index laws (basic)
+"Year 10, GCSE Higher",Summer,Using Number,Indices and Roots,Understand and use the power zero and negative indices,298,Negative indices
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Work with powers of powers,194,Algebraic index laws (basic)
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Understand and use fractional indices,394;395,Fractional indices | Solving equations involving negative and fractional indices and surds
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Using Number,Indices and Roots,Calculate with numbers in standard form,303;304,Adding or subtracting numbers in standard form/scientific notation | Multiplying and dividing numbers in standard form/scientific notation
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Expressions,Manipulating Expressions,Simplify algebraic expressions,193;194;387,Collecting like terms | Algebraic index laws (basic) | Simplifying single algebraic fractions by cancelling common factors
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Use identities,455,Equating coefficients in an identity f(x) ≡ g(x)
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Add and subtract simple algebraic fractions,389,Adding and subtracting algebraic fractions (no factorisation of denominators required)
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Add and subtract complex algebraic fractions,390,"Adding and subtracting algebraic fractions, requiring prior factorisation of the denominators"
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Multiply and divide simple algebraic fractions,388,Multiplying and dividing algebraic fractions
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Multiply and divide complex algebraic fractions,388,Multiplying and dividing algebraic fractions
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Form and solve equations and inequalities with fractions,462,Solving equations involving fractions that lead to a quadratic equation
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Solve equations with algebraic fractions,462,Solving equations involving fractions that lead to a quadratic equation
+"Year 10, GCSE Foundation, GCSE Higher",Summer,Expressions,Manipulating Expressions,Represent numbers algebraically,,
+"Year 10, GCSE Higher",Summer,Expressions,Manipulating Expressions,Algebraic arguments and proof,454,Algebraic proofs involving integers
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Equations of lines parallel to the axis,63;271,"Identifying vertical, horizontal, parallel and perpendicular lines | Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)"
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Plot straight line graphs,267;273,Plotting a straight line from a table of values | Drawing a line from its equation
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Interpret y = mx + c,271,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Find the equation of a straight line from a graph (1),272,Determining the equation of a straight line in slope-intercept or standard form
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Find the equation of a straight line from a graph (2),272,Determining the equation of a straight line in slope-intercept or standard form
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Equation of a straight-line graph given one point and gradient,272,Determining the equation of a straight line in slope-intercept or standard form
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Equation of a straight-line graph given two points,272,Determining the equation of a straight line in slope-intercept or standard form
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Determine whether a point is on a line,271,Understanding the equation of a straight line in slope-intercept form (y=mx+c) or standard form (ax + by = c)
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Gradients and Lines,Solve linear simultaneous equations graphically,275,Solving linear simultaneous equations/systems of equations using graphical methods
+"Year 11, GCSE Higher",Autumn,Graphs,Gradients and Lines,Recognise when straight lines are perpendicular,445,Equations of perpendicular lines
+"Year 11, GCSE Higher",Autumn,Graphs,Gradients and Lines,Find the equations of perpendicular lines,445,Equations of perpendicular lines
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Plot and read from quadratic graphs,366;368,Plotting quadratic graphs from a table of values | Quadratic graphs and their features
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Plot and read from cubic graphs,420,Plotting simple cubic graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Plot and read from reciprocal graphs,422,Plotting reciprocal graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Recognise graph shapes,426;427;452,"Recognising the shape of basic forms of cubic, reciprocal and exponential graphs based on their equations | Recognising the shape of more complex forms of quadratic, cubic, reciprocal and exponential graphs based on their equations | Graphs of root functions"
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Identify and interpret roots and intercepts of quadratics,368,Quadratic graphs and their features
+"Year 11, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Understand and use exponential graphs,423;424;425,Plotting exponential graphs | Properties of exponential graphs | Determining the values of k and a in the exponential function y = ka^x
+"Year 11, GCSE Higher",Autumn,Graphs,Non-linear Graphs,"Find and use the equation of a circle centre (0,0)",446,Graphs of circles centred at the origin
+"Year 11, GCSE Higher",Autumn,Graphs,Non-linear Graphs,Find the equation of the tangent to any curve,447,Equation of a tangent to a circle centred at the origin
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Reflect shapes in given lines,153;278,Reflecting a shape on axes using a given mirror line | Reflecting a shape in a line with given equation
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Construct and interpret conversion graphs,178,Conversion graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Construct and interpret other real-life straight line graphs,267;273;332,Plotting a straight line from a table of values | Drawing a line from its equation | Real-life linear graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Interpret distance/time graphs,327,Constructing and reading distance-time graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Construct distance/time graphs,327,Constructing and reading distance-time graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Construct and interpret speed/time graphs,459,Understanding and drawing speed-time (or positive velocity-time) graphs
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Construct and interpret piece-wise graphs,487,Piecewise functions
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Recognise and interpret graphs that illustrate direct and inverse proportion,386,Algebraic direct and inverse proportion
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Graphs,Using Graphs,Find approximate solutions to equations using graphs,421,Using graphs to count solutions and find approximate solutions to equations
+"Year 11, GCSE Higher",Autumn,Graphs,Using Graphs,Estimate the area under a curve,460,Estimating area under a curved graph
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Expand and factorise with a single bracket,252;253,Expanding a single bracket | Factorising out a single term
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Expand binomials,299,Expanding double brackets
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Factorise quadratic expressions,362,Factorising quadratic expressions given in the form x^2 + bx + c
+"Year 11, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Factorise complex quadratic expressions,364;363,Factorising a quadratic where the coefficient of the x^2 term is not 1 | Factorising the difference of two squares
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Solve equations equal to 0,367,Solving quadratic equations by factorisation
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Solve quadratic equations by factorisation,367;418,Solving quadratic equations by factorisation | Forming quadratic or non-linear expressions or equations from a given context (excluding probability problems)
+"Year 11, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Solve complex quadratic expressions by factorisation,364;367;365,Factorising a quadratic where the coefficient of the x^2 term is not 1 | Solving quadratic equations by factorisation | Factorising more difficult expressions by combining factorisation techniques or substitution of a variable
+"Year 11, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Complete the square,413;414;416,Completing the square to put an expression in the form (x+a)^2 + b | Completing the square to put an expression in the form a(x+b)^2 + c | Minimum or maximum point of a quadratic graph by completing the square
+"Year 11, GCSE Higher",Autumn,Algebra,Expanding and Factorising,Solve quadratic equations using the quadratic formula,415;417,Solving quadratic equations by using the quadratic formula | Quadratic formula to solve quadratic equations
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Solve linear equations,199;254;257,"Solving linear equations where the variable appears on one side of the equation only | Solving linear equations where the variable appears on one side of the equation only, including brackets | Solving linear equations where the variable appears on both sides of the equation"
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Solve inequalities,339;340,Solving linear inequalities in one variable | Solving linear inequalities with one variable on both sides
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Form and solve equations and inequalities in the context of shape,259;342,Forming and solving linear equations from a given context (excluding angles) | Forming and solving linear inequalities from a given context
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Change the subject of a simple formula,201,"Changing the subject where the variable appears once only, excluding brackets"
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Change the subject of a known formula,201,"Changing the subject where the variable appears once only, excluding brackets"
+"Year 11, GCSE Higher",Autumn,Algebra,Changing the Subject,Change the subject of a complex formula,260,"Changing the subject of a formula where the subject appears once only, including brackets, powers and roots"
+"Year 11, GCSE Higher",Autumn,Algebra,Changing the Subject,Change the subject where the subject appears more than once,391,Changing the subject of a formula where the subject appears multiple times
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Changing the Subject,Solve equations by iteration,440;439,General iterative processes | Trial and improvement to approximate a solution to an equation
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Use function machines,133;195,"Function machines | Function machines involving decimals, negative numbers and algebraic inputs"
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Functions,Substitute into expressions and formulae,196;197,"Further substitution with positive integers (including powers, roots and brackets) | Substitution with decimals, negative integers and fractions"
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Use function notation,432;433;437;438,Function notation and calculating outputs or inputs or a function | Graph representation of functions | Domain and range of simple functions | Properties of functions
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Work with composite functions,435,Composite functions (excluding exponentials and modulus)
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Work with inverse functions,436,Inverse functions (excluding exponentials and modulus)
+"Year 11, GCSE Foundation, GCSE Higher",Autumn,Algebra,Functions,Graphs of quadratic functions,366;368,Plotting quadratic graphs from a table of values | Quadratic graphs and their features
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Solve quadratic inequalities,458,Solving quadratic inequalities
+"Year 11, GCSE Higher",Autumn,Algebra,Functions,Understand and use trigonometric functions,431;434,"Plotting and recognising graphs of trigonometric functions | Solving simple trigonometric equations, e.g. sin(x) = k, using a graph"
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Use scale factors,128;283,Multiplicative scaling with integer scale factors and ratio notation | Scale drawings including map scales
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Understand direct proportion,176,Multiplicative scaling and numerical proportion relationships
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Construct complex direct proportion equations,386,Algebraic direct and inverse proportion
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Calculate with pressure and density,328;329,Density | Pressure
+"Year 11, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Understand inverse proportion,386,Algebraic direct and inverse proportion
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Construct inverse proportion equations,386,Algebraic direct and inverse proportion
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Multiplicative Reasoning,Ratio problems,224;225;227,"Simplifying ratios and forming ratios from a given context | Finding a quantity within a ratio where either the total amount, a particular amount or a difference in an amount is given | Combining ratios and proportions into a single ratio"
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Angles at points,110,Sum of the angles on a straight line and angles around a point
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Angles in parallel lines and shapes,262,"Alternate, corresponding and co-interior angles"
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Exterior and interior angles of polygons,261,Interior and exterior angles of regular and irregular polygons
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Proving geometric facts,453;454,Testing conjectures and identifying counterexamples | Algebraic proofs involving integers
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Solve problems involving vectors,373;474,"Adding, subtracting and scaling column vectors | Parallel vectors and straight line proofs using vectors"
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,The first four circle theorems,442;443,Circle theorems | Intersecting chord and intersecting secant theorems
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Angle between a radius and a chord,317;442,"Further terms in relation to circles, including chord and segment | Circle theorems"
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Angle between a radius and a tangent,442,Circle theorems
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Two tangents from a point,442,Circle theorems
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Alternate segment theorem,442,Circle theorems
+"Year 11, GCSE Higher",Spring,Reasoning,Geometric Reasoning,Pythagoras' theorem and trigonometrical ratios,288;321;322,Pythagoras' theorem in 2D (excluding surds) | Trigonometry to determine side lengths in a right-angled triangle | Trigonometry to determine angles in a right-angled triangle
+"Year 11, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Simplify complex expressions,193;194,Collecting like terms | Algebraic index laws (basic)
+"Year 11, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Find the rule for the nth term of a linear sequence,205,nth term formula for arithmetic sequences (no standard formulae)
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Find the rule for the nth term of a quadratic sequence,369,nth term formula for a quadratic sequence
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Use rules for sequences,203;204,"Describing, generating and continuing sequences using term-to-term rules | Generating terms of a sequence given a position-to-term rule"
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Solve linear simultaneous equations,276,Solving linear simultaneous equations/systems of equations using elimination or substitution
+"Year 11, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Solve simultaneous equations with one quadratic,419,Solving non-linear simultaneous equations/systems of equations by substitution
+"Year 11, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Formal algebraic proof,454,Algebraic proofs involving integers
+"Year 11, GCSE Higher",Spring,Reasoning,Algebraic Reasoning,Inequalities in two variables,456,"Inequalities in two variables, including their representation on a plane."
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe line symmetry and reflection,153;279,Reflecting a shape on axes using a given mirror line | Describing a reflection
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe rotation/rotational symmetry,280;281;282,Rotational symmetry | Rotating a shape by a given angle around a given point | Describing a rotation
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe translations of shapes,374;375,Translations of shapes by a vector | Describing translations using vector notation
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe enlargements of shapes,294;295;296;297,Describing an enlargement/dilation for a positive integer scale factor | Enlarging/dilating a shape by a given positive integer scale factor | Describing an enlargement/dilation for a positive fractional scale factor | Enlarging/dilating a shape by a positive fractional scale factor
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe negative enlargements of shapes,376;377,Enlargement/dilation of shapes by a negative scale factor | Describing enlargements/dilations for a negative scale factor
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Identify transformations of shapes,279;282;294;375,Describing a reflection | Describing a rotation | Describing an enlargement/dilation for a positive integer scale factor | Describing translations using vector notation
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform and describe a series of transformations of shapes,378,Combining transformations
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Identify invariant points and lines,379,Invariant points
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Perform standard constructions using ruler and protractor or compasses,284;286,Constructions with lines and angles | Drawing and constructing triangles
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Solve loci problems,285,Loci
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Understand and use trigonometrical graphs,431,Plotting and recognising graphs of trigonometric functions
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Sketch and identify translations of the graph of a given function,448,Graph transformations of y = f(x+a) and y = f(x) + a
+"Year 11, GCSE Higher",Spring,Revision and Communication,Transforming and Constructing,Sketch and identify reflections of the graph of a given function,449;450;451,Graph transformations of y = f(-x) and y = -f(x) | Graph transformations of y = f(ax) and y = af(x) (dilations) | Combinations of graph transformations
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Work with organised lists,380,Listing all combinations
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Sample spaces and probability,249;248,Sample space diagrams | Theoretical probabilities using counts
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Use the product rule for counting,381,Product rule for counting (Fundamental Counting Principle)
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Complete and use Venn diagrams,242;243,"Construct Venn diagrams | Union, intersection and complements of sets, including the universal and empty sets"
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Construct and interpret plans and elevations,228,"Front elevation, side elevation and plan of a 3D shape"
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Use data to compare distributions,403,Comparing data sets using different representations
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Listing and Describing,Interpreting scatter diagrams,244;245,Scatter graphs/scatterplots and correlation | Line of best fit
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with number",453;454,Testing conjectures and identifying counterexamples | Algebraic proofs involving integers
+"Year 11, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with algebra",454,Algebraic proofs involving integers
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with shape",453,Testing conjectures and identifying counterexamples
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with angles",453,Testing conjectures and identifying counterexamples
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with data",453,Testing conjectures and identifying counterexamples
+"Year 11, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with vectors",474,Parallel vectors and straight line proofs using vectors
+"Year 11, GCSE Foundation, GCSE Higher",Spring,Revision and Communication,Show That,"""Show that"" with congruent triangles",290,Properties of congruent shapes
+"Year 11, GCSE Higher",Spring,Revision and Communication,Show That,Formal proof with congruent triangles,471,"Proving triangle congruence using SSS, SAS, ASA and RHS"
