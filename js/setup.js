@@ -72,9 +72,7 @@ const Setup = (() => {
     el.dfRefsInput = document.getElementById('dfRefsInput');
     el.dfRefsLookupLink = document.getElementById('dfRefsLookupLink');
     el.dfSkillSearchInput = document.getElementById('dfSkillSearchInput');
-    el.dfSkillSearchBtn = document.getElementById('dfSkillSearchBtn');
     el.dfSkillPreview = document.getElementById('dfSkillPreview');
-    el.dfSkillResults = document.getElementById('dfSkillResults');
     el.dfSkillSelectedField = document.getElementById('dfSkillSelectedField');
     el.dfSkillChips = document.getElementById('dfSkillChips');
 
@@ -112,8 +110,7 @@ const Setup = (() => {
     el.smallStepChecklist.addEventListener('change', onSelectionChanged);
     el.dfRefsInput.addEventListener('input', onSelectionChanged);
     el.dfSkillSearchInput.addEventListener('input', onDfSkillSearchInput);
-    el.dfSkillSearchBtn.addEventListener('click', onDfSkillSearchClick);
-    el.dfSkillResults.addEventListener('click', onDfSkillResultsClick);
+    el.dfSkillPreview.addEventListener('click', onDfSkillPreviewClick);
     el.dfSkillChips.addEventListener('click', onDfSkillChipsClick);
     el.savedQuizSelect.addEventListener('change', onSavedQuizChange);
     el.savedGroupSelect.addEventListener('change', onSavedGroupChange);
@@ -562,14 +559,13 @@ const Setup = (() => {
 
   // ---------------- Dr Frost skill search-by-name ----------------
   // A friendlier way to build the same comma-separated number list
-  // above, not a parallel system: picking a search result just appends
-  // its number into dfRefsInput (deduped), and removing a "chip" here
+  // above, not a parallel system: picking a match just appends its
+  // number into dfRefsInput (deduped), and removing a "chip" here
   // removes that number back out. Manual edits to the number box itself
   // are left alone either way - chips are a picking aid, not a strict
   // two-way mirror of whatever's currently typed there.
 
-  const DF_PREVIEW_LIMIT = 10;
-  const DF_RESULTS_LIMIT = 20;
+  const DF_MATCH_LIMIT = 10;
   let selectedDfSkills = []; // [{ topicNum, topicName }], accumulated across searches
 
   function searchDfTally(query) {
@@ -580,56 +576,36 @@ const Setup = (() => {
 
   function onDfSkillSearchInput() {
     const query = el.dfSkillSearchInput.value;
-    const hasQuery = query.trim().length > 0;
-    el.dfSkillSearchBtn.hidden = !hasQuery;
-
-    if (!hasQuery) {
+    if (!query.trim()) {
       el.dfSkillPreview.hidden = true;
       el.dfSkillPreview.innerHTML = '';
       return;
     }
 
-    const matches = searchDfTally(query);
-    const shown = matches.slice(0, DF_PREVIEW_LIMIT);
-    el.dfSkillPreview.innerHTML = shown.map(row => `<span class="df-search-preview__item">${escapeHtml(row.topicName)}</span>`).join('')
-      + (matches.length > DF_PREVIEW_LIMIT ? `<span class="df-search-preview__more">+${matches.length - DF_PREVIEW_LIMIT} more — press Search to pick</span>` : '');
-    el.dfSkillPreview.hidden = shown.length === 0;
-  }
-
-  function onDfSkillSearchClick() {
-    const query = el.dfSkillSearchInput.value;
-    const matches = searchDfTally(query);
-    const shown = matches.slice(0, DF_RESULTS_LIMIT);
+    // Already-picked topics drop out of the list entirely (they're
+    // already shown as a chip below) rather than staying clickable and
+    // risking a confusing double-add.
+    const pickedNums = new Set(selectedDfSkills.map(s => s.topicNum));
+    const matches = searchDfTally(query).filter(row => !pickedNums.has(row.topicNum));
+    const shown = matches.slice(0, DF_MATCH_LIMIT);
 
     if (!shown.length) {
-      el.dfSkillResults.innerHTML = '<p class="hint">No matching skills/topics found.</p>';
-      el.dfSkillResults.hidden = false;
+      el.dfSkillPreview.innerHTML = '<p class="hint">No matching skills/topics found.</p>';
+      el.dfSkillPreview.hidden = false;
       return;
     }
 
-    const rows = shown.map(row => `<button type="button" class="df-search-results__item" data-topic-num="${row.topicNum}">${escapeHtml(row.topicName)}</button>`).join('');
-    const overflow = matches.length > DF_RESULTS_LIMIT
-      ? `<p class="df-search-results__more">Showing ${DF_RESULTS_LIMIT} of ${matches.length} matches — refine your search for more.</p>` : '';
-    el.dfSkillResults.innerHTML = `
-      <div class="df-search-results__header">
-        <span>${matches.length} match${matches.length === 1 ? '' : 'es'}</span>
-        <button type="button" class="df-search-results__close" id="dfSkillResultsClose" title="Close">✕</button>
-      </div>
-      ${rows}
-      ${overflow}
-    `;
-    el.dfSkillResults.hidden = false;
+    const rows = shown.map(row =>
+      `<button type="button" class="df-search-preview__item" data-topic-num="${row.topicNum}">${row.topicNum}. ${escapeHtml(row.topicName)}</button>`
+    ).join('');
+    const overflow = matches.length > DF_MATCH_LIMIT
+      ? `<p class="df-search-preview__more">+${matches.length - DF_MATCH_LIMIT} more — keep typing to narrow it down.</p>` : '';
+    el.dfSkillPreview.innerHTML = rows + overflow;
+    el.dfSkillPreview.hidden = false;
   }
 
-  function onDfSkillResultsClick(e) {
-    const closeBtn = e.target.closest('#dfSkillResultsClose');
-    if (closeBtn) {
-      el.dfSkillResults.hidden = true;
-      el.dfSkillResults.innerHTML = '';
-      return;
-    }
-
-    const item = e.target.closest('.df-search-results__item');
+  function onDfSkillPreviewClick(e) {
+    const item = e.target.closest('.df-search-preview__item');
     if (!item) return;
 
     const topicNum = Number(item.dataset.topicNum);
@@ -639,6 +615,7 @@ const Setup = (() => {
     selectedDfSkills.push({ topicNum: row.topicNum, topicName: row.topicName });
     addDfRefNumber(topicNum);
     renderDfSkillChips();
+    onDfSkillSearchInput(); // refresh the list so the just-picked item drops out of it
   }
 
   function addDfRefNumber(num) {
@@ -672,6 +649,7 @@ const Setup = (() => {
     selectedDfSkills = selectedDfSkills.filter(s => s.topicNum !== topicNum);
     removeDfRefNumber(topicNum);
     renderDfSkillChips();
+    onDfSkillSearchInput(); // the removed item should reappear in the list if its search term is still active
   }
 
   // ---------------- Saved starters ----------------

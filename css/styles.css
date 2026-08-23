@@ -513,82 +513,20 @@ button:focus-visible {
 
 /* ---------- Dr Frost skill search-by-name ---------- */
 
-.df-search-row {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
-
-.df-search-row input {
-  flex: 1;
-}
-
-.df-search-btn {
-  flex-shrink: 0;
-  padding: 8px 14px;
-  font-size: 0.88rem;
-}
-
-/* Live preview: plain, non-interactive text while typing - deliberately
-   greyed out and not clickable, distinct from the real results list
-   below (which only appears once Search is pressed). */
+/* Clickable results, appearing live while typing - no separate search
+   button/step, picking one adds it straight to the "Selected skills"
+   chips below. */
 .df-search-preview {
-  margin-top: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  font-size: 0.85rem;
-}
-
-.df-search-preview__item {
-  color: var(--muted);
-  background: #F1EFE8;
-  border-radius: 5px;
-  padding: 3px 8px;
-}
-
-.df-search-preview__more {
-  color: var(--muted);
-  font-style: italic;
-  padding: 3px 2px;
-}
-
-.df-search-results {
   margin-top: 8px;
   background: #FAF8F3;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 10px;
+  padding: 8px;
   max-height: 220px;
   overflow-y: auto;
 }
 
-.df-search-results__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--muted);
-  padding-bottom: 6px;
-  margin-bottom: 6px;
-  border-bottom: 1px solid var(--line);
-}
-
-.df-search-results__close {
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 0.85rem;
-  padding: 2px 4px;
-}
-
-.df-search-results__close:hover { color: var(--ink); }
-
-.df-search-results__item {
+.df-search-preview__item {
   display: block;
   width: 100%;
   text-align: left;
@@ -602,13 +540,14 @@ button:focus-visible {
   cursor: pointer;
 }
 
-.df-search-results__item:hover { background: #EEF3F0; }
+.df-search-preview__item:hover { background: #EEF3F0; }
 
-.df-search-results__more {
+.df-search-preview__more {
   margin: 6px 0 0;
   font-size: 0.8rem;
   color: var(--muted);
   font-style: italic;
+  padding: 3px 8px;
 }
 
 .df-skill-chips {
