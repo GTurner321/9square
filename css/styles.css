@@ -819,6 +819,69 @@ button:focus-visible {
   background: rgba(255, 255, 255, 0.6);
 }
 
+/* Shifted left when the clear ("X") button is also present, so the two
+   don't overlap in the same corner - width of .square__clear-btn (22px)
+   plus a small gap. */
+.square__hide-question-btn--shifted {
+  right: 34px;
+}
+
+.square__clear-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.6;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.square__clear-btn:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* A cleared square is otherwise fully blank (see .square--blank) - the
+   restore button stays deliberately quiet at rest, only becoming clearly
+   visible on hover, so it doesn't undercut the "board getting emptier"
+   effect this feature is for. */
+.square__restore-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  opacity: 0.35;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.square__restore-btn:hover {
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.5);
+}
+
 /* Positioned top-left, mirroring .square__hide-question-btn's top-right
    spot - that corner was already taken, and the two only ever appear
    together when a split panel is showing, so there's no clash either
