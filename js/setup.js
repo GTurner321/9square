@@ -32,10 +32,10 @@ const Setup = (() => {
     bindChecklistSelectAll(el.bookChecklist);
     bindChecklistSelectAll(el.chapterChecklist);
     bindChecklistSelectAll(el.subtopicChecklist);
+    bindChecklistSelectAll(el.yearChecklist);
     bindChecklistSelectAll(el.blockChecklist);
     bindChecklistSelectAll(el.smallStepChecklist);
     bindEvents();
-    initWrmYearSelect();
     loadData();
     loadSavedQuizzes();
     loadSavedGroups();
@@ -61,7 +61,7 @@ const Setup = (() => {
     el.subtopicChecklist = document.getElementById('subtopicChecklist');
     el.subtopicHelp = document.getElementById('subtopicHelp');
 
-    el.wrmYearSelect = document.getElementById('wrmYearSelect');
+    el.yearChecklist = document.getElementById('yearChecklist');
     el.blocksField = document.getElementById('blocksField');
     el.blockChecklist = document.getElementById('blockChecklist');
     el.blockHelp = document.getElementById('blockHelp');
@@ -101,7 +101,7 @@ const Setup = (() => {
     el.bookChecklist.addEventListener('change', onBookChecklistChange);
     el.chapterChecklist.addEventListener('change', onChapterChecklistChange);
     el.subtopicChecklist.addEventListener('change', onSelectionChanged);
-    el.wrmYearSelect.addEventListener('change', onWrmYearChange);
+    el.yearChecklist.addEventListener('change', onYearChecklistChange);
     el.blockChecklist.addEventListener('change', onBlockChecklistChange);
     el.smallStepChecklist.addEventListener('change', onSelectionChanged);
     el.dfRefsInput.addEventListener('input', onSelectionChanged);
@@ -202,6 +202,8 @@ const Setup = (() => {
       pearson.forEach(row => { if (!books.includes(row.book)) books.push(row.book); });
 
       renderChecklist(el.bookChecklist, books.map(b => ({ label: b })), 'Select all', false);
+
+      initWrmYearChecklist();
 
       setStatus('');
     } catch (err) {
@@ -419,62 +421,80 @@ const Setup = (() => {
   }
 
   // ---------------- White Rose flow ----------------
-  // Simpler than the Pearson-book flow above: Year/Course is always a
-  // single choice (a <select>, not a checklist), so there's no
-  // multi-book-style "combined view" branch to handle - blocks and
-  // small steps are always filtered down from exactly one year choice.
+  // Mirrors the Pearson-book flow above exactly: Year/Course is now a
+  // checklist (multiple can be selected, like Books), Blocks are
+  // grouped by year once more than one is selected (same as Chapters
+  // grouped by book), and Small steps only show with exactly one year
+  // selected (same reasoning as Sub-topics: block/small-step names
+  // aren't guaranteed unique across years).
 
-  function initWrmYearSelect() {
-    el.wrmYearSelect.innerHTML = '<option value="" disabled selected>Choose a year/course…</option>' +
-      PoolBuilder.WRM_YEAR_OPTIONS.map(o => `<option value="${o.value}">${escapeHtml(o.label)}</option>`).join('');
+  let years = [];  // unique year option values that actually have data, in WRM_YEAR_OPTIONS order
+
+  function initWrmYearChecklist() {
+    years = PoolBuilder.WRM_YEAR_OPTIONS
+      .map(o => o.value)
+      .filter(v => PoolBuilder.getWrmRowsForYear(wrmSet, v).length > 0);
+    const items = years.map(v => ({
+      label: PoolBuilder.WRM_YEAR_OPTIONS.find(o => o.value === v).label
+    }));
+    renderChecklist(el.yearChecklist, items, 'Select all', false);
   }
 
-  function getSelectedWrmYear() {
-    return el.wrmYearSelect.value || null;
+  function getSelectedYears() {
+    return readCheckedIndices(el.yearChecklist).map(idx => years[idx]);
   }
 
-  function onWrmYearChange() {
-    const year = getSelectedWrmYear();
+  function onYearChecklistChange() {
+    const selectedYears = getSelectedYears();
 
-    const blocks = [];
-    if (year) {
-      PoolBuilder.getWrmRowsForYear(wrmSet, year).forEach(row => {
+    const groups = selectedYears.map(yearValue => {
+      const yearLabel = PoolBuilder.WRM_YEAR_OPTIONS.find(o => o.value === yearValue).label;
+      const blocks = [];
+      PoolBuilder.getWrmRowsForYear(wrmSet, yearValue).forEach(row => {
         if (!blocks.includes(row.block)) blocks.push(row.block);
       });
-    }
+      return {
+        header: yearLabel,
+        items: blocks.map(block => ({ label: block, data: { year: yearValue, block } }))
+      };
+    });
 
-    currentBlockFlatItems = blocks;
-    renderChecklist(el.blockChecklist, blocks.map(b => ({ label: b })), 'Select all', false);
+    currentBlockFlatItems = renderGroupedChecklist(el.blockChecklist, groups, 'Select all', false);
 
-    // Blocks (and, in turn, small steps) stay hidden entirely until a
-    // year/course has actually been chosen, same pattern as
-    // Chapters/Sub-topics on the Pearson-book side.
-    el.blocksField.hidden = !year;
+    // Blocks (and, in turn, small steps) stay hidden entirely until
+    // there's actually a year/course to show blocks for, same pattern
+    // as Chapters/Sub-topics on the Pearson-book side.
+    el.blocksField.hidden = selectedYears.length === 0;
 
-    if (!year) {
-      el.blockChecklist.innerHTML = '<p class="hint">Choose a year/course above.</p>';
+    if (!selectedYears.length) {
+      el.blockChecklist.innerHTML = '<p class="hint">Choose at least one year/course above.</p>';
     }
     el.blockHelp.hidden = true;
 
     onBlockChecklistChange();
   }
 
-  function getSelectedBlocks() {
+  function getSelectedBlockPairs() {
     return readCheckedIndices(el.blockChecklist).map(idx => currentBlockFlatItems[idx]);
   }
 
   function onBlockChecklistChange() {
-    const year = getSelectedWrmYear();
-    const blocks = getSelectedBlocks();
+    const selectedYears = getSelectedYears();
+    const blockPairs = getSelectedBlockPairs();
 
-    if (year && blocks.length > 0) {
+    // Small-step-level filtering only makes sense with one year/course
+    // on screen - with several selected, the combined small-step list
+    // would be too large to be a useful filter, so it's hidden and the
+    // pool is built from every small step under the selected blocks
+    // directly (equivalent to "everything ticked").
+    if (selectedYears.length === 1 && blockPairs.length > 0) {
       el.smallStepsField.hidden = false;
+      const year = selectedYears[0];
+      const blocks = blockPairs.map(p => p.block);
       currentSmallStepRows = PoolBuilder.getWrmSmallStepRows(wrmSet, year, blocks);
 
       // Grouped by block, in the order blocks were selected - same
-      // reasoning as sub-topics grouped by chapter: a small step name
-      // that happens to repeat across blocks reads unambiguously
-      // without needing a "(block)" suffix.
+      // reasoning as sub-topics grouped by chapter.
       const groups = blocks
         .map(block => ({
           header: block,
@@ -501,6 +521,22 @@ const Setup = (() => {
 
   function getSelectedSmallStepRows() {
     return readCheckedIndices(el.smallStepChecklist).map(idx => currentSmallStepFlatItems[idx]);
+  }
+
+  /**
+   * The exact set of White Rose rows in play for the current
+   * selection - user-filtered small steps when one year/course is
+   * selected, or every small step under the selected blocks when
+   * several years are selected. Used for both the live pool and the
+   * save descriptor, so the two always agree (mirrors
+   * getEffectiveSubtopicRows).
+   */
+  function getEffectiveWrmSmallStepRows() {
+    const selectedYears = getSelectedYears();
+    if (selectedYears.length === 1) {
+      return getSelectedSmallStepRows();
+    }
+    return PoolBuilder.getWrmSmallStepRowsMultiYear(wrmSet, getSelectedBlockPairs());
   }
 
   // ---------------- Dr Frost skill numbers flow ----------------
@@ -637,7 +673,7 @@ const Setup = (() => {
     if (currentMethod === 'pearsonBook') {
       pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
     } else if (currentMethod === 'wrm') {
-      pool = PoolBuilder.fromSubtopicRows(practiceSet, getSelectedSmallStepRows());
+      pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveWrmSmallStepRows());
     } else if (currentMethod === 'dfRefs') {
       pool = PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
     } else {
@@ -682,7 +718,7 @@ const Setup = (() => {
     if (currentMethod === 'pearsonBook') {
       el.generateBtn.disabled = getSelectedChapterPairs().length === 0 || getCurrentPool().length === 0;
     } else if (currentMethod === 'wrm') {
-      el.generateBtn.disabled = getSelectedBlocks().length === 0 || getCurrentPool().length === 0;
+      el.generateBtn.disabled = getSelectedBlockPairs().length === 0 || getCurrentPool().length === 0;
     } else if (currentMethod === 'dfRefs') {
       el.generateBtn.disabled = parseDfRefsInput().length === 0 || getCurrentPool().length === 0;
     } else {
@@ -705,13 +741,13 @@ const Setup = (() => {
         subtopics: subtopicRows.map(row => ({ book: row.book, chapter: row.chapter, subTopic: row.subTopic }))
       };
     } else if (currentMethod === 'wrm') {
-      const smallStepRows = getSelectedSmallStepRows();
+      const smallStepRows = getEffectiveWrmSmallStepRows();
       pool = PoolBuilder.fromSubtopicRows(practiceSet, smallStepRows);
       source = {
         method: 'wrm',
-        year: getSelectedWrmYear(),
-        blocks: getSelectedBlocks(),
-        smallSteps: smallStepRows.map(row => ({ block: row.block, smallStep: row.smallStep }))
+        years: getSelectedYears(),
+        blocks: getSelectedBlockPairs(),
+        smallSteps: smallStepRows.map(row => ({ yearTags: row.yearTags, block: row.block, smallStep: row.smallStep }))
       };
     } else {
       const dfRefs = parseDfRefsInput();

@@ -106,6 +106,30 @@ const PoolBuilder = (() => {
   }
 
   /**
+   * Like getWrmSmallStepRows, but across several Year/Course choices at
+   * once - used when more than one is selected, since block names
+   * aren't unique across years (mirrors getSubtopicRowsMultiBook for
+   * the Pearson-book side). yearBlockPairs is an array of
+   * { year, block } (year is a WRM_YEAR_OPTIONS value).
+   */
+  function getWrmSmallStepRowsMultiYear(wrmRows, yearBlockPairs) {
+    return wrmRows.filter(row =>
+      yearBlockPairs.some(p => p.block === row.block && wrmRowMatchesYearOption(row, p.year))
+    );
+  }
+
+  // A stable identity for a White Rose row, for descriptor save/rebuild
+  // - the row's own Year/Course tags (sorted, so tag order in the
+  // source cell doesn't matter) plus block and small step. Not tied to
+  // which UI year OPTION it was selected under: a dual-tagged row (e.g.
+  // "Year 10, GCSE Foundation, GCSE Higher") is the same single row
+  // whether it was ticked while "Year 10 Foundation" or "Year 10
+  // Higher" was selected, so this avoids needing to remember which.
+  function wrmRowKey(row) {
+    return row.yearTags.slice().sort().join(',') + '\u0000' + row.block + '\u0000' + row.smallStep;
+  }
+
+  /**
    * Rebuilds a pool from a saved descriptor - the same shape SaveQuiz
    * stores alongside a saved starter's box layout. For the Pearson-book
    * method, the descriptor records the exact book+chapter+sub-topic
@@ -121,10 +145,10 @@ const PoolBuilder = (() => {
       return fromSubtopicRows(practiceSet, rows);
     }
     if (descriptor.method === 'wrm') {
-      const wanted = new Set(descriptor.smallSteps.map(s => s.block + '\u0000' + s.smallStep));
-      const rows = wrmRows.filter(row =>
-        wrmRowMatchesYearOption(row, descriptor.year) && wanted.has(row.block + '\u0000' + row.smallStep)
-      );
+      const wanted = new Set((descriptor.smallSteps || []).map(s =>
+        (s.yearTags || []).slice().sort().join(',') + '\u0000' + s.block + '\u0000' + s.smallStep
+      ));
+      const rows = wrmRows.filter(row => wanted.has(wrmRowKey(row)));
       return fromSubtopicRows(practiceSet, rows);
     }
     if (descriptor.method === 'dfRefs') {
@@ -147,8 +171,14 @@ const PoolBuilder = (() => {
       return books.length ? books.join(', ') : 'Pearson book selection';
     }
     if (descriptor.method === 'wrm') {
-      const yearOption = WRM_YEAR_OPTIONS.find(o => o.value === descriptor.year);
-      return `White Rose: ${yearOption ? yearOption.label : (descriptor.year || '?')}`;
+      // Back-compat with an earlier single-year shape (descriptor.year)
+      // from before multi-select existed.
+      const years = descriptor.years || (descriptor.year ? [descriptor.year] : []);
+      const labels = years.map(v => {
+        const opt = WRM_YEAR_OPTIONS.find(o => o.value === v);
+        return opt ? opt.label : v;
+      });
+      return labels.length ? `White Rose: ${labels.join(', ')}` : 'White Rose selection';
     }
     if (descriptor.method === 'dfRefs') {
       return `DF refs ${(descriptor.dfRefs || []).join(', ')}`;
@@ -161,7 +191,7 @@ const PoolBuilder = (() => {
 
   return {
     getSubtopicRows, getSubtopicRowsMultiBook, fromSubtopicRows, fromDfRefs, fromYearTag,
-    WRM_YEAR_OPTIONS, wrmRowMatchesYearOption, getWrmRowsForYear, getWrmSmallStepRows,
+    WRM_YEAR_OPTIONS, wrmRowMatchesYearOption, getWrmRowsForYear, getWrmSmallStepRows, getWrmSmallStepRowsMultiYear,
     fromDescriptor, describeDescriptor
   };
 })();
