@@ -73,6 +73,7 @@ const Setup = (() => {
     el.dfRefsLookupLink = document.getElementById('dfRefsLookupLink');
     el.dfSkillSearchInput = document.getElementById('dfSkillSearchInput');
     el.dfSkillPreview = document.getElementById('dfSkillPreview');
+    el.dfSkillPreviewFooter = document.getElementById('dfSkillPreviewFooter');
     el.dfSkillSelectedField = document.getElementById('dfSkillSelectedField');
     el.dfSkillChips = document.getElementById('dfSkillChips');
 
@@ -581,6 +582,7 @@ const Setup = (() => {
     if (!trimmed) {
       el.dfSkillPreview.hidden = true;
       el.dfSkillPreview.innerHTML = '';
+      el.dfSkillPreviewFooter.hidden = true;
       return;
     }
 
@@ -593,6 +595,7 @@ const Setup = (() => {
     if (!matches.length) {
       el.dfSkillPreview.innerHTML = '<p class="hint">No matching skills/topics found.</p>';
       el.dfSkillPreview.hidden = false;
+      el.dfSkillPreviewFooter.hidden = true;
       return;
     }
 
@@ -620,8 +623,13 @@ const Setup = (() => {
       footer = `${matches.length} skill${matches.length === 1 ? '' : 's'} found — keep typing to narrow it down.`;
     }
 
-    el.dfSkillPreview.innerHTML = rows + `<p class="df-search-preview__more">${footer}</p>`;
+    // Footer sits outside/below the scrollable list (a separate element,
+    // not part of its innerHTML) specifically so it's always visible
+    // without having to scroll down through the results first.
+    el.dfSkillPreview.innerHTML = rows;
     el.dfSkillPreview.hidden = false;
+    el.dfSkillPreviewFooter.textContent = footer;
+    el.dfSkillPreviewFooter.hidden = false;
   }
 
   function onDfSkillPreviewClick(e) {
