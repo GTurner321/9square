@@ -181,7 +181,9 @@ body {
    sits centred in its side of the page. */
 .setup-side > * {
   width: 100%;
-  max-width: 420px;
+  /* Widened from 420px - four method tabs (adding White Rose) need
+     more room per tab than three did. */
+  max-width: 480px;
 }
 
 .setup-divider {
@@ -405,10 +407,14 @@ button:focus-visible {
 
 .method-tab {
   flex: 1;
+  min-width: 0;
   font-family: var(--font-body);
   font-weight: 600;
-  font-size: 0.85rem;
-  padding: 8px 10px;
+  /* Trimmed slightly from 0.85rem/8px 10px - four tabs now share the
+     same row width three used to, so each needs to be a bit more
+     compact to comfortably fit "White Rose" alongside the others. */
+  font-size: 0.78rem;
+  padding: 8px 6px;
   border-radius: 7px;
   border: none;
   background: transparent;

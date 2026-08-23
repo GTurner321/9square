@@ -39,6 +39,7 @@
 
         <div class="method-tabs" id="methodTabs">
           <button type="button" class="method-tab" data-method="pearsonBook">Pearson book</button>
+          <button type="button" class="method-tab" data-method="wrm">White Rose</button>
           <button type="button" class="method-tab" data-method="dfRefs">Dr Frost skills</button>
           <button type="button" class="method-tab" data-method="saved">Saved starter</button>
         </div>
@@ -57,6 +58,25 @@
             <span class="field__label">Sub-topics</span>
             <p class="hint" id="subtopicHelp">Choose at least one chapter first…</p>
             <div class="topic-checklist" id="subtopicChecklist"></div>
+          </div>
+        </div>
+
+        <div class="method-panel" id="panelWrm" hidden>
+          <div class="field">
+            <label for="wrmYearSelect">Year/Course</label>
+            <select id="wrmYearSelect">
+              <option value="" disabled selected>Choose a year/course…</option>
+            </select>
+          </div>
+          <div class="field" id="blocksField" hidden>
+            <span class="field__label">Blocks</span>
+            <p class="hint" id="blockHelp">Choose a year/course first…</p>
+            <div class="topic-checklist" id="blockChecklist"></div>
+          </div>
+          <div class="field" id="smallStepsField" hidden>
+            <span class="field__label">Small steps</span>
+            <p class="hint" id="smallStepHelp">Choose at least one block first…</p>
+            <div class="topic-checklist" id="smallStepChecklist"></div>
           </div>
         </div>
 

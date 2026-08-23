@@ -13,6 +13,7 @@ const DataService = (() => {
 
   let practiceSetPromise = null;
   let pearsonBooksPromise = null;
+  let wrmSetPromise = null;
   let quotesPromise = null;
   let dfTallyPromise = null;
 
@@ -82,6 +83,46 @@ const DataService = (() => {
       subTopic: row['Sub-Topic'],
       refs
     };
+  }
+
+  // The White Rose sheet's "Year/Course" column packs several tags into
+  // one comma-separated cell, e.g. "Year 10, GCSE Foundation, GCSE
+  // Higher" - a single row can belong to more than one of the setup
+  // page's Year/Course choices (that exact row also satisfies "Year 10
+  // Higher"), which a single flat value couldn't represent. Term, Unit,
+  // and "DF Topic Names (review)" are read but intentionally unused.
+  function normaliseWrmRow(row) {
+    const yearTags = String(row['Year/Course'] || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+    const refs = String(row['DF Topic Refs'] || '')
+      .split(';')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(Number)
+      .filter(n => !isNaN(n));
+
+    return {
+      yearTags,
+      block: row['Block'],
+      smallStep: row['Small Step'],
+      refs
+    };
+  }
+
+  /**
+   * Returns every White Rose row (one per Year/Course/block/small step)
+   * with its Year/Course tags split out and its DF ref numbers already
+   * parsed out of the hidden semicolon-joined column.
+   */
+  async function loadWrmSet() {
+    if (!wrmSetPromise) {
+      wrmSetPromise = parseCsv(CONFIG.WRM_SET_CSV).then(rows =>
+        rows.filter(r => r['Year/Course']).map(normaliseWrmRow)
+      );
+    }
+    return wrmSetPromise;
   }
 
   /**
@@ -166,5 +207,5 @@ const DataService = (() => {
     return dfTallyPromise;
   }
 
-  return { loadPracticeSet, loadPearsonBooks, loadQuotes, loadDfTally };
+  return { loadPracticeSet, loadPearsonBooks, loadWrmSet, loadQuotes, loadDfTally };
 })();

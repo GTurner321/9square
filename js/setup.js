@@ -6,15 +6,20 @@
 
 const Setup = (() => {
 
-  let currentMethod = 'pearsonBook'; // 'pearsonBook' | 'dfRefs' | 'saved'
+  let currentMethod = 'pearsonBook'; // 'pearsonBook' | 'wrm' | 'dfRefs' | 'saved'
 
   let practiceSet = [];          // full practice set, loaded once
   let pearsonBooks = [];         // full Pearson books map, loaded once
+  let wrmSet = [];                // full White Rose map, loaded once
   let dfTally = [];              // full df_tally map (DF ref -> Year/course tags), loaded once
   let books = [];                 // unique book names, in sheet order
   let currentChapterFlatItems = []; // {book, chapter} pairs, parallel to chapterChecklist's rendered indices
   let currentSubtopicRows = [];   // Pearson-books rows available for the selected chapters (single-book mode only)
   let currentSubtopicFlatItems = []; // rows parallel to subtopicChecklist's rendered (grouped-by-chapter) indices
+
+  let currentBlockFlatItems = [];  // block names, parallel to blockChecklist's rendered indices
+  let currentSmallStepRows = [];   // White Rose rows available for the selected year + blocks
+  let currentSmallStepFlatItems = []; // rows parallel to smallStepChecklist's rendered (grouped-by-block) indices
 
   let students = [];             // parsed, deduped student names
   let savedQuizzes = [];         // valid (non-expired) saved starters
@@ -27,7 +32,10 @@ const Setup = (() => {
     bindChecklistSelectAll(el.bookChecklist);
     bindChecklistSelectAll(el.chapterChecklist);
     bindChecklistSelectAll(el.subtopicChecklist);
+    bindChecklistSelectAll(el.blockChecklist);
+    bindChecklistSelectAll(el.smallStepChecklist);
     bindEvents();
+    initWrmYearSelect();
     loadData();
     loadSavedQuizzes();
     loadSavedGroups();
@@ -40,6 +48,7 @@ const Setup = (() => {
     el.methodTabs = document.getElementById('methodTabs');
 
     el.panelPearsonBook = document.getElementById('panelPearsonBook');
+    el.panelWrm = document.getElementById('panelWrm');
     el.panelDfRefs = document.getElementById('panelDfRefs');
     el.panelSaved = document.getElementById('panelSaved');
     el.commonQuizFields = document.getElementById('commonQuizFields');
@@ -51,6 +60,14 @@ const Setup = (() => {
     el.subtopicField = document.getElementById('subtopicField');
     el.subtopicChecklist = document.getElementById('subtopicChecklist');
     el.subtopicHelp = document.getElementById('subtopicHelp');
+
+    el.wrmYearSelect = document.getElementById('wrmYearSelect');
+    el.blocksField = document.getElementById('blocksField');
+    el.blockChecklist = document.getElementById('blockChecklist');
+    el.blockHelp = document.getElementById('blockHelp');
+    el.smallStepsField = document.getElementById('smallStepsField');
+    el.smallStepChecklist = document.getElementById('smallStepChecklist');
+    el.smallStepHelp = document.getElementById('smallStepHelp');
 
     el.dfRefsInput = document.getElementById('dfRefsInput');
     el.dfRefsLookupLink = document.getElementById('dfRefsLookupLink');
@@ -84,6 +101,9 @@ const Setup = (() => {
     el.bookChecklist.addEventListener('change', onBookChecklistChange);
     el.chapterChecklist.addEventListener('change', onChapterChecklistChange);
     el.subtopicChecklist.addEventListener('change', onSelectionChanged);
+    el.wrmYearSelect.addEventListener('change', onWrmYearChange);
+    el.blockChecklist.addEventListener('change', onBlockChecklistChange);
+    el.smallStepChecklist.addEventListener('change', onSelectionChanged);
     el.dfRefsInput.addEventListener('input', onSelectionChanged);
     el.savedQuizSelect.addEventListener('change', onSavedQuizChange);
     el.savedGroupSelect.addEventListener('change', onSavedGroupChange);
@@ -121,6 +141,7 @@ const Setup = (() => {
     });
 
     el.panelPearsonBook.hidden = method !== 'pearsonBook';
+    el.panelWrm.hidden = method !== 'wrm';
     el.panelDfRefs.hidden = method !== 'dfRefs';
     el.panelSaved.hidden = method !== 'saved';
     el.commonQuizFields.hidden = method === 'saved';
@@ -166,13 +187,15 @@ const Setup = (() => {
   async function loadData() {
     setStatus('Loading question data…', 'info');
     try {
-      const [practice, pearson, tally] = await Promise.all([
+      const [practice, pearson, wrm, tally] = await Promise.all([
         DataService.loadPracticeSet(),
         DataService.loadPearsonBooks(),
+        DataService.loadWrmSet(),
         DataService.loadDfTally()
       ]);
       practiceSet = practice;
       pearsonBooks = pearson;
+      wrmSet = wrm;
       dfTally = tally;
 
       books = [];
@@ -395,6 +418,91 @@ const Setup = (() => {
     return PoolBuilder.getSubtopicRowsMultiBook(pearsonBooks, getSelectedChapterPairs());
   }
 
+  // ---------------- White Rose flow ----------------
+  // Simpler than the Pearson-book flow above: Year/Course is always a
+  // single choice (a <select>, not a checklist), so there's no
+  // multi-book-style "combined view" branch to handle - blocks and
+  // small steps are always filtered down from exactly one year choice.
+
+  function initWrmYearSelect() {
+    el.wrmYearSelect.innerHTML = '<option value="" disabled selected>Choose a year/course…</option>' +
+      PoolBuilder.WRM_YEAR_OPTIONS.map(o => `<option value="${o.value}">${escapeHtml(o.label)}</option>`).join('');
+  }
+
+  function getSelectedWrmYear() {
+    return el.wrmYearSelect.value || null;
+  }
+
+  function onWrmYearChange() {
+    const year = getSelectedWrmYear();
+
+    const blocks = [];
+    if (year) {
+      PoolBuilder.getWrmRowsForYear(wrmSet, year).forEach(row => {
+        if (!blocks.includes(row.block)) blocks.push(row.block);
+      });
+    }
+
+    currentBlockFlatItems = blocks;
+    renderChecklist(el.blockChecklist, blocks.map(b => ({ label: b })), 'Select all', false);
+
+    // Blocks (and, in turn, small steps) stay hidden entirely until a
+    // year/course has actually been chosen, same pattern as
+    // Chapters/Sub-topics on the Pearson-book side.
+    el.blocksField.hidden = !year;
+
+    if (!year) {
+      el.blockChecklist.innerHTML = '<p class="hint">Choose a year/course above.</p>';
+    }
+    el.blockHelp.hidden = true;
+
+    onBlockChecklistChange();
+  }
+
+  function getSelectedBlocks() {
+    return readCheckedIndices(el.blockChecklist).map(idx => currentBlockFlatItems[idx]);
+  }
+
+  function onBlockChecklistChange() {
+    const year = getSelectedWrmYear();
+    const blocks = getSelectedBlocks();
+
+    if (year && blocks.length > 0) {
+      el.smallStepsField.hidden = false;
+      currentSmallStepRows = PoolBuilder.getWrmSmallStepRows(wrmSet, year, blocks);
+
+      // Grouped by block, in the order blocks were selected - same
+      // reasoning as sub-topics grouped by chapter: a small step name
+      // that happens to repeat across blocks reads unambiguously
+      // without needing a "(block)" suffix.
+      const groups = blocks
+        .map(block => ({
+          header: block,
+          items: currentSmallStepRows
+            .filter(row => row.block === block)
+            .map(row => ({ label: row.smallStep, data: row }))
+        }))
+        .filter(g => g.items.length > 0);
+
+      currentSmallStepFlatItems = renderGroupedChecklist(el.smallStepChecklist, groups, 'Select all', true);
+
+      if (!currentSmallStepRows.length) {
+        el.smallStepChecklist.innerHTML = '<p class="hint">No small steps — choose at least one block above.</p>';
+      }
+      el.smallStepHelp.hidden = true;
+    } else {
+      el.smallStepsField.hidden = true;
+      currentSmallStepRows = [];
+      currentSmallStepFlatItems = [];
+    }
+
+    onSelectionChanged();
+  }
+
+  function getSelectedSmallStepRows() {
+    return readCheckedIndices(el.smallStepChecklist).map(idx => currentSmallStepFlatItems[idx]);
+  }
+
   // ---------------- Dr Frost skill numbers flow ----------------
 
   function parseDfRefsInput() {
@@ -528,6 +636,8 @@ const Setup = (() => {
     let pool;
     if (currentMethod === 'pearsonBook') {
       pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
+    } else if (currentMethod === 'wrm') {
+      pool = PoolBuilder.fromSubtopicRows(practiceSet, getSelectedSmallStepRows());
     } else if (currentMethod === 'dfRefs') {
       pool = PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
     } else {
@@ -571,6 +681,8 @@ const Setup = (() => {
   function updateGenerateAvailability() {
     if (currentMethod === 'pearsonBook') {
       el.generateBtn.disabled = getSelectedChapterPairs().length === 0 || getCurrentPool().length === 0;
+    } else if (currentMethod === 'wrm') {
+      el.generateBtn.disabled = getSelectedBlocks().length === 0 || getCurrentPool().length === 0;
     } else if (currentMethod === 'dfRefs') {
       el.generateBtn.disabled = parseDfRefsInput().length === 0 || getCurrentPool().length === 0;
     } else {
@@ -591,6 +703,15 @@ const Setup = (() => {
         books: getSelectedBooks(),
         chapters: getSelectedChapterPairs(),
         subtopics: subtopicRows.map(row => ({ book: row.book, chapter: row.chapter, subTopic: row.subTopic }))
+      };
+    } else if (currentMethod === 'wrm') {
+      const smallStepRows = getSelectedSmallStepRows();
+      pool = PoolBuilder.fromSubtopicRows(practiceSet, smallStepRows);
+      source = {
+        method: 'wrm',
+        year: getSelectedWrmYear(),
+        blocks: getSelectedBlocks(),
+        smallSteps: smallStepRows.map(row => ({ block: row.block, smallStep: row.smallStep }))
       };
     } else {
       const dfRefs = parseDfRefsInput();
@@ -651,7 +772,7 @@ const Setup = (() => {
   }
 
   function loadSavedStarter(savedQuiz) {
-    const pool = PoolBuilder.fromDescriptor(practiceSet, pearsonBooks, dfTally, savedQuiz.descriptor);
+    const pool = PoolBuilder.fromDescriptor(practiceSet, pearsonBooks, wrmSet, dfTally, savedQuiz.descriptor);
 
     if (pool.length === 0) {
       setStatus("Couldn't rebuild this saved starter — none of its questions are in the practice set anymore.", 'error');

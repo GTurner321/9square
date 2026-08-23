@@ -7,6 +7,7 @@
 const CONFIG = {
   PRACTICE_SET_CSV: 'csv/practice_set.csv',
   PEARSON_BOOKS_CSV: 'csv/pearson_books.csv',
+  WRM_SET_CSV: 'csv/WRM_full_set.csv',
   DF_TALLY_CSV: 'csv/df_tally.csv',
   QUOTES_CSV: 'csv/quotes.csv',
 
