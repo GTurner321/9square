@@ -11,7 +11,7 @@ const Setup = (() => {
   let practiceSet = [];          // full practice set, loaded once
   let pearsonBooks = [];         // full Pearson books map, loaded once
   let wrmSet = [];                // full White Rose map, loaded once
-  let dfTally = [];              // full df_tally map (DF ref -> Year/course tags), loaded once
+  let dfTally = [];              // DF Topic # -> DF Topic Name lookup, loaded once (search index for the Dr Frost skill-name search)
   let books = [];                 // unique book names, in sheet order
   let currentChapterFlatItems = []; // {book, chapter} pairs, parallel to chapterChecklist's rendered indices
   let currentSubtopicRows = [];   // Pearson-books rows available for the selected chapters (single-book mode only)
@@ -71,6 +71,12 @@ const Setup = (() => {
 
     el.dfRefsInput = document.getElementById('dfRefsInput');
     el.dfRefsLookupLink = document.getElementById('dfRefsLookupLink');
+    el.dfSkillSearchInput = document.getElementById('dfSkillSearchInput');
+    el.dfSkillSearchBtn = document.getElementById('dfSkillSearchBtn');
+    el.dfSkillPreview = document.getElementById('dfSkillPreview');
+    el.dfSkillResults = document.getElementById('dfSkillResults');
+    el.dfSkillSelectedField = document.getElementById('dfSkillSelectedField');
+    el.dfSkillChips = document.getElementById('dfSkillChips');
 
 
     el.savedQuizSelect = document.getElementById('savedQuizSelect');
@@ -105,6 +111,10 @@ const Setup = (() => {
     el.blockChecklist.addEventListener('change', onBlockChecklistChange);
     el.smallStepChecklist.addEventListener('change', onSelectionChanged);
     el.dfRefsInput.addEventListener('input', onSelectionChanged);
+    el.dfSkillSearchInput.addEventListener('input', onDfSkillSearchInput);
+    el.dfSkillSearchBtn.addEventListener('click', onDfSkillSearchClick);
+    el.dfSkillResults.addEventListener('click', onDfSkillResultsClick);
+    el.dfSkillChips.addEventListener('click', onDfSkillChipsClick);
     el.savedQuizSelect.addEventListener('change', onSavedQuizChange);
     el.savedGroupSelect.addEventListener('change', onSavedGroupChange);
     el.levelSelect.addEventListener('change', updateLevelCount);
@@ -550,6 +560,120 @@ const Setup = (() => {
       .filter(n => !isNaN(n));
   }
 
+  // ---------------- Dr Frost skill search-by-name ----------------
+  // A friendlier way to build the same comma-separated number list
+  // above, not a parallel system: picking a search result just appends
+  // its number into dfRefsInput (deduped), and removing a "chip" here
+  // removes that number back out. Manual edits to the number box itself
+  // are left alone either way - chips are a picking aid, not a strict
+  // two-way mirror of whatever's currently typed there.
+
+  const DF_PREVIEW_LIMIT = 10;
+  const DF_RESULTS_LIMIT = 20;
+  let selectedDfSkills = []; // [{ topicNum, topicName }], accumulated across searches
+
+  function searchDfTally(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return dfTally.filter(row => (row.topicName || '').toLowerCase().includes(q));
+  }
+
+  function onDfSkillSearchInput() {
+    const query = el.dfSkillSearchInput.value;
+    const hasQuery = query.trim().length > 0;
+    el.dfSkillSearchBtn.hidden = !hasQuery;
+
+    if (!hasQuery) {
+      el.dfSkillPreview.hidden = true;
+      el.dfSkillPreview.innerHTML = '';
+      return;
+    }
+
+    const matches = searchDfTally(query);
+    const shown = matches.slice(0, DF_PREVIEW_LIMIT);
+    el.dfSkillPreview.innerHTML = shown.map(row => `<span class="df-search-preview__item">${escapeHtml(row.topicName)}</span>`).join('')
+      + (matches.length > DF_PREVIEW_LIMIT ? `<span class="df-search-preview__more">+${matches.length - DF_PREVIEW_LIMIT} more — press Search to pick</span>` : '');
+    el.dfSkillPreview.hidden = shown.length === 0;
+  }
+
+  function onDfSkillSearchClick() {
+    const query = el.dfSkillSearchInput.value;
+    const matches = searchDfTally(query);
+    const shown = matches.slice(0, DF_RESULTS_LIMIT);
+
+    if (!shown.length) {
+      el.dfSkillResults.innerHTML = '<p class="hint">No matching skills/topics found.</p>';
+      el.dfSkillResults.hidden = false;
+      return;
+    }
+
+    const rows = shown.map(row => `<button type="button" class="df-search-results__item" data-topic-num="${row.topicNum}">${escapeHtml(row.topicName)}</button>`).join('');
+    const overflow = matches.length > DF_RESULTS_LIMIT
+      ? `<p class="df-search-results__more">Showing ${DF_RESULTS_LIMIT} of ${matches.length} matches — refine your search for more.</p>` : '';
+    el.dfSkillResults.innerHTML = `
+      <div class="df-search-results__header">
+        <span>${matches.length} match${matches.length === 1 ? '' : 'es'}</span>
+        <button type="button" class="df-search-results__close" id="dfSkillResultsClose" title="Close">✕</button>
+      </div>
+      ${rows}
+      ${overflow}
+    `;
+    el.dfSkillResults.hidden = false;
+  }
+
+  function onDfSkillResultsClick(e) {
+    const closeBtn = e.target.closest('#dfSkillResultsClose');
+    if (closeBtn) {
+      el.dfSkillResults.hidden = true;
+      el.dfSkillResults.innerHTML = '';
+      return;
+    }
+
+    const item = e.target.closest('.df-search-results__item');
+    if (!item) return;
+
+    const topicNum = Number(item.dataset.topicNum);
+    const row = dfTally.find(r => r.topicNum === topicNum);
+    if (!row || selectedDfSkills.some(s => s.topicNum === topicNum)) return; // already picked
+
+    selectedDfSkills.push({ topicNum: row.topicNum, topicName: row.topicName });
+    addDfRefNumber(topicNum);
+    renderDfSkillChips();
+  }
+
+  function addDfRefNumber(num) {
+    const current = parseDfRefsInput();
+    if (current.includes(num)) return;
+    const text = el.dfRefsInput.value.trim();
+    el.dfRefsInput.value = text ? `${text}, ${num}` : String(num);
+    onSelectionChanged();
+  }
+
+  function removeDfRefNumber(num) {
+    const current = parseDfRefsInput().filter(n => n !== num);
+    el.dfRefsInput.value = current.join(', ');
+    onSelectionChanged();
+  }
+
+  function renderDfSkillChips() {
+    el.dfSkillSelectedField.hidden = selectedDfSkills.length === 0;
+    el.dfSkillChips.innerHTML = selectedDfSkills.map(s => `
+      <span class="df-skill-chip">
+        ${escapeHtml(s.topicName)}
+        <button type="button" class="df-skill-chip__remove" data-topic-num="${s.topicNum}" title="Remove">✕</button>
+      </span>
+    `).join('');
+  }
+
+  function onDfSkillChipsClick(e) {
+    const btn = e.target.closest('.df-skill-chip__remove');
+    if (!btn) return;
+    const topicNum = Number(btn.dataset.topicNum);
+    selectedDfSkills = selectedDfSkills.filter(s => s.topicNum !== topicNum);
+    removeDfRefNumber(topicNum);
+    renderDfSkillChips();
+  }
+
   // ---------------- Saved starters ----------------
 
   function loadSavedQuizzes() {
@@ -808,7 +932,7 @@ const Setup = (() => {
   }
 
   function loadSavedStarter(savedQuiz) {
-    const pool = PoolBuilder.fromDescriptor(practiceSet, pearsonBooks, wrmSet, dfTally, savedQuiz.descriptor);
+    const pool = PoolBuilder.fromDescriptor(practiceSet, pearsonBooks, wrmSet, savedQuiz.descriptor);
 
     if (pool.length === 0) {
       setStatus("Couldn't rebuild this saved starter — none of its questions are in the practice set anymore.", 'error');

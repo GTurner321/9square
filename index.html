@@ -38,10 +38,10 @@
       <div class="setup-side setup-side--quiz">
 
         <div class="method-tabs" id="methodTabs">
-          <button type="button" class="method-tab" data-method="pearsonBook">Pearson book</button>
+          <button type="button" class="method-tab" data-method="pearsonBook">Pearson</button>
           <button type="button" class="method-tab" data-method="wrm">White Rose</button>
-          <button type="button" class="method-tab" data-method="dfRefs">Dr Frost skills</button>
-          <button type="button" class="method-tab" data-method="saved">Saved starter</button>
+          <button type="button" class="method-tab" data-method="dfRefs">Dr Frost</button>
+          <button type="button" class="method-tab" data-method="saved">Saved</button>
         </div>
 
         <div class="method-panel" id="panelPearsonBook">
@@ -80,9 +80,24 @@
 
         <div class="method-panel" id="panelDfRefs" hidden>
           <div class="field">
+            <label for="dfSkillSearchInput">Search skill/topic name</label>
+            <div class="df-search-row">
+              <input type="text" id="dfSkillSearchInput" placeholder="e.g. vectors, simultaneous equations" autocomplete="off">
+              <button type="button" class="btn btn--ghost df-search-btn" id="dfSkillSearchBtn" hidden>Search</button>
+            </div>
+            <div class="df-search-preview" id="dfSkillPreview" hidden></div>
+            <div class="df-search-results" id="dfSkillResults" hidden></div>
+          </div>
+
+          <div class="field" id="dfSkillSelectedField" hidden>
+            <span class="field__label">Selected skills</span>
+            <div class="df-skill-chips" id="dfSkillChips"></div>
+          </div>
+
+          <div class="field">
             <label for="dfRefsInput">Dr Frost skill numbers</label>
             <input type="text" id="dfRefsInput" placeholder="e.g. 112, 115">
-            <p class="hint">Separate multiple numbers with commas.</p>
+            <p class="hint">Search by name above to add numbers, or type/edit them directly here — separate multiple numbers with commas.</p>
             <a href="#" id="dfRefsLookupLink" class="hint-link" target="_blank" rel="noopener" hidden>Look up Dr Frost skill numbers →</a>
           </div>
         </div>

@@ -42,21 +42,6 @@ const PoolBuilder = (() => {
   }
 
   /**
-   * Filters the practice set to every question whose DF ref is tagged
-   * (in df_tally.csv) with the given Year/course tag, e.g. "GCSE
-   * Higher". Tag matching is case-insensitive since it's typed by hand
-   * into a spreadsheet cell.
-   */
-  function fromYearTag(practiceSet, dfTallyRows, tag) {
-    const wanted = tag.trim().toLowerCase();
-    const refSet = new Set();
-    dfTallyRows.forEach(row => {
-      if (row.tags.some(t => t.toLowerCase() === wanted)) refSet.add(row.topicNum);
-    });
-    return practiceSet.filter(q => refSet.has(q.dfRefNum));
-  }
-
-  /**
    * Filters the practice set directly against a hand-typed list of
    * Dr Frost skill numbers - no Pearson-books lookup involved.
    */
@@ -138,7 +123,7 @@ const PoolBuilder = (() => {
    * The White Rose method mirrors this at year+block+small-step
    * granularity.
    */
-  function fromDescriptor(practiceSet, pearsonRows, wrmRows, dfTallyRows, descriptor) {
+  function fromDescriptor(practiceSet, pearsonRows, wrmRows, descriptor) {
     if (descriptor.method === 'pearsonBook') {
       const wanted = new Set(descriptor.subtopics.map(s => s.book + '\u0000' + s.chapter + '\u0000' + s.subTopic));
       const rows = pearsonRows.filter(row => wanted.has(row.book + '\u0000' + row.chapter + '\u0000' + row.subTopic));
@@ -153,9 +138,6 @@ const PoolBuilder = (() => {
     }
     if (descriptor.method === 'dfRefs') {
       return fromDfRefs(practiceSet, descriptor.dfRefs);
-    }
-    if (descriptor.method === 'yearCourse') {
-      return fromYearTag(practiceSet, dfTallyRows, descriptor.tag);
     }
     return [];
   }
@@ -183,14 +165,11 @@ const PoolBuilder = (() => {
     if (descriptor.method === 'dfRefs') {
       return `DF refs ${(descriptor.dfRefs || []).join(', ')}`;
     }
-    if (descriptor.method === 'yearCourse') {
-      return `Year/course: ${descriptor.tag || '?'}`;
-    }
     return 'Unknown selection';
   }
 
   return {
-    getSubtopicRows, getSubtopicRowsMultiBook, fromSubtopicRows, fromDfRefs, fromYearTag,
+    getSubtopicRows, getSubtopicRowsMultiBook, fromSubtopicRows, fromDfRefs,
     WRM_YEAR_OPTIONS, wrmRowMatchesYearOption, getWrmRowsForYear, getWrmSmallStepRows, getWrmSmallStepRowsMultiYear,
     fromDescriptor, describeDescriptor
   };

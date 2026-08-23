@@ -511,6 +511,140 @@ button:focus-visible {
   padding-top: 0;
 }
 
+/* ---------- Dr Frost skill search-by-name ---------- */
+
+.df-search-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.df-search-row input {
+  flex: 1;
+}
+
+.df-search-btn {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  font-size: 0.88rem;
+}
+
+/* Live preview: plain, non-interactive text while typing - deliberately
+   greyed out and not clickable, distinct from the real results list
+   below (which only appears once Search is pressed). */
+.df-search-preview {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.df-search-preview__item {
+  color: var(--muted);
+  background: #F1EFE8;
+  border-radius: 5px;
+  padding: 3px 8px;
+}
+
+.df-search-preview__more {
+  color: var(--muted);
+  font-style: italic;
+  padding: 3px 2px;
+}
+
+.df-search-results {
+  margin-top: 8px;
+  background: #FAF8F3;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.df-search-results__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+
+.df-search-results__close {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 4px;
+}
+
+.df-search-results__close:hover { color: var(--ink); }
+
+.df-search-results__item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  padding: 7px 8px;
+  font-size: 0.9rem;
+  font-family: var(--font-body);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.df-search-results__item:hover { background: #EEF3F0; }
+
+.df-search-results__more {
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.df-skill-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.df-skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--board);
+  color: var(--chalk-yellow);
+  border-radius: 999px;
+  padding: 5px 8px 5px 12px;
+  font-size: 0.85rem;
+}
+
+.df-skill-chip__remove {
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: inherit;
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 0.7rem;
+  padding: 0;
+}
+
+.df-skill-chip__remove:hover { background: rgba(255, 255, 255, 0.3); }
+
 /* ---------- Checkbox rows ---------- */
 
 .checkbox {

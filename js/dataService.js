@@ -178,22 +178,18 @@ const DataService = (() => {
   }
 
   function normaliseDfTallyRow(row) {
-    const tags = String(row['Tags'] || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean);
     return {
       topicNum: Number(row['DF Topic #']),
-      topicName: row['DF Topic Name'],
-      tally: row['Tally'],
-      tags
+      topicName: row['DF Topic Name']
     };
   }
 
   /**
-   * Returns every df_tally row that has a valid DF Topic number -
-   * used to resolve a Year/course tag (e.g. "GCSE Higher") into the
-   * set of DF ref numbers tagged with it.
+   * Returns every df_tally row that has a valid DF Topic number - used
+   * as the search index for the Dr Frost skill-name search (topic
+   * number -> topic name). Year/course selection is now handled via
+   * the Pearson-books and White Rose files instead, so this file's
+   * former Tally/Tags columns (and the code that read them) are gone.
    */
   async function loadDfTally() {
     if (!dfTallyPromise) {
