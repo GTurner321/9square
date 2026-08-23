@@ -92,17 +92,21 @@ const Grid = (() => {
   }
 
   // Band width peaks at the middle grey tone(s) and narrows sharply
-  // toward both extremes - exponent and peak multiplier pushed further
-  // than a first pass at this (which was structurally the same shape,
-  // just not visually exaggerated enough): non-middle tones drop off
-  // much faster now, and the middle itself reaches noticeably wider.
+  // toward both extremes. Both ends of the random range now scale with
+  // closeness-to-middle, not just the ceiling: the darkest/lightest
+  // tones get pushed narrower still (down toward a ~1 floor, from ~2
+  // before), while the middle tones get a genuinely higher MINIMUM
+  // width too (not just a higher maximum) - previously a middle pick
+  // could occasionally roll as low as ~2 by chance since the floor was
+  // flat across every tone; now the middle's floor sits around ~8,
+  // guaranteeing it reads as a wide band even on an unlucky roll.
   function bandWidthFor(index) {
     const middle = (SHUTTER_PALETTE.length - 1) / 2; // 3.5 for 8 entries
     const maxDistance = middle; // furthest an index can be from the middle
     const distance = Math.abs(index - middle);
     const closeness = 1 - distance / maxDistance; // 1 at the middle, 0 at either extreme
-    const minWidth = 2;
-    const maxWidth = 2 + Math.pow(closeness, 6) * 100;
+    const minWidth = 1 + Math.pow(closeness, 4) * 13;
+    const maxWidth = minWidth + Math.pow(closeness, 6) * 90;
     return minWidth + Math.random() * (maxWidth - minWidth);
   }
 
