@@ -565,7 +565,8 @@ const Setup = (() => {
   // are left alone either way - chips are a picking aid, not a strict
   // two-way mirror of whatever's currently typed there.
 
-  const DF_MATCH_LIMIT = 10;
+  const DF_MATCH_LIMIT_SHORT = 10; // 1-3 letter queries - these tend to be broad, so stay tight
+  const DF_MATCH_LIMIT_LONG = 50;  // 4+ letter queries - specific enough to be generous with
   let selectedDfSkills = []; // [{ topicNum, topicName }], accumulated across searches
 
   function searchDfTally(query) {
@@ -576,7 +577,8 @@ const Setup = (() => {
 
   function onDfSkillSearchInput() {
     const query = el.dfSkillSearchInput.value;
-    if (!query.trim()) {
+    const trimmed = query.trim();
+    if (!trimmed) {
       el.dfSkillPreview.hidden = true;
       el.dfSkillPreview.innerHTML = '';
       return;
@@ -587,20 +589,38 @@ const Setup = (() => {
     // risking a confusing double-add.
     const pickedNums = new Set(selectedDfSkills.map(s => s.topicNum));
     const matches = searchDfTally(query).filter(row => !pickedNums.has(row.topicNum));
-    const shown = matches.slice(0, DF_MATCH_LIMIT);
 
-    if (!shown.length) {
+    if (!matches.length) {
       el.dfSkillPreview.innerHTML = '<p class="hint">No matching skills/topics found.</p>';
       el.dfSkillPreview.hidden = false;
       return;
     }
 
+    const isShortQuery = trimmed.length <= 3;
+    const limit = isShortQuery ? DF_MATCH_LIMIT_SHORT : DF_MATCH_LIMIT_LONG;
+    const shown = matches.slice(0, limit);
+
     const rows = shown.map(row =>
       `<button type="button" class="df-search-preview__item" data-topic-num="${row.topicNum}">${row.topicNum}. ${escapeHtml(row.topicName)}</button>`
     ).join('');
-    const overflow = matches.length > DF_MATCH_LIMIT
-      ? `<p class="df-search-preview__more">+${matches.length - DF_MATCH_LIMIT} more — keep typing to narrow it down.</p>` : '';
-    el.dfSkillPreview.innerHTML = rows + overflow;
+
+    // A short (1-3 letter) query tends to be too broad to say anything
+    // useful about the count, so it just nudges toward typing more.
+    // Once there's an actual count worth showing (4+ letters), a small
+    // enough result list (4 or fewer matches) drops the "keep typing"
+    // suggestion entirely - there's nothing left to narrow.
+    let footer;
+    if (isShortQuery) {
+      footer = 'Keep typing to narrow it down.';
+    } else if (matches.length > limit) {
+      footer = `Showing ${limit} of ${matches.length} — keep typing to narrow it down.`;
+    } else if (matches.length <= 4) {
+      footer = `${matches.length} skill${matches.length === 1 ? '' : 's'} found.`;
+    } else {
+      footer = `${matches.length} skill${matches.length === 1 ? '' : 's'} found — keep typing to narrow it down.`;
+    }
+
+    el.dfSkillPreview.innerHTML = rows + `<p class="df-search-preview__more">${footer}</p>`;
     el.dfSkillPreview.hidden = false;
   }
 
