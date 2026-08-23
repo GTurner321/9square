@@ -447,6 +447,7 @@ const Grid = (() => {
         choiceOrder: null,
         choiceResolved: false,
         questionHidden: false,
+        cleared: false,
         studentName: hasStudents ? StudentPicker.next(studentQueue) : null,
         studentRevealed: false,
         shuttered: true,
@@ -581,6 +582,19 @@ const Grid = (() => {
     wrap.style.background = state.color.bg;
     wrap.style.setProperty('--square-text', state.color.text);
 
+    // A cleared square shows nothing but a small restore button - same
+    // visual treatment as a genuinely blank square (dashed border,
+    // striped background), reinforcing the "board getting emptier"
+    // effect this is for, rather than looking like a different kind of
+    // empty. Everything else about the square (active panel, choices
+    // already answered, zoom level, student reveal state) stays intact
+    // underneath - restoring brings all of it straight back.
+    if (state.cleared) {
+      wrap.classList.add('square--blank', 'square--cleared');
+      wrap.innerHTML = `<button class="square__restore-btn" data-action="restore-square" title="Bring this question back">⊕</button>`;
+      return wrap;
+    }
+
     const q = square.question;
     const hasChoices = q.wrong1 && q.wrong2;
     const hasHint = !!q.hint;
@@ -596,13 +610,20 @@ const Grid = (() => {
     const splitPanels = ['choices', 'answer'];
     const isSplit = splitPanels.includes(state.activePanel) && !state.questionHidden;
     const showHideToggle = splitPanels.includes(state.activePanel);
+    // The clear ("X") button only appears once a square is actually
+    // unshuttered - clearing a still-covered square doesn't mean
+    // anything. When the hide-question eye icon is also showing (only
+    // during the split answer/choices view), it shifts left so the two
+    // don't overlap in the same corner.
+    const showClearBtn = !state.shuttered;
 
     wrap.innerHTML = `
       <div class="square__content ${isSplit ? 'square__content--split' : ''}">
         <div class="square__question" ${state.activePanel && !isSplit ? 'hidden' : ''}>${renderMath(q.question)}</div>
         ${state.activePanel ? renderPanel(q, state) : ''}
       </div>
-      ${showHideToggle ? `<button class="square__hide-question-btn" data-action="toggle-question" title="${state.questionHidden ? 'Show question' : 'Hide question'}">${state.questionHidden ? ICON_EYE_SMALL : ICON_EYE_OFF_SMALL}</button>` : ''}
+      ${showHideToggle ? `<button class="square__hide-question-btn${showClearBtn ? ' square__hide-question-btn--shifted' : ''}" data-action="toggle-question" title="${state.questionHidden ? 'Show question' : 'Hide question'}">${state.questionHidden ? ICON_EYE_SMALL : ICON_EYE_OFF_SMALL}</button>` : ''}
+      ${showClearBtn ? `<button class="square__clear-btn" data-action="clear-square" title="Hide this question">✕</button>` : ''}
       ${!state.shuttered ? `<div class="square__zoom-control" title="Adjust text size">
         <button class="square__zoom-btn" data-action="zoom-in" title="Larger text">+</button>
         <button class="square__zoom-btn" data-action="zoom-out" title="Smaller text">−</button>
@@ -703,12 +724,30 @@ const Grid = (() => {
     if (!square) return;
     const state = squareStates[index];
 
+    const restoreBtn = e.target.closest('[data-action="restore-square"]');
+    if (restoreBtn) {
+      state.cleared = false;
+      rerenderSquare(index);
+      return;
+    }
+
     // A shutter intercepts every click while present - nothing beneath
     // it is reachable until it's removed (one-way, no re-covering).
     const shutter = e.target.closest('.square__shutter');
     if (shutter) {
       state.shuttered = false;
       stopShutterPulse(); // the attention-grabbing pulse has done its job
+      rerenderSquare(index);
+      return;
+    }
+
+    const clearBtn = e.target.closest('[data-action="clear-square"]');
+    if (clearBtn) {
+      // Purely a display toggle - everything underneath (active panel,
+      // choices already answered, zoom level, student reveal) is left
+      // completely untouched, so restoring brings all of it straight
+      // back exactly as it was.
+      state.cleared = true;
       rerenderSquare(index);
       return;
     }
@@ -889,6 +928,7 @@ const Grid = (() => {
       choiceOrder: null,
       choiceResolved: false,
       questionHidden: false,
+      cleared: false, // a refreshed question always comes back visible, even if the old one had been cleared
       studentName: squareStates[index].studentName,
       studentRevealed: squareStates[index].studentRevealed,
       shuttered: false, // a square already interacted with (refreshed) stays unshuttered
