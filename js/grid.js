@@ -1220,12 +1220,18 @@ const Grid = (() => {
     el.browseGrid.innerHTML = pageEntries.map(entry => renderBrowseCard(entry.question, entry.globalIndex)).join('');
 
     // Left/right either side of the count, per request - left steps
-    // back to the previous 18 offered, right moves on to the next.
-    el.browsePager.innerHTML = `
-      <button class="browse-panel__nav" data-page-nav="prev" ${browsePage === 0 ? 'disabled' : ''} title="Previous questions">‹</button>
-      <span class="browse-panel__count">${end - start} of ${browsePool.length} remaining</span>
-      <button class="browse-panel__nav" data-page-nav="next" ${browsePage >= totalPages - 1 ? 'disabled' : ''} title="Next questions">›</button>
-    `;
+    // back to the previous batch offered, right moves on to the next.
+    // Nothing to say when everything fits on one page (30 or fewer) -
+    // a static, never-changing count would just be noise there.
+    if (totalPages <= 1) {
+      el.browsePager.innerHTML = '';
+    } else {
+      el.browsePager.innerHTML = `
+        <button class="browse-panel__nav" data-page-nav="prev" ${browsePage === 0 ? 'disabled' : ''} title="Previous questions">‹</button>
+        <span class="browse-panel__count">${start + 1}-${end} of ${browsePool.length} additional questions</span>
+        <button class="browse-panel__nav" data-page-nav="next" ${browsePage >= totalPages - 1 ? 'disabled' : ''} title="Next questions">›</button>
+      `;
+    }
   }
 
   function onBrowsePanelClick(e) {
