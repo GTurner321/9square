@@ -847,6 +847,7 @@ button:focus-visible {
   padding: 12px;
   background: var(--bg);
   overflow: hidden;
+  position: relative;
 }
 
 .grid--four {
@@ -884,6 +885,44 @@ button:focus-visible {
   z-index: 6;
   pointer-events: none;
   text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+/* Two large "scroll down for more" markers straddling the two seams
+   in the bottom row (between squares 7&8, and 8&9) - sitting on the
+   grid itself means they're visible without scrolling at all, unlike
+   the note text at the top of the panel below. Positioned at the two
+   column-boundary fractions of an equal 3-column grid (see
+   Grid.attachScrollArrows) - close enough for a visual cue that it
+   doesn't need to track the grid's exact computed gap geometry. */
+.browse-scroll-arrow {
+  position: absolute;
+  bottom: 4px;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 46px;
+  border-radius: 14px;
+  background: rgba(190, 30, 30, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  z-index: 7;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+.browse-scroll-arrow__chevron {
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.browse-scroll-arrow__label {
+  font-size: 0.55rem;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
 }
 
 /* Normally #gridView is a fixed 100vh with .grid filling all the

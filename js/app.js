@@ -153,12 +153,16 @@ const App = (() => {
   // Browse/swap is 9-square-mode only, so its button and the 9<->4
   // toggle disable each other while the other is active - simpler and
   // safer than trying to keep both features consistent if the layout
-  // changed underneath one of them.
+  // changed underneath one of them. Cover-shutters and show/hide
+  // students act on every square at once, which would fight with a
+  // frozen/mid-swap grid, so they're disabled for the same window.
   function resetBrowseToggle() {
     el.browseBtn.classList.remove('icon-btn--active');
     el.browseBtn.title = 'Browse & swap questions';
     el.browseBtn.disabled = false;
     el.gridSizeBtn.disabled = false;
+    el.hideAllBtn.disabled = false;
+    el.globalStudentBtn.disabled = false;
   }
 
   function onBrowseClick() {
@@ -166,6 +170,8 @@ const App = (() => {
     el.browseBtn.classList.toggle('icon-btn--active', active);
     el.browseBtn.title = active ? 'Exit browse & swap' : 'Browse & swap questions';
     el.gridSizeBtn.disabled = active;
+    el.hideAllBtn.disabled = active;
+    el.globalStudentBtn.disabled = active;
   }
 
   function onGridSizeClick() {

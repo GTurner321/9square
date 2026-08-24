@@ -27,7 +27,7 @@ const Grid = (() => {
   // resets the countdown, so a fast run of clicks keeps undo available
   // the whole time - it only disappears after this many ms of genuine
   // inactivity on that square.
-  const UNDO_VISIBLE_MS = 5000;
+  const UNDO_VISIBLE_MS = 10000;
   let undoTimeoutIds = []; // per square index, parallel to squares/squareStates
 
   // ---------------- Browse & swap (prep-time question picker) ----------------
@@ -36,7 +36,7 @@ const Grid = (() => {
   // questions at a time (from the same pool the grid was generated
   // from) that can be dropped into any of the 9 positions. Only ever
   // available in 9-square mode - see toggleBrowseMode.
-  const BROWSE_PAGE_SIZE = 18;
+  const BROWSE_PAGE_SIZE = 30;
   let browseModeActive = false;
   let browsePool = [];       // ordered candidate questions for this browse session
   let browsePage = 0;        // 0-indexed page into browsePool
@@ -585,6 +585,7 @@ const Grid = (() => {
       el.container.appendChild(squareEl);
       if (browseModeActive) attachBrowseBadge(squareEl, i);
     });
+    if (browseModeActive) attachScrollArrows();
     requestAnimationFrame(autosizeAll);
   }
 
@@ -1202,9 +1203,21 @@ const Grid = (() => {
 
     const start = browsePage * BROWSE_PAGE_SIZE;
     const end = Math.min(start + BROWSE_PAGE_SIZE, browsePool.length);
-    const pageItems = browsePool.slice(start, end);
 
-    el.browseGrid.innerHTML = pageItems.map((q, i) => renderBrowseCard(q, start + i)).join('');
+    // Which questions land in this batch of (up to) 30 is still
+    // decided by buildBrowsePool's level-matched interleave above -
+    // this just re-sorts that fixed batch for display, L1s first
+    // through L3s last (anything untagged goes after), so the
+    // swap-target index each card carries stays tied to its real
+    // position in browsePool regardless of the on-screen reordering.
+    const pageEntries = browsePool.slice(start, end).map((q, i) => ({ question: q, globalIndex: start + i }));
+    pageEntries.sort((a, b) => {
+      const la = (a.question.level === null || a.question.level === undefined) ? Infinity : a.question.level;
+      const lb = (b.question.level === null || b.question.level === undefined) ? Infinity : b.question.level;
+      return la - lb;
+    });
+
+    el.browseGrid.innerHTML = pageEntries.map(entry => renderBrowseCard(entry.question, entry.globalIndex)).join('');
 
     // Left/right either side of the count, per request - left steps
     // back to the previous 18 offered, right moves on to the next.
@@ -1307,6 +1320,7 @@ const Grid = (() => {
   }
 
   function toggleGlobalStudents() {
+    if (browseModeActive) return;
     if (config.students.length === 0) return;
     globalRevealed = !globalRevealed;
     squareStates.forEach(state => {
@@ -1316,6 +1330,7 @@ const Grid = (() => {
   }
 
   function hideAllShutters() {
+    if (browseModeActive) return;
     squareStates.forEach(state => {
       if (state) state.shuttered = true;
     });
@@ -1323,6 +1338,7 @@ const Grid = (() => {
   }
 
   function revealAllShutters() {
+    if (browseModeActive) return;
     squareStates.forEach(state => {
       if (state) state.shuttered = false;
     });
@@ -1355,6 +1371,24 @@ const Grid = (() => {
     badge.className = 'square__browse-badge';
     badge.textContent = String(index + 1);
     squareEl.appendChild(badge);
+  }
+
+  // Two large "SCROLL" markers straddling the two internal seams of
+  // the bottom row (between squares 7&8, and between 8&9) - the
+  // "choose replacement questions" panel below the grid is off-screen
+  // until scrolled to, so this puts an unmissable cue for it directly
+  // on the part of the page that's already in view, rather than
+  // relying on the note text at the top of that panel alone. Appended
+  // straight onto the grid container (not any one square), positioned
+  // at the two column-boundary fractions of an equal 3-column grid.
+  function attachScrollArrows() {
+    ['33.333%', '66.666%'].forEach(leftPct => {
+      const arrow = document.createElement('div');
+      arrow.className = 'browse-scroll-arrow';
+      arrow.style.left = leftPct;
+      arrow.innerHTML = '<span class="browse-scroll-arrow__chevron">▼</span><span class="browse-scroll-arrow__label">SCROLL</span>';
+      el.container.appendChild(arrow);
+    });
   }
 
   // ---------------- Text autosizing ----------------
