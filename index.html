@@ -17,7 +17,7 @@
     <button type="button" class="icon-btn icon-btn--symbol" id="setupForwardBtn" title="Return to quiz" hidden>&#8594;</button>
     <h1 class="board__title">
       <span class="board__title-squares board__title-squares--left" aria-hidden="true">☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐</span>
-      <span class="board__title-text">9 SQUARE — MATHS STARTERS</span>
+      <span class="board__title-text" id="setupTitleText">9 SQUARE</span>
       <span class="board__title-squares board__title-squares--right" aria-hidden="true">☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐☐</span>
     </h1>
     <button type="button" class="icon-btn" id="coffeeBtn" title="Buy me a coffee">
@@ -38,9 +38,9 @@
       <div class="setup-side setup-side--quiz">
 
         <div class="method-tabs" id="methodTabs">
+          <button type="button" class="method-tab" data-method="dfRefs">Dr Frost</button>
           <button type="button" class="method-tab" data-method="pearsonBook">Pearson</button>
           <button type="button" class="method-tab" data-method="wrm">White Rose</button>
-          <button type="button" class="method-tab" data-method="dfRefs">Dr Frost</button>
           <button type="button" class="method-tab" data-method="saved">Saved</button>
         </div>
 
@@ -94,8 +94,8 @@
           <div class="field">
             <label for="dfRefsInput">Dr Frost skill numbers</label>
             <input type="text" id="dfRefsInput" placeholder="e.g. 112, 115">
-            <p class="hint">Search by name above to add numbers, or type/edit them directly here — separate multiple numbers with commas.</p>
-            <a href="#" id="dfRefsLookupLink" class="hint-link" target="_blank" rel="noopener" hidden>Look up Dr Frost skill numbers →</a>
+            <p class="hint">Search by name above and select to add numbers, or type/edit them directly here — separate multiple numbers with commas.</p>
+            <a href="#" id="dfRefsLookupLink" class="hint-link" target="_blank" rel="noopener" hidden>Look up full set of Dr Frost skill numbers →</a>
           </div>
         </div>
 
@@ -110,7 +110,7 @@
         </div>
 
         <div id="commonQuizFields">
-          <div class="field field--spaced">
+          <div class="field field--spaced" id="questionLevelField" hidden>
             <label for="levelSelect">Question level</label>
             <select id="levelSelect">
               <option value="progressive" selected>Level 1–3 progressive (top row easiest)</option>
@@ -123,7 +123,7 @@
             </select>
           </div>
 
-          <div class="field field--spaced">
+          <div class="field field--spaced" id="calculatorField" hidden>
             <label for="calculatorSelect">Calculator use</label>
             <select id="calculatorSelect">
               <option value="mixed" selected>Mixed</option>

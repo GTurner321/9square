@@ -52,6 +52,8 @@ const Setup = (() => {
     el.panelDfRefs = document.getElementById('panelDfRefs');
     el.panelSaved = document.getElementById('panelSaved');
     el.commonQuizFields = document.getElementById('commonQuizFields');
+    el.questionLevelField = document.getElementById('questionLevelField');
+    el.calculatorField = document.getElementById('calculatorField');
 
     el.bookChecklist = document.getElementById('bookChecklist');
     el.chaptersField = document.getElementById('chaptersField');
@@ -831,6 +833,28 @@ const Setup = (() => {
   function onSelectionChanged() {
     updateGenerateAvailability();
     updateLevelCount();
+    updateCommonFieldsVisibility();
+  }
+
+  // Question level (and, once that's visible, Calculator use) stay
+  // hidden until there's actually a question selection to apply them
+  // to - same "don't show a control until it means something" pattern
+  // as Chapters/Sub-topics and Blocks/Small steps above, just gated on
+  // "has anything been picked yet" rather than "has a parent choice
+  // been made" specifically. Keeps the page more compact by default,
+  // which in turn keeps the Generate button in view without scrolling
+  // on first load.
+  function updateCommonFieldsVisibility() {
+    let hasSelection = false;
+    if (currentMethod === 'pearsonBook') {
+      hasSelection = getSelectedChapterPairs().length > 0;
+    } else if (currentMethod === 'wrm') {
+      hasSelection = getSelectedBlockPairs().length > 0;
+    } else if (currentMethod === 'dfRefs') {
+      hasSelection = parseDfRefsInput().length > 0;
+    }
+    el.questionLevelField.hidden = !hasSelection;
+    el.calculatorField.hidden = !hasSelection;
   }
 
   function updateLevelCount() {

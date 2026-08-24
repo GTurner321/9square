@@ -60,6 +60,54 @@ const App = (() => {
         console.error('Module failed to initialize:', err);
       }
     });
+
+    initSetupTitleAnimation();
+  }
+
+  // Idle-time "9 SQUARE" <-> "MATHS STARTER GRIDS" title swap on the
+  // setup page: first cycle 5s after load, then every 10s of continued
+  // idleness after that, until any interaction happens - at which
+  // point it settles on "9 SQUARE" for good and never cycles again.
+  function initSetupTitleAnimation() {
+    const titleEl = document.getElementById('setupTitleText');
+    if (!titleEl) return; // not on this view
+
+    let interacted = false;
+    const timeoutIds = [];
+    const schedule = (fn, ms) => { timeoutIds.push(setTimeout(fn, ms)); };
+
+    function stopForGood() {
+      if (interacted) return;
+      interacted = true;
+      timeoutIds.forEach(clearTimeout);
+      titleEl.textContent = '9 SQUARE';
+      titleEl.style.opacity = '1';
+    }
+    ['pointerdown', 'keydown'].forEach(evt =>
+      document.addEventListener(evt, stopForGood, { once: true })
+    );
+
+    function runCycle() {
+      if (interacted) return;
+      titleEl.style.opacity = '0'; // fade out "9 SQUARE" (1s, via CSS transition)
+      schedule(() => {
+        if (interacted) return;
+        titleEl.textContent = 'MATHS STARTER GRIDS';
+        titleEl.style.opacity = '1'; // fade in (1s)
+        schedule(() => {
+          if (interacted) return;
+          titleEl.style.opacity = '0'; // stayed 4s, now fade out (1s)
+          schedule(() => {
+            if (interacted) return;
+            titleEl.textContent = '9 SQUARE';
+            titleEl.style.opacity = '1'; // fade back in (1s)
+            schedule(runCycle, 10000); // idle 10s, then repeat if still no interaction
+          }, 1000);
+        }, 4000);
+      }, 1000);
+    }
+
+    schedule(runCycle, 5000); // first cycle starts 5s after load
   }
 
   function onCoffeeClick() {
