@@ -248,6 +248,8 @@ body {
   flex: 1;
   min-width: 140px;
   align-self: stretch;
+  font-size: 0.82rem;
+  padding: 5px 12px;
 }
 
 /* ---------- Setup actions (Generate / Return to quiz) ---------- */
@@ -312,16 +314,17 @@ textarea {
   color: var(--ink);
 }
 
-/* Smaller than the general rule above, specifically for dropdowns. Worth
-   noting: for a native <select>, the *open* option list's row spacing
-   is mostly rendered by the OS/browser itself, not something CSS can
-   fully control (Safari in particular ignores most option styling) -
-   what's reliably controllable is the closed box, which this targets
-   as strongly as makes sense while staying legible. */
+/* Smaller than the general rule above (Question level, Calculator use,
+   saved-starter/group pickers), but not as tight as an earlier pass at
+   this - that turned out to be a size too small. Worth noting: for a
+   native <select>, the *open* option list's row spacing is mostly
+   rendered by the OS/browser itself, not something CSS can fully
+   control (Safari in particular ignores most option styling) - what's
+   reliably controllable is the closed box, which this targets. */
 select {
-  font-size: 0.85rem;
-  padding: 5px 8px;
-  line-height: 1.15;
+  font-size: 0.92rem;
+  padding: 7px 10px;
+  line-height: 1.3;
 }
 
 /* Native <select> chrome varies by OS/browser and can include a
@@ -446,6 +449,17 @@ button:focus-visible {
   color: var(--chalk-yellow);
 }
 
+/* The general .method-tab:hover rule above uses --ink, which is itself
+   a dark navy - fine against a light/transparent tab background, but
+   on the dark-navy active tab it would land nearly on top of the
+   background colour and disappear. --bg (a light cream, already in
+   the palette) reads clearly against dark navy instead. Needs to come
+   after .method-tab:hover in the file - same specificity, so source
+   order decides which wins on an active tab being hovered. */
+.method-tab--active:hover {
+  color: var(--bg);
+}
+
 .method-panel {
   display: flex;
   flex-direction: column;
@@ -480,7 +494,7 @@ button:focus-visible {
 .topic-checklist {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   max-height: 170px;
   overflow-y: auto;
   padding: 12px;
@@ -494,7 +508,7 @@ button:focus-visible {
   align-items: center;
   gap: 8px;
   font-weight: 400;
-  font-size: 0.92rem;
+  font-size: 0.8rem;
   cursor: pointer;
 }
 
@@ -659,7 +673,10 @@ button:focus-visible {
   align-self: flex-start;
 }
 
-.btn--primary:hover { background: #0F1A30; }
+.btn--primary:hover {
+  background: #0F1A30;
+  color: var(--bg);
+}
 
 .btn--generate {
   background: var(--chalk-yellow);
@@ -1534,8 +1551,8 @@ sup {
 }
 
 .contact-modal__avatar {
-  width: 34px;
-  height: 34px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
