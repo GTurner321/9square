@@ -1499,10 +1499,15 @@ sup {
 
 .contact-modal {
   position: relative;
-  background: var(--panel);
+  /* Warm cream, matching the setup page's own background (var(--bg))
+     rather than plain white - the setup page itself has no boxed panel
+     background anymore, so this now reads as the same "material" as
+     the page behind it, just floating above the dimmed overlay. */
+  background: var(--bg);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 44px 36px 36px;
-  max-width: 480px;
+  max-width: 768px; /* ~60% wider than the previous 480px */
   width: 100%;
   max-height: calc(100vh - 48px);
   overflow-y: auto;
