@@ -1,9 +1,9 @@
 // Question Grid — contact popup
 // A lightweight overlay (same pattern as QuotesModal) for sending a
-// message to the creator. Submits via Formspree so the destination
-// email address never needs to appear anywhere in this file or in the
-// page's HTML - only Formspree's dashboard (set up separately, once)
-// knows where it goes.
+// message to the creator. Prefers Formspree when configured (keeps the
+// destination address fully out of this file/the page's HTML), and
+// falls back to a plain mailto: link otherwise, so the button works
+// right away even before Formspree is set up - see config.js.
 
 const ContactModal = (() => {
   let el = {};
@@ -29,10 +29,18 @@ const ContactModal = (() => {
   function open() {
     setStatus('', false);
     el.overlay.hidden = false;
+    // Lock the page behind the popup from scrolling while it's open -
+    // without this, on mobile in particular, the underlying page can
+    // still scroll under a "fixed" overlay, which is what made this
+    // look like something you scroll down to reach rather than a
+    // proper popup, and let the overlay's edges drift to the sides of
+    // the page instead of staying centred with buffer either side.
+    document.body.style.overflow = 'hidden';
   }
 
   function close() {
     el.overlay.hidden = true;
+    document.body.style.overflow = '';
   }
 
   function setStatus(message, isError) {
@@ -41,14 +49,32 @@ const ContactModal = (() => {
     el.status.classList.toggle('status--error', !!isError);
   }
 
+  function sendViaMailto() {
+    const name = (new FormData(el.form).get('name') || '').toString().trim();
+    const message = el.messageField.value.trim();
+    const subject = '9 Square feedback' + (name ? ` from ${name}` : '');
+    const body = message + (name ? `\n\n— ${name}` : '');
+    const mailto = `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+
+    // Can't know whether the person's device actually has an email
+    // client configured to catch this, so the confirmation is phrased
+    // accordingly rather than claiming it's definitely sent.
+    setStatus('Opening your email app to send this…', false);
+    setTimeout(() => {
+      el.form.reset();
+      close();
+    }, 2500);
+  }
+
   async function onSubmit(e) {
     e.preventDefault();
+    if (!el.messageField.value.trim()) return;
 
     if (!CONFIG.FORMSPREE_FORM_ID) {
-      setStatus("Sorry, the message form isn't set up yet.", true);
+      sendViaMailto();
       return;
     }
-    if (!el.messageField.value.trim()) return;
 
     el.sendBtn.disabled = true;
     setStatus('Sending…', false);

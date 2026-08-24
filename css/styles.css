@@ -1526,8 +1526,25 @@ sup {
   gap: 8px;
 }
 
-.contact-modal__title {
+.contact-modal__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 10px;
+}
+
+.contact-modal__avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.contact-modal__title {
+  margin: 0;
   font-size: 1.3rem;
   color: var(--ink);
 }

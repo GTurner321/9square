@@ -30,8 +30,12 @@ const CONFIG = {
   // --- Contact form (Formspree) ---
   // Sign up free at formspree.io, create a form pointed at your email,
   // and paste its endpoint ID here (the part after "https://formspree.io/f/").
-  // Leave blank to disable the contact button.
+  // Leave blank to send via a plain mailto: link instead (works
+  // immediately, no signup needed - the trade-off is that the address
+  // below then does appear in this file's source, whereas Formspree
+  // keeps it fully hidden).
   FORMSPREE_FORM_ID: '',
+  CONTACT_EMAIL: 'gt301277@gmail.com',
 
   // --- Buy me a coffee ---
   // A Ko-fi, Buy Me a Coffee, or Stripe Payment Link URL. Leave blank
