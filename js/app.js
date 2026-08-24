@@ -65,23 +65,41 @@ const App = (() => {
   }
 
   // Idle-time "9 SQUARE" <-> "MATHS STARTER GRIDS" title swap on the
-  // setup page: first cycle 5s after load, then every 10s of continued
+  // setup page: first cycle 5s after load, then every 5s of continued
   // idleness after that, until any interaction happens - at which
   // point it settles on "9 SQUARE" for good and never cycles again.
   function initSetupTitleAnimation() {
     const titleEl = document.getElementById('setupTitleText');
     if (!titleEl) return; // not on this view
+    // Scoped to #setupView specifically - .board__title-squares also
+    // exists in the grid view's header, which uses the exact same
+    // class names.
+    const setupView = document.getElementById('setupView');
+    const squareEls = [
+      setupView.querySelector('.board__title-squares--left'),
+      setupView.querySelector('.board__title-squares--right')
+    ].filter(Boolean);
 
     let interacted = false;
     const timeoutIds = [];
     const schedule = (fn, ms) => { timeoutIds.push(setTimeout(fn, ms)); };
+
+    // Fade-outs are quicker (1s) than fade-ins (2s) - different
+    // transition-duration per direction, so it's set explicitly before
+    // each opacity change rather than relying on one fixed CSS value.
+    function setOpacity(elements, value, durationMs) {
+      elements.forEach(el => {
+        el.style.transitionDuration = (durationMs / 1000) + 's';
+        el.style.opacity = value;
+      });
+    }
 
     function stopForGood() {
       if (interacted) return;
       interacted = true;
       timeoutIds.forEach(clearTimeout);
       titleEl.textContent = '9 SQUARE';
-      titleEl.style.opacity = '1';
+      setOpacity([titleEl, ...squareEls], '1', 0);
     }
     ['pointerdown', 'keydown'].forEach(evt =>
       document.addEventListener(evt, stopForGood, { once: true })
@@ -89,19 +107,25 @@ const App = (() => {
 
     function runCycle() {
       if (interacted) return;
-      titleEl.style.opacity = '0'; // fade out "9 SQUARE" (1s, via CSS transition)
+      // The decorative squares either side of the title are tied to
+      // "9 SQUARE" specifically, not to the title element's every
+      // opacity change - they fade out here, alongside the title text,
+      // and don't fade back in until "9 SQUARE" itself returns at the
+      // end of the cycle (they stay hidden all the way through the
+      // "MATHS STARTER GRIDS" text in between).
+      setOpacity([titleEl, ...squareEls], '0', 1000); // fade out "9 SQUARE" (+ squares)
       schedule(() => {
         if (interacted) return;
         titleEl.textContent = 'MATHS STARTER GRIDS';
-        titleEl.style.opacity = '1'; // fade in (1s)
+        setOpacity([titleEl], '1', 2000); // fade in (squares stay hidden)
         schedule(() => {
           if (interacted) return;
-          titleEl.style.opacity = '0'; // stayed 4s, now fade out (1s)
+          setOpacity([titleEl], '0', 1000); // stayed 4s, now fade out
           schedule(() => {
             if (interacted) return;
             titleEl.textContent = '9 SQUARE';
-            titleEl.style.opacity = '1'; // fade back in (1s)
-            schedule(runCycle, 10000); // idle 10s, then repeat if still no interaction
+            setOpacity([titleEl, ...squareEls], '1', 2000); // fade back in together
+            schedule(runCycle, 5000); // idle 5s, then repeat if still no interaction
           }, 1000);
         }, 4000);
       }, 1000);

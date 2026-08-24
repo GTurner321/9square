@@ -53,6 +53,7 @@ const Setup = (() => {
     el.panelSaved = document.getElementById('panelSaved');
     el.commonQuizFields = document.getElementById('commonQuizFields');
     el.questionLevelField = document.getElementById('questionLevelField');
+    el.poolCountHint = document.getElementById('poolCountHint');
     el.calculatorField = document.getElementById('calculatorField');
 
     el.bookChecklist = document.getElementById('bookChecklist');
@@ -117,7 +118,7 @@ const Setup = (() => {
     el.dfSkillChips.addEventListener('click', onDfSkillChipsClick);
     el.savedQuizSelect.addEventListener('change', onSavedQuizChange);
     el.savedGroupSelect.addEventListener('change', onSavedGroupChange);
-    el.levelSelect.addEventListener('change', updateLevelCount);
+    el.levelSelect.addEventListener('change', updateQuestionCounts);
     el.calculatorSelect.addEventListener('change', onSelectionChanged);
 
     el.addStudentsBtn.addEventListener('click', onAddStudents);
@@ -800,17 +801,21 @@ const Setup = (() => {
    * level filtering. Returns [] for the saved-starter tab (that path
    * doesn't build a pool live - it's reconstructed on load instead).
    */
-  function getCurrentPool() {
-    let pool;
+  function buildRawPool() {
     if (currentMethod === 'pearsonBook') {
-      pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
-    } else if (currentMethod === 'wrm') {
-      pool = PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveWrmSmallStepRows());
-    } else if (currentMethod === 'dfRefs') {
-      pool = PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
-    } else {
-      return [];
+      return PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveSubtopicRows());
     }
+    if (currentMethod === 'wrm') {
+      return PoolBuilder.fromSubtopicRows(practiceSet, getEffectiveWrmSmallStepRows());
+    }
+    if (currentMethod === 'dfRefs') {
+      return PoolBuilder.fromDfRefs(practiceSet, parseDfRefsInput());
+    }
+    return [];
+  }
+
+  function getCurrentPool() {
+    const pool = buildRawPool();
     const calcMode = el.calculatorSelect.value;
     if (calcMode === 'noncalc') return pool.filter(q => q.calculator === 'No');
     if (calcMode === 'calc') return pool.filter(q => q.calculator === 'Yes');
@@ -832,7 +837,7 @@ const Setup = (() => {
 
   function onSelectionChanged() {
     updateGenerateAvailability();
-    updateLevelCount();
+    updateQuestionCounts();
     updateCommonFieldsVisibility();
   }
 
@@ -857,15 +862,30 @@ const Setup = (() => {
     el.calculatorField.hidden = !hasSelection;
   }
 
-  function updateLevelCount() {
+  // Two separate counts: how many questions the topic selection alone
+  // offers (above Question level, unaffected by level/calculator), and
+  // - only when it actually differs from that - how many remain once
+  // level and calculator are also applied. With the defaults (Level
+  // 1-3 progressive, Mixed) nothing gets filtered out, so the second
+  // line has nothing useful to add and stays hidden.
+  function updateQuestionCounts() {
     if (currentMethod === 'saved') {
+      el.poolCountHint.hidden = true;
       el.levelCountHint.hidden = true;
       return;
     }
-    const pool = getCurrentPool();
-    const count = countForLevelMode(pool, el.levelSelect.value);
-    el.levelCountHint.textContent = `${count} question${count === 1 ? '' : 's'} available for this selection.`;
-    el.levelCountHint.hidden = false;
+
+    const rawCount = buildRawPool().length;
+    el.poolCountHint.textContent = `${rawCount} question${rawCount === 1 ? '' : 's'} available for this selection.`;
+    el.poolCountHint.hidden = false;
+
+    const filteredCount = countForLevelMode(getCurrentPool(), el.levelSelect.value);
+    if (filteredCount !== rawCount) {
+      el.levelCountHint.textContent = `${filteredCount} question${filteredCount === 1 ? '' : 's'} remain after level and calculator selections.`;
+      el.levelCountHint.hidden = false;
+    } else {
+      el.levelCountHint.hidden = true;
+    }
   }
 
   function updateGenerateAvailability() {
