@@ -40,7 +40,7 @@ const Setup = (() => {
     loadSavedQuizzes();
     loadSavedGroups();
     setupDfRefsLink();
-    switchMethod('pearsonBook');
+    switchMethod('dfRefs');
     switchStudentMethod('fresh');
   }
 

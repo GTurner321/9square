@@ -107,20 +107,18 @@ const App = (() => {
 
     function runCycle() {
       if (interacted) return;
-      // The decorative squares either side of the title are tied to
-      // "9 SQUARE" specifically, not to the title element's every
-      // opacity change - they fade out here, alongside the title text,
-      // and don't fade back in until "9 SQUARE" itself returns at the
-      // end of the cycle (they stay hidden all the way through the
-      // "MATHS STARTER GRIDS" text in between).
+      // The decorative squares either side of the title fade in and out
+      // together with whatever text is currently showing - both "9
+      // SQUARE" and "MATHS STARTER GRIDS" - not just tied to "9 SQUARE"
+      // specifically.
       setOpacity([titleEl, ...squareEls], '0', 1000); // fade out "9 SQUARE" (+ squares)
       schedule(() => {
         if (interacted) return;
         titleEl.textContent = 'MATHS STARTER GRIDS';
-        setOpacity([titleEl], '1', 2000); // fade in (squares stay hidden)
+        setOpacity([titleEl, ...squareEls], '1', 2000); // fade in (+ squares)
         schedule(() => {
           if (interacted) return;
-          setOpacity([titleEl], '0', 1000); // stayed 4s, now fade out
+          setOpacity([titleEl, ...squareEls], '0', 1000); // stayed 4s, now fade out (+ squares)
           schedule(() => {
             if (interacted) return;
             titleEl.textContent = '9 SQUARE';
