@@ -19,6 +19,7 @@ const App = (() => {
     el.quotesBtn = document.getElementById('quotesBtn');
     el.hideAllBtn = document.getElementById('hideAllBtn');
     el.gridSizeBtn = document.getElementById('gridSizeBtn');
+    el.browseBtn = document.getElementById('browseBtn');
     el.globalStudentBtn = document.getElementById('globalStudentBtn');
     el.saveBtn = document.getElementById('saveBtn');
     el.fullscreenBtn = document.getElementById('fullscreenBtn');
@@ -33,6 +34,7 @@ const App = (() => {
     el.quotesBtn.addEventListener('click', () => QuotesModal.open());
     el.hideAllBtn.addEventListener('click', onHideRevealClick);
     el.gridSizeBtn.addEventListener('click', onGridSizeClick);
+    el.browseBtn.addEventListener('click', onBrowseClick);
     el.globalStudentBtn.addEventListener('click', () => Grid.toggleGlobalStudents());
     el.saveBtn.addEventListener('click', onSaveClick);
     el.fullscreenBtn.addEventListener('click', toggleFullscreen);
@@ -148,10 +150,29 @@ const App = (() => {
     el.gridSizeBtn.title = 'Switch to 4 squares';
   }
 
+  // Browse/swap is 9-square-mode only, so its button and the 9<->4
+  // toggle disable each other while the other is active - simpler and
+  // safer than trying to keep both features consistent if the layout
+  // changed underneath one of them.
+  function resetBrowseToggle() {
+    el.browseBtn.classList.remove('icon-btn--active');
+    el.browseBtn.title = 'Browse & swap questions';
+    el.browseBtn.disabled = false;
+    el.gridSizeBtn.disabled = false;
+  }
+
+  function onBrowseClick() {
+    const active = Grid.toggleBrowseMode();
+    el.browseBtn.classList.toggle('icon-btn--active', active);
+    el.browseBtn.title = active ? 'Exit browse & swap' : 'Browse & swap questions';
+    el.gridSizeBtn.disabled = active;
+  }
+
   function onGridSizeClick() {
     const mode = Grid.toggleGridMode();
     el.gridSizeBtn.innerHTML = mode === '4' ? '4&#x27A4;9' : '9&#x27A4;4';
     el.gridSizeBtn.title = mode === '4' ? 'Switch back to 9 squares' : 'Switch to 4 squares';
+    el.browseBtn.disabled = (mode === '4');
     requestAnimationFrame(() => Grid.autosizeAll());
   }
 
@@ -176,6 +197,7 @@ const App = (() => {
     Timer.reset();
     resetShutterToggle();
     resetGridSizeToggle();
+    resetBrowseToggle();
     Analytics.trackQuizGenerated();
   }
 
@@ -186,6 +208,7 @@ const App = (() => {
     Timer.reset();
     resetShutterToggle();
     resetGridSizeToggle();
+    resetBrowseToggle();
     Analytics.trackQuizGenerated();
   }
 

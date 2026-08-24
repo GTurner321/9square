@@ -22,6 +22,26 @@ const Grid = (() => {
   const HIDDEN_INDICES = [1, 3, 4, 5, 7]; // reading order - the 5 squares dropped in 4-mode
   let refreshQueue = [];     // indices from HIDDEN_INDICES, consumed by refresh while in 4-mode
 
+  // How long the "go back" undo button stays available after a
+  // refresh, in ms. Any further refresh OR undo click on that square
+  // resets the countdown, so a fast run of clicks keeps undo available
+  // the whole time - it only disappears after this many ms of genuine
+  // inactivity on that square.
+  const UNDO_VISIBLE_MS = 5000;
+  let undoTimeoutIds = []; // per square index, parallel to squares/squareStates
+
+  // ---------------- Browse & swap (prep-time question picker) ----------------
+  // Freezes the live 9-square grid with a numbered target overlaid on
+  // each square, and offers up to BROWSE_PAGE_SIZE further candidate
+  // questions at a time (from the same pool the grid was generated
+  // from) that can be dropped into any of the 9 positions. Only ever
+  // available in 9-square mode - see toggleBrowseMode.
+  const BROWSE_PAGE_SIZE = 18;
+  let browseModeActive = false;
+  let browsePool = [];       // ordered candidate questions for this browse session
+  let browsePage = 0;        // 0-indexed page into browsePool
+  let openPickerIndex = null; // browsePool index whose 1-9 target picker is currently open
+
   // Metal-plate palette for the shutter background - lightest to
   // darkest. Darker tones were pulled up several steps lighter than
   // before (previously ran all the way down to a near-charcoal ~127
@@ -396,6 +416,12 @@ const Grid = (() => {
   function init() {
     el.container = document.getElementById('gridContainer');
     el.container.addEventListener('click', onGridClick);
+
+    el.gridView = document.getElementById('gridView');
+    el.browsePanel = document.getElementById('browsePanel');
+    el.browseGrid = document.getElementById('browseGrid');
+    el.browsePager = document.getElementById('browsePager');
+    if (el.browsePanel) el.browsePanel.addEventListener('click', onBrowsePanelClick);
   }
 
 
@@ -440,6 +466,21 @@ const Grid = (() => {
     const hasStudents = config.students.length > 0;
     studentQueue = hasStudents ? StudentPicker.createQueue(config.students) : null;
 
+    // A brand new grid has no refresh history to go back to - clear
+    // any timers left over from the previous grid so a stale one can't
+    // fire against the new squares array.
+    undoTimeoutIds.forEach(id => { if (id) clearTimeout(id); });
+    undoTimeoutIds = [];
+
+    // Likewise, a fresh Generate always starts outside browse mode,
+    // even if the previous grid was left with it open.
+    browseModeActive = false;
+    browsePool = [];
+    browsePage = 0;
+    openPickerIndex = null;
+    if (el.gridView) el.gridView.classList.remove('browsing');
+    if (el.browsePanel) el.browsePanel.hidden = true;
+
     squareStates = squares.map(square => {
       if (!square) return null;
       return {
@@ -461,7 +502,8 @@ const Grid = (() => {
         zoomOffsets: { question: 0, hint: 0, explain: 0 },
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
         shutterKind: null,
-        shutterHtml: null
+        shutterHtml: null,
+        undoStack: [] // questions this square previously showed, most-recent last
       };
     });
 
@@ -537,8 +579,11 @@ const Grid = (() => {
   function render() {
     el.container.innerHTML = '';
     el.container.classList.toggle('grid--four', gridMode === '4');
+    el.container.classList.toggle('grid--browsing', browseModeActive);
     visibleIndices().forEach(i => {
-      el.container.appendChild(renderSquare(squares[i], squareStates[i], i));
+      const squareEl = renderSquare(squares[i], squareStates[i], i);
+      el.container.appendChild(squareEl);
+      if (browseModeActive) attachBrowseBadge(squareEl, i);
     });
     requestAnimationFrame(autosizeAll);
   }
@@ -548,9 +593,13 @@ const Grid = (() => {
    * Squares outside the 4-square view aren't destroyed, just not
    * rendered - so switching back to 9 always restores them exactly as
    * they were, with whatever the visible corners did in the meantime
-   * left untouched. Returns the new mode.
+   * left untouched. Returns the new mode. A no-op while browse/swap is
+   * open (that control is only ever available in 9-square mode, and
+   * the header button that would trigger this is disabled for the
+   * same reason - this is just belt-and-braces).
    */
   function toggleGridMode() {
+    if (browseModeActive) return gridMode;
     gridMode = gridMode === '9' ? '4' : '9';
     if (gridMode === '4') {
       refreshQueue = HIDDEN_INDICES.slice();
@@ -636,6 +685,7 @@ const Grid = (() => {
           ${hasHint ? `<button class="icon" data-action="hint" title="Show hint" aria-pressed="${state.activePanel === 'hint'}">?</button>` : ''}
           ${hasExplain ? `<button class="icon" data-action="explain" title="Show explanation" aria-pressed="${state.activePanel === 'explain'}">i</button>` : ''}
           <button class="icon" data-action="refresh" title="Choose a different question">↻</button>
+          ${state.undoStack && state.undoStack.length > 0 ? `<button class="icon icon--undo" data-action="undo-refresh" title="Go back to the previous question">↩</button>` : ''}
         </div>
         ${hasStudents ? renderStudentChip(state) : ''}
       </div>
@@ -717,6 +767,11 @@ const Grid = (() => {
   // ---------------- Interaction ----------------
 
   function onGridClick(e) {
+    // The grid is a frozen reference view while browse/swap is open -
+    // every normal interaction (shutters, panels, refresh, clear...)
+    // is inert until it's closed again.
+    if (browseModeActive) return;
+
     const squareEl = e.target.closest('.square');
     if (!squareEl) return;
     const index = Number(squareEl.dataset.index);
@@ -785,6 +840,8 @@ const Grid = (() => {
       const action = panelBtn.dataset.action;
       if (action === 'refresh') {
         handleRefreshQuestion(index);
+      } else if (action === 'undo-refresh') {
+        handleUndoRefresh(index);
       } else {
         state.activePanel = (state.activePanel === action) ? null : action;
         rerenderSquare(index);
@@ -887,12 +944,14 @@ const Grid = (() => {
   }
 
   function handleRefreshQuestion(index) {
+    const previous = squares[index]; // what this square showed just before this refresh
+
     if (gridMode === '4') {
       while (refreshQueue.length > 0) {
         const sourceIndex = refreshQueue.shift();
         const sourceSquare = squares[sourceIndex];
         if (sourceSquare) {
-          applyReplacement(index, sourceSquare.question, sourceSquare.levelTarget);
+          applyReplacement(index, sourceSquare.question, sourceSquare.levelTarget, previous);
           return;
         }
       }
@@ -918,10 +977,76 @@ const Grid = (() => {
       return;
     }
 
-    applyReplacement(index, replacement, levelTarget);
+    applyReplacement(index, replacement, levelTarget, previous);
   }
 
-  function applyReplacement(index, question, levelTarget) {
+  /**
+   * Restores whatever this square showed one refresh ago. Only
+   * reachable while the ↩ button is visible (i.e. within
+   * UNDO_VISIBLE_MS of the last refresh/undo on this square - see
+   * scheduleUndoExpiry). Popping further just keeps walking back
+   * through the same square's history, one step per click.
+   */
+  function handleUndoRefresh(index) {
+    const state = squareStates[index];
+    if (!state || !state.undoStack || state.undoStack.length === 0) return;
+
+    const restored = state.undoStack.pop();
+    const remainingUndoStack = state.undoStack;
+
+    squares[index] = restored;
+    squareStates[index] = {
+      activePanel: null,
+      choiceOrder: null,
+      choiceResolved: false,
+      questionHidden: false,
+      cleared: false,
+      studentName: state.studentName,
+      studentRevealed: state.studentRevealed,
+      shuttered: false,
+      color: state.color,
+      shutterKind: state.shutterKind,
+      shutterHtml: state.shutterHtml,
+      zoomOffsets: { question: 0, hint: 0, explain: 0 },
+      undoStack: remainingUndoStack
+    };
+
+    if (remainingUndoStack.length > 0) {
+      scheduleUndoExpiry(index);
+    } else {
+      clearUndoTimer(index);
+    }
+
+    rerenderSquare(index);
+  }
+
+  function clearUndoTimer(index) {
+    if (undoTimeoutIds[index]) {
+      clearTimeout(undoTimeoutIds[index]);
+      undoTimeoutIds[index] = null;
+    }
+  }
+
+  // Restarts (rather than merely starting) the countdown on every call -
+  // called after both a refresh and an undo, so a burst of activity on
+  // one square keeps its ↩ button available the whole time, and it only
+  // vanishes after UNDO_VISIBLE_MS of that square being left alone.
+  function scheduleUndoExpiry(index) {
+    clearUndoTimer(index);
+    undoTimeoutIds[index] = setTimeout(() => {
+      undoTimeoutIds[index] = null;
+      const state = squareStates[index];
+      if (!state || !state.undoStack || state.undoStack.length === 0) return;
+      state.undoStack = [];
+      rerenderSquare(index);
+    }, UNDO_VISIBLE_MS);
+  }
+
+  function applyReplacement(index, question, levelTarget, previousForUndo) {
+    const priorState = squareStates[index]; // null if this square was genuinely blank - only reachable via browse/swap (normal refresh never targets a blank square)
+    const undoStack = (priorState && priorState.undoStack) || [];
+    if (previousForUndo) undoStack.push(previousForUndo);
+
     squares[index] = { question, levelTarget };
     squareStates[index] = {
       activePanel: null,
@@ -929,12 +1054,12 @@ const Grid = (() => {
       choiceResolved: false,
       questionHidden: false,
       cleared: false, // a refreshed question always comes back visible, even if the old one had been cleared
-      studentName: squareStates[index].studentName,
-      studentRevealed: squareStates[index].studentRevealed,
+      studentName: priorState ? priorState.studentName : (config.students.length > 0 ? StudentPicker.next(studentQueue) : null),
+      studentRevealed: priorState ? priorState.studentRevealed : false,
       shuttered: false, // a square already interacted with (refreshed) stays unshuttered
-      color: squareStates[index].color,
-      shutterKind: squareStates[index].shutterKind,
-      shutterHtml: squareStates[index].shutterHtml,
+      color: priorState ? priorState.color : PALETTE[Math.floor(Math.random() * PALETTE.length)],
+      shutterKind: priorState ? priorState.shutterKind : null,
+      shutterHtml: priorState ? priorState.shutterHtml : null,
       // Fresh content gets a fresh zoom level, same reasoning as a
       // whole new grid - this was also missing outright before, which
       // was the actual cause of zoom silently breaking after a
@@ -943,9 +1068,204 @@ const Grid = (() => {
       // once stored - stayed NaN forever after (NaN + anything is
       // still NaN), even though the render code's `|| 0` fallback
       // masked it by always visually defaulting back to 0.
-      zoomOffsets: { question: 0, hint: 0, explain: 0 }
+      zoomOffsets: { question: 0, hint: 0, explain: 0 },
+      undoStack
     };
+
+    if (undoStack.length > 0) scheduleUndoExpiry(index);
+
     rerenderSquare(index);
+  }
+
+  /**
+   * Opens or closes the browse/swap overlay. Only ever available in
+   * 9-square mode (the header button is disabled otherwise - see
+   * app.js). Opening it force-reveals every shutter (this is a
+   * prep-time tool: never expose upcoming questions live off the back
+   * of it) and freezes the grid underneath a numbered target on every
+   * square. Returns the new state (true = now open).
+   */
+  function toggleBrowseMode() {
+    if (gridMode !== '9') return browseModeActive;
+
+    browseModeActive = !browseModeActive;
+
+    if (browseModeActive) {
+      squareStates.forEach(state => { if (state) state.shuttered = false; });
+      stopShutterPulse();
+
+      browsePool = buildBrowsePool();
+      browsePage = 0;
+      openPickerIndex = null;
+
+      // The header stays pinned (position: sticky) while the page
+      // scrolls through extra candidates below the frozen grid - it
+      // needs to know its own rendered height to size the grid to
+      // exactly fill the rest of the viewport underneath it.
+      const header = document.querySelector('#gridView .board--grid');
+      if (header && el.gridView) {
+        el.gridView.style.setProperty('--browse-header-h', header.getBoundingClientRect().height + 'px');
+      }
+      if (el.gridView) el.gridView.classList.add('browsing');
+      if (el.browsePanel) el.browsePanel.hidden = false;
+    } else {
+      browsePool = [];
+      browsePage = 0;
+      openPickerIndex = null;
+      if (el.gridView) el.gridView.classList.remove('browsing');
+      if (el.browsePanel) el.browsePanel.hidden = true;
+    }
+
+    render();
+    if (browseModeActive) renderBrowsePanel();
+    return browseModeActive;
+  }
+
+  /**
+   * Builds the ordered list of candidate questions for a browse
+   * session: whatever's in the current pool (topic-filtered, same as
+   * a normal refresh) minus whatever the 9 squares are currently
+   * showing. When the grid has level targets in play (e.g. Level 1-3
+   * progressive), candidates are interleaved across those levels first
+   * - so early pages offer a spread across levels rather than
+   * happening to be dominated by one - and only once a level's
+   * candidates run out does the list fall back to whatever's left over
+   * from any level. A bank with no level structure (Full random mix)
+   * has nothing to match, so it's just offered in a random order.
+   */
+  function buildBrowsePool() {
+    const shown = new Set(squares.filter(Boolean).map(s => s.question));
+    const remaining = getBasePoolForRefresh().filter(q => !shown.has(q));
+
+    const levelsInPlay = [];
+    squares.forEach(s => {
+      if (s && s.levelTarget !== null && s.levelTarget !== undefined && !levelsInPlay.includes(s.levelTarget)) {
+        levelsInPlay.push(s.levelTarget);
+      }
+    });
+
+    if (levelsInPlay.length === 0) return shuffle(remaining);
+
+    const buckets = new Map(levelsInPlay.map(l => [l, []]));
+    const leftover = [];
+    remaining.forEach(q => {
+      if (buckets.has(q.level)) buckets.get(q.level).push(q);
+      else leftover.push(q);
+    });
+    buckets.forEach((arr, l) => buckets.set(l, shuffle(arr)));
+
+    const ordered = [];
+    let anyLeft = true;
+    while (anyLeft) {
+      anyLeft = false;
+      for (const l of levelsInPlay) {
+        const bucket = buckets.get(l);
+        if (bucket.length) {
+          ordered.push(bucket.shift());
+          anyLeft = true;
+        }
+      }
+    }
+    return ordered.concat(shuffle(leftover));
+  }
+
+  function renderBrowseCard(q, globalIndex) {
+    const isOpen = openPickerIndex === globalIndex;
+    const hasLevel = q.level !== null && q.level !== undefined;
+    const pickerHtml = isOpen ? `
+      <div class="browse-card__picker">
+        ${squares.map((s, i) => `<button class="browse-card__picker-btn" data-swap-target="${i}" title="Replace question ${i + 1}">${i + 1}</button>`).join('')}
+      </div>
+    ` : '';
+
+    return `
+      <div class="browse-card${isOpen ? ' browse-card--open' : ''}" data-browse-index="${globalIndex}">
+        ${hasLevel ? `<span class="browse-card__level">L${escapeHtml(q.level)}</span>` : ''}
+        <div class="browse-card__question">${renderMath(q.question)}</div>
+        ${pickerHtml}
+      </div>
+    `;
+  }
+
+  function renderBrowsePanel() {
+    if (!el.browseGrid || !el.browsePager) return;
+
+    if (browsePool.length === 0) {
+      el.browseGrid.innerHTML = '<p class="browse-panel__empty">No other questions are available for this selection.</p>';
+      el.browsePager.innerHTML = '';
+      return;
+    }
+
+    const totalPages = Math.max(1, Math.ceil(browsePool.length / BROWSE_PAGE_SIZE));
+    if (browsePage >= totalPages) browsePage = totalPages - 1;
+    if (browsePage < 0) browsePage = 0;
+
+    const start = browsePage * BROWSE_PAGE_SIZE;
+    const end = Math.min(start + BROWSE_PAGE_SIZE, browsePool.length);
+    const pageItems = browsePool.slice(start, end);
+
+    el.browseGrid.innerHTML = pageItems.map((q, i) => renderBrowseCard(q, start + i)).join('');
+
+    // Left/right either side of the count, per request - left steps
+    // back to the previous 18 offered, right moves on to the next.
+    el.browsePager.innerHTML = `
+      <button class="browse-panel__nav" data-page-nav="prev" ${browsePage === 0 ? 'disabled' : ''} title="Previous questions">‹</button>
+      <span class="browse-panel__count">${end - start} of ${browsePool.length} remaining</span>
+      <button class="browse-panel__nav" data-page-nav="next" ${browsePage >= totalPages - 1 ? 'disabled' : ''} title="Next questions">›</button>
+    `;
+  }
+
+  function onBrowsePanelClick(e) {
+    const pickerBtn = e.target.closest('[data-swap-target]');
+    if (pickerBtn) {
+      const card = e.target.closest('.browse-card');
+      performBrowseSwap(Number(card.dataset.browseIndex), Number(pickerBtn.dataset.swapTarget));
+      return;
+    }
+
+    const card = e.target.closest('.browse-card');
+    if (card) {
+      const globalIndex = Number(card.dataset.browseIndex);
+      openPickerIndex = (openPickerIndex === globalIndex) ? null : globalIndex;
+      renderBrowsePanel();
+      return;
+    }
+
+    const pagerBtn = e.target.closest('[data-page-nav]');
+    if (pagerBtn) {
+      const totalPages = Math.max(1, Math.ceil(browsePool.length / BROWSE_PAGE_SIZE));
+      if (pagerBtn.dataset.pageNav === 'prev' && browsePage > 0) browsePage--;
+      if (pagerBtn.dataset.pageNav === 'next' && browsePage < totalPages - 1) browsePage++;
+      openPickerIndex = null;
+      renderBrowsePanel();
+    }
+  }
+
+  /**
+   * Drops browsePool[globalIndex] into squares[targetIndex], reusing
+   * applyReplacement so a browse swap gets the same undo-within-5s
+   * safety net as a normal refresh. Whatever targetIndex held before
+   * (including nothing, if it was a genuinely blank square) goes back
+   * into browsePool at the same slot so it stays available to browse
+   * further in this session, rather than reshuffling the whole list.
+   */
+  function performBrowseSwap(globalIndex, targetIndex) {
+    const candidate = browsePool[globalIndex];
+    if (!candidate) return;
+
+    const targetSquare = squares[targetIndex]; // may be null - a blank square is a valid swap target
+    const levelTarget = targetSquare ? targetSquare.levelTarget : null;
+
+    applyReplacement(targetIndex, candidate, levelTarget, targetSquare);
+
+    if (targetSquare) {
+      browsePool[globalIndex] = targetSquare.question;
+    } else {
+      browsePool.splice(globalIndex, 1);
+    }
+
+    openPickerIndex = null;
+    renderBrowsePanel();
   }
 
   function getBasePoolForRefresh() {
@@ -1020,7 +1340,21 @@ const Grid = (() => {
     const oldEl = el.container.querySelector(`.square[data-index="${index}"]`);
     const newEl = renderSquare(squares[index], squareStates[index], index);
     oldEl.replaceWith(newEl);
+    if (browseModeActive) attachBrowseBadge(newEl, index);
     autosizeSquare(newEl, squareStates[index]);
+  }
+
+  // The numbered red target overlaid on each square while browse/swap
+  // is open. Appended after the fact rather than baked into
+  // renderSquare's own markup, since it needs to appear on every
+  // square regardless of which of renderSquare's early-return branches
+  // (blank, cleared, normal) fired - a blank or cleared square is
+  // still a valid swap target.
+  function attachBrowseBadge(squareEl, index) {
+    const badge = document.createElement('div');
+    badge.className = 'square__browse-badge';
+    badge.textContent = String(index + 1);
+    squareEl.appendChild(badge);
   }
 
   // ---------------- Text autosizing ----------------
@@ -1126,5 +1460,5 @@ const Grid = (() => {
     return d.innerHTML;
   }
 
-  return { init, generate, generateFromSaved, getSaveData, toggleGlobalStudents, hideAllShutters, revealAllShutters, autosizeAll, toggleGridMode };
+  return { init, generate, generateFromSaved, getSaveData, toggleGlobalStudents, hideAllShutters, revealAllShutters, autosizeAll, toggleGridMode, toggleBrowseMode };
 })();

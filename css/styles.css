@@ -767,6 +767,19 @@ button:focus-visible {
 
 .icon-btn:hover { background: rgba(255,255,255,0.18); }
 
+.icon-btn--active {
+  background: var(--chalk-yellow);
+  color: var(--board);
+  border-color: var(--chalk-yellow);
+}
+.icon-btn--active:hover { background: var(--chalk-yellow); }
+
+.icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.icon-btn:disabled:hover { background: rgba(255,255,255,0.08); }
+
 .icon-btn--symbol {
   font-size: 1.25rem;
   line-height: 1;
@@ -839,6 +852,170 @@ button:focus-visible {
 .grid--four {
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
+}
+
+/* ---------- Browse & swap (prep-time question picker) ---------- */
+
+/* The 9 squares stay fully visible (real question text, not shutter
+   artwork - see Grid.toggleBrowseMode) but are inert: every normal
+   click target is disabled and slightly dimmed to read as "reference
+   only" while a numbered target sits over each one. */
+.grid--browsing .square {
+  pointer-events: none;
+  filter: brightness(0.94) saturate(0.85);
+}
+
+.square__browse-badge {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: rgba(190, 30, 30, 0.4);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.15rem;
+  z-index: 6;
+  pointer-events: none;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
+}
+
+/* Normally #gridView is a fixed 100vh with .grid filling all the
+   remaining space (see the GRID VIEW rules below) - while browsing,
+   the page needs to grow taller than the viewport so the extra
+   candidates below the grid can be scrolled to, with the header
+   pinned in place throughout (per request) rather than scrolling out
+   of reach. --browse-header-h is set from JS (Grid.toggleBrowseMode)
+   to the header's actual rendered height, since it isn't a fixed
+   value across screen sizes. */
+#gridView.browsing {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+#gridView.browsing .board--grid {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+#gridView.browsing .grid {
+  flex: 0 0 auto;
+  height: calc(100vh - var(--browse-header-h, 64px));
+  min-height: 320px;
+}
+
+.browse-panel {
+  flex: 0 0 auto;
+  padding: 18px 16px 36px;
+  background: var(--bg);
+}
+
+.browse-panel__note {
+  text-align: center;
+  color: var(--muted);
+  opacity: 0.65;
+  font-size: 0.85rem;
+  margin: 0 0 16px;
+}
+
+.browse-panel__empty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.browse-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.browse-card {
+  position: relative;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  background: #fff;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.browse-card:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+
+.browse-card--open { border-color: var(--chalk-yellow-dark); }
+
+.browse-card__level {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  opacity: 0.6;
+}
+
+.browse-card__question {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  padding-right: 26px; /* clears the level badge in the corner */
+}
+
+.browse-card__picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+
+.browse-card__picker-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: rgba(190, 30, 30, 0.12);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.browse-card__picker-btn:hover { background: rgba(190, 30, 30, 0.25); }
+
+.browse-panel__pager {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.browse-panel__nav {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  width: 34px;
+  height: 34px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: var(--ink);
+}
+
+.browse-panel__nav:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.browse-panel__count {
+  font-size: 0.85rem;
+  color: var(--muted);
 }
 
 /* ---------- Square ---------- */
@@ -1305,6 +1482,19 @@ sup {
   background: var(--board);
   color: var(--chalk-yellow);
   opacity: 1;
+}
+
+/* "Go back" button - only present in the DOM for ~5s after a refresh
+   (see grid.js scheduleUndoExpiry), so it pops in to draw the eye
+   rather than silently appearing, and needs no separate "leaving"
+   animation since it's simply removed on re-render once it expires. */
+.square__icons .icon--undo {
+  animation: undo-pop-in 0.18s ease-out;
+}
+
+@keyframes undo-pop-in {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 0.75; transform: scale(1); }
 }
 
 .square__studentchip {
