@@ -15,6 +15,7 @@ const ContactModal = (() => {
     el.sendBtn = document.getElementById('contactSendBtn');
     el.status = document.getElementById('contactStatus');
     el.messageField = document.getElementById('contactMessage');
+    el.sentNote = document.getElementById('contactSentNote');
     el.dfLink = document.getElementById('contactDfLink');
     el.emailLink = document.getElementById('contactEmailLink');
 
@@ -47,6 +48,7 @@ const ContactModal = (() => {
   }
 
   function close() {
+    clearSentTimeouts(); // a still-running fade/whoosh sequence shouldn't fire against whatever's in the box next time it's opened
     el.overlay.hidden = true;
     document.body.style.overflow = '';
   }
@@ -66,6 +68,43 @@ const ContactModal = (() => {
     el.sendBtn.classList.add('btn--clicked');
   }
 
+  // Timed sequence once a send has genuinely gone (or as gone as it
+  // can be, for the mailto fallback - see sendViaMailto): the typed
+  // message sits untouched for a beat, then fades out over half a
+  // second (the whoosh plays right as that fade starts, so the sound
+  // is tied to the message actually leaving rather than to the
+  // original click), then after another beat a plain grey "(message
+  // has been sent)" note fades in in its place. Every step's timer id
+  // is tracked so a mid-sequence close() (very likely - most people
+  // will just close the popup once they see it start) can cancel
+  // whatever hasn't fired yet, rather than it going off later against
+  // a fresh, unrelated draft.
+  let sentTimeoutIds = [];
+  function clearSentTimeouts() {
+    sentTimeoutIds.forEach(id => window.clearTimeout(id));
+    sentTimeoutIds = [];
+  }
+
+  function fadeOutMessageThenConfirm() {
+    sentTimeoutIds.push(window.setTimeout(() => {
+      Sound.playSendWhoosh();
+      el.messageField.classList.add('contact-message--fading');
+
+      sentTimeoutIds.push(window.setTimeout(() => {
+        el.messageField.value = '';
+        el.messageField.classList.remove('contact-message--fading');
+
+        sentTimeoutIds.push(window.setTimeout(() => {
+          el.sentNote.hidden = false;
+          // Set hidden first, then add the visible class on the next
+          // frame - flipping both at once would leave nothing for the
+          // opacity transition to animate from.
+          requestAnimationFrame(() => el.sentNote.classList.add('contact-sent-note--visible'));
+        }, 1000));
+      }, 500));
+    }, 1000));
+  }
+
   // Once a message is genuinely away (or as away as it can be, for the
   // mailto fallback - see sendViaMailto), the button itself becomes
   // the confirmation: it turns into a plain "Close" and stops being a
@@ -78,15 +117,20 @@ const ContactModal = (() => {
     el.sendBtn.type = 'button';
     el.sendBtn.addEventListener('click', close);
     setStatus('', false);
+    fadeOutMessageThenConfirm();
   }
 
   function resetFormUI() {
+    clearSentTimeouts();
     el.sendBtn.removeEventListener('click', close);
     el.sendBtn.disabled = false;
     el.sendBtn.textContent = 'Send message';
     el.sendBtn.type = 'submit';
     el.sendBtn.classList.remove('btn--clicked');
     el.messageField.disabled = false;
+    el.messageField.classList.remove('contact-message--fading');
+    el.sentNote.hidden = true;
+    el.sentNote.classList.remove('contact-sent-note--visible');
     setStatus('', false);
   }
 
@@ -94,11 +138,12 @@ const ContactModal = (() => {
     const message = el.messageField.value.trim();
     const mailto = `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent('9 Square feedback')}&body=${encodeURIComponent(message)}`;
     window.location.href = mailto;
-    el.form.reset();
     // Can't know whether the person's device actually has an email
     // client configured to catch this, so there's no confident status
     // text here - the "Close" button just means the app has done all
-    // it can on this path, not a guarantee of delivery.
+    // it can on this path, not a guarantee of delivery. The message
+    // stays visible until the usual fade sequence clears it, same as
+    // the Formspree path.
     enterSentState();
   }
 
@@ -107,7 +152,6 @@ const ContactModal = (() => {
     if (!el.messageField.value.trim()) return;
 
     flashSendClick();
-    Sound.playSendWhoosh();
 
     if (!CONFIG.FORMSPREE_FORM_ID) {
       sendViaMailto();
@@ -125,7 +169,6 @@ const ContactModal = (() => {
       });
 
       if (res.ok) {
-        el.form.reset();
         enterSentState();
       } else {
         setStatus("Couldn't send that — please try again shortly.", true);
