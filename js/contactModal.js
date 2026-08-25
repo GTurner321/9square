@@ -15,6 +15,14 @@ const ContactModal = (() => {
     el.sendBtn = document.getElementById('contactSendBtn');
     el.status = document.getElementById('contactStatus');
     el.messageField = document.getElementById('contactMessage');
+    el.dfLink = document.getElementById('contactDfLink');
+    el.emailLink = document.getElementById('contactEmailLink');
+
+    // Same source of truth as the "look up skill numbers" link on the
+    // Dr Frost setup tab (see setup.js) - if that sheet URL is ever
+    // changed in config.js, this one stays in sync automatically.
+    if (el.dfLink && CONFIG.DF_REFS_SHEET_URL) el.dfLink.href = CONFIG.DF_REFS_SHEET_URL;
+    if (el.emailLink) el.emailLink.href = `mailto:${CONFIG.CONTACT_EMAIL}`;
 
     el.closeBtn.addEventListener('click', close);
     el.overlay.addEventListener('click', e => {

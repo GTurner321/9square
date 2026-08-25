@@ -34,7 +34,7 @@ const CONFIG = {
   // immediately, no signup needed - the trade-off is that the address
   // below then does appear in this file's source, whereas Formspree
   // keeps it fully hidden).
-  FORMSPREE_FORM_ID: '',
+  FORMSPREE_FORM_ID: 'mrpzwazg',
   CONTACT_EMAIL: 'gt301277@gmail.com',
 
   // --- Buy me a coffee ---
