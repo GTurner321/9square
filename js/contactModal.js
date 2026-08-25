@@ -35,7 +35,7 @@ const ContactModal = (() => {
   }
 
   function open() {
-    setStatus('', false);
+    resetFormUI();
     el.overlay.hidden = false;
     // Lock the page behind the popup from scrolling while it's open -
     // without this, on mobile in particular, the underlying page can
@@ -57,24 +57,57 @@ const ContactModal = (() => {
     el.status.classList.toggle('status--error', !!isError);
   }
 
+  // A quick, visible press animation on the Send button, restarted on
+  // every click (removing then re-adding the class forces the CSS
+  // animation to replay even on a rapid double-click).
+  function flashSendClick() {
+    el.sendBtn.classList.remove('btn--clicked');
+    void el.sendBtn.offsetWidth; // force reflow so the removal above actually takes effect first
+    el.sendBtn.classList.add('btn--clicked');
+  }
+
+  // Once a message is genuinely away (or as away as it can be, for the
+  // mailto fallback - see sendViaMailto), the button itself becomes
+  // the confirmation: it turns into a plain "Close" and stops being a
+  // submit button, so there's nothing left to auto-hide or time out -
+  // the popup only ever closes on a deliberate action from here.
+  function enterSentState() {
+    el.messageField.disabled = true;
+    el.sendBtn.disabled = false;
+    el.sendBtn.textContent = 'Close';
+    el.sendBtn.type = 'button';
+    el.sendBtn.addEventListener('click', close);
+    setStatus('', false);
+  }
+
+  function resetFormUI() {
+    el.sendBtn.removeEventListener('click', close);
+    el.sendBtn.disabled = false;
+    el.sendBtn.textContent = 'Send message';
+    el.sendBtn.type = 'submit';
+    el.sendBtn.classList.remove('btn--clicked');
+    el.messageField.disabled = false;
+    setStatus('', false);
+  }
+
   function sendViaMailto() {
     const message = el.messageField.value.trim();
     const mailto = `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent('9 Square feedback')}&body=${encodeURIComponent(message)}`;
     window.location.href = mailto;
-
+    el.form.reset();
     // Can't know whether the person's device actually has an email
-    // client configured to catch this, so the confirmation is phrased
-    // accordingly rather than claiming it's definitely sent.
-    setStatus('Opening your email app to send this…', false);
-    setTimeout(() => {
-      el.form.reset();
-      close();
-    }, 2500);
+    // client configured to catch this, so there's no confident status
+    // text here - the "Close" button just means the app has done all
+    // it can on this path, not a guarantee of delivery.
+    enterSentState();
   }
 
   async function onSubmit(e) {
     e.preventDefault();
     if (!el.messageField.value.trim()) return;
+
+    flashSendClick();
+    Sound.playSendWhoosh();
 
     if (!CONFIG.FORMSPREE_FORM_ID) {
       sendViaMailto();
@@ -93,8 +126,7 @@ const ContactModal = (() => {
 
       if (res.ok) {
         el.form.reset();
-        setStatus('Thanks — your message has been sent!', false);
-        setTimeout(close, 2000);
+        enterSentState();
       } else {
         setStatus("Couldn't send that — please try again shortly.", true);
       }

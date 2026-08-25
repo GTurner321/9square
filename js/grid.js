@@ -789,10 +789,15 @@ const Grid = (() => {
 
     // A shutter intercepts every click while present - nothing beneath
     // it is reachable until it's removed (one-way, no re-covering).
+    // The reveal sound plays only here, one square at a time by hand -
+    // hideAllShutters/revealAllShutters (the header button, and
+    // browse/swap forcing every shutter open) deliberately stay silent
+    // so a whole-grid action doesn't fire nine tocks at once.
     const shutter = e.target.closest('.square__shutter');
     if (shutter) {
       state.shuttered = false;
       stopShutterPulse(); // the attention-grabbing pulse has done its job
+      Sound.playShutterReveal();
       rerenderSquare(index);
       return;
     }

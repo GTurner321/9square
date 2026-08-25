@@ -41,5 +41,52 @@ const Sound = (() => {
     tone(660, 0.25, 'sine', 0.18, 0.5);
   }
 
-  return { playCorrect, playIncorrect, playTimerEnd };
+  // A short, dry mechanical "tock" - two quick clicks (down-stroke,
+  // release) rather than a musical tone, for a single shutter being
+  // revealed by hand. Deliberately percussive/short so it doesn't
+  // overlap or blur into itself if several squares are clicked open in
+  // quick succession.
+  function playShutterReveal() {
+    tone(140, 0.05, 'square', 0.12, 0);
+    tone(90, 0.04, 'square', 0.09, 0.045);
+  }
+
+  // A short filtered-noise "whoosh" - a burst of white noise swept
+  // through a downward-moving bandpass filter, the standard Web Audio
+  // trick for an airy send/swipe sound without needing an audio file.
+  // Used as the audible feedback when the contact form's Send button
+  // is pressed.
+  function playSendWhoosh() {
+    const c = getCtx();
+    const duration = 0.35;
+    const startAt = c.currentTime;
+
+    const bufferSize = Math.max(1, Math.round(c.sampleRate * duration));
+    const buffer = c.createBuffer(1, bufferSize, c.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+
+    const noise = c.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = c.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.Q.value = 1;
+    filter.frequency.setValueAtTime(2400, startAt);
+    filter.frequency.exponentialRampToValueAtTime(280, startAt + duration);
+
+    const gain = c.createGain();
+    gain.gain.setValueAtTime(0.0001, startAt);
+    gain.gain.exponentialRampToValueAtTime(0.3, startAt + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+    noise.connect(filter);
+    filter.connect(gain);
+    gain.connect(c.destination);
+
+    noise.start(startAt);
+    noise.stop(startAt + duration);
+  }
+
+  return { playCorrect, playIncorrect, playTimerEnd, playSendWhoosh, playShutterReveal };
 })();

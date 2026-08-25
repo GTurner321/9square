@@ -659,6 +659,19 @@ button:focus-visible {
 
 .btn:active { transform: translateY(1px); }
 
+/* A deliberate, visible "click" pulse - used on Send so the press
+   registers clearly even once the mouse/finger has already lifted,
+   rather than relying only on the fleeting native :active state. */
+.btn--clicked {
+  animation: btn-click-pulse 0.28s ease-out;
+}
+
+@keyframes btn-click-pulse {
+  0% { transform: scale(1); }
+  35% { transform: scale(0.94); }
+  100% { transform: scale(1); }
+}
+
 .btn--ghost {
   background: transparent;
   border: 1px solid var(--board);
