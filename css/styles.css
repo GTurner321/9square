@@ -1829,27 +1829,22 @@ sup {
   justify-content: center;
 }
 
-/* Textarea fades out (rather than clearing instantly) once a send has
-   gone through - see contactModal.js's fadeOutMessageThenConfirm. */
+/* The transition lives on the base rule (not only inside the
+   .contact-message--fading rule) so it animates in BOTH directions:
+   adding the class fades the typed message out, and later removing it
+   fades the grey "(message has been sent)" text - swapped in while
+   still invisible, see contactModal.js - back in, in the same box. */
+#contactMessage {
+  transition: opacity 0.5s ease;
+}
+
 #contactMessage.contact-message--fading {
-  transition: opacity 0.5s ease;
   opacity: 0;
 }
 
-/* Grey confirmation note that fades in once the message has finished
-   fading out - kept as its own element rather than reusing
-   #contactStatus, since that one still needs its instant show/hide for
-   the "Sending…"/error states. */
-.contact-sent-note {
-  margin: 10px 0 0;
-  text-align: center;
-  font-size: 0.85rem;
+#contactMessage.contact-message--sent {
   color: var(--muted);
-  opacity: 0;
-  transition: opacity 0.5s ease;
 }
-
-.contact-sent-note--visible { opacity: 1; }
 
 .field__sublabel {
   margin: -4px 0 6px;

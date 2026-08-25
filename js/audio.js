@@ -71,36 +71,44 @@ const Sound = (() => {
 
   // Fetched and decoded once, as soon as this script runs - well
   // before the setup page is even filled in, let alone a grid
-  // generated - so the promise is already settled by the time the
-  // first shutter is ever clicked. A failed fetch/decode (e.g. the
-  // file genuinely missing from assets/) just means playShutterReveal
-  // silently does nothing rather than throwing.
-  let shutterClickBufferPromise = null;
+  // generated - so by the time a real shutter gets clicked, the fetch
+  // has almost certainly finished (index.html also carries a <link
+  // rel="preload"> for this file, so the browser starts downloading it
+  // even earlier, in parallel with everything else on the page, before
+  // this script has even run). shutterClickBuffer is set the moment
+  // decoding finishes, checked synchronously below - not awaited via
+  // the promise - so playShutterReveal never has to wait on a fetch
+  // that's already long done by click time.
+  let shutterClickBuffer = null;
   function loadShutterClickBuffer() {
-    if (!shutterClickBufferPromise) {
-      shutterClickBufferPromise = fetch('assets/shutter_click.mp3')
-        .then(res => res.arrayBuffer())
-        .then(data => getCtx().decodeAudioData(data))
-        .catch(err => {
-          shutterClickBufferPromise = null; // let a later click retry, in case it was a transient network hiccup
-          throw err;
-        });
-    }
-    return shutterClickBufferPromise;
+    return fetch('assets/shutter_click.mp3')
+      .then(res => res.arrayBuffer())
+      .then(data => getCtx().decodeAudioData(data))
+      .then(buffer => { shutterClickBuffer = buffer; });
   }
   if (typeof fetch === 'function') loadShutterClickBuffer().catch(() => {});
 
   // A single square's shutter being revealed by hand - see
   // grid.js, which calls this only from the one-by-one click path
-  // (never from "reveal all" or browse/swap's automatic reveal).
+  // (never from "reveal all" or browse/swap's automatic reveal). Plays
+  // the real recorded clip once it's loaded (the overwhelmingly common
+  // case - by the time anyone reaches a shutter they've been through
+  // the whole setup page first, giving the fetch above plenty of
+  // time); on the off chance a shutter is clicked before that fetch
+  // has finished, falls back to an instant synthesized click rather
+  // than making the person wait on a network request, so there's
+  // never a perceptible delay either way.
   function playShutterReveal() {
-    loadShutterClickBuffer().then(buffer => {
-      const c = getCtx();
+    const c = getCtx();
+    if (shutterClickBuffer) {
       const source = c.createBufferSource();
-      source.buffer = buffer;
+      source.buffer = shutterClickBuffer;
       source.connect(c.destination);
       source.start();
-    }).catch(() => { /* best-effort only - a missing/broken asset shouldn't break the click itself */ });
+    } else {
+      tone(140, 0.05, 'square', 0.12, 0);
+      tone(90, 0.04, 'square', 0.09, 0.045);
+    }
   }
 
   // A short filtered-noise "whoosh" - a burst of white noise swept

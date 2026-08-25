@@ -15,7 +15,6 @@ const ContactModal = (() => {
     el.sendBtn = document.getElementById('contactSendBtn');
     el.status = document.getElementById('contactStatus');
     el.messageField = document.getElementById('contactMessage');
-    el.sentNote = document.getElementById('contactSentNote');
     el.dfLink = document.getElementById('contactDfLink');
     el.emailLink = document.getElementById('contactEmailLink');
 
@@ -69,16 +68,17 @@ const ContactModal = (() => {
   }
 
   // Timed sequence once a send has genuinely gone (or as gone as it
-  // can be, for the mailto fallback - see sendViaMailto): the typed
-  // message sits untouched for a beat, then fades out over half a
-  // second (the whoosh plays right as that fade starts, so the sound
-  // is tied to the message actually leaving rather than to the
-  // original click), then after another beat a plain grey "(message
-  // has been sent)" note fades in in its place. Every step's timer id
-  // is tracked so a mid-sequence close() (very likely - most people
-  // will just close the popup once they see it start) can cancel
-  // whatever hasn't fired yet, rather than it going off later against
-  // a fresh, unrelated draft.
+  // can be, for the mailto fallback - see sendViaMailto). The
+  // confirmation text lives right inside the message box itself
+  // (rather than a separate element elsewhere in the popup), reusing
+  // the exact same opacity transition for both halves: adding
+  // .contact-message--fading fades the typed text OUT, and later
+  // removing that same class fades the grey confirmation text back IN
+  // in its place - one mechanism, run in each direction. Every step's
+  // timer id is tracked so a mid-sequence close() (very likely - most
+  // people will just close the popup once they see it start) can
+  // cancel whatever hasn't fired yet, rather than it going off later
+  // against a fresh, unrelated draft.
   let sentTimeoutIds = [];
   function clearSentTimeouts() {
     sentTimeoutIds.forEach(id => window.clearTimeout(id));
@@ -86,30 +86,30 @@ const ContactModal = (() => {
   }
 
   function fadeOutMessageThenConfirm() {
+    Sound.playSendWhoosh();
+    el.messageField.classList.add('contact-message--fading'); // opacity -> 0 over 0.5s
+
     sentTimeoutIds.push(window.setTimeout(() => {
-      Sound.playSendWhoosh();
-      el.messageField.classList.add('contact-message--fading');
+      // Fully invisible at this point - safe to swap what's underneath
+      // without the change itself being seen.
+      el.messageField.value = '(message has been sent)';
+      el.messageField.classList.add('contact-message--sent');
 
       sentTimeoutIds.push(window.setTimeout(() => {
-        el.messageField.value = '';
+        // Removing the class reverses the same transition - opacity
+        // climbs back to 1, fading the grey confirmation text in.
         el.messageField.classList.remove('contact-message--fading');
-
-        sentTimeoutIds.push(window.setTimeout(() => {
-          el.sentNote.hidden = false;
-          // Set hidden first, then add the visible class on the next
-          // frame - flipping both at once would leave nothing for the
-          // opacity transition to animate from.
-          requestAnimationFrame(() => el.sentNote.classList.add('contact-sent-note--visible'));
-        }, 1000));
-      }, 500));
-    }, 1000));
+      }, 1000));
+    }, 500));
   }
 
   // Once a message is genuinely away (or as away as it can be, for the
   // mailto fallback - see sendViaMailto), the button itself becomes
-  // the confirmation: it turns into a plain "Close" and stops being a
-  // submit button, so there's nothing left to auto-hide or time out -
-  // the popup only ever closes on a deliberate action from here.
+  // the confirmation too: it turns into a plain "Close" and stops
+  // being a submit button, so there's nothing left to auto-hide or
+  // time out - the popup only ever closes on a deliberate action, and
+  // the "(message has been sent)" text in the box stays right there
+  // until it does.
   function enterSentState() {
     el.messageField.disabled = true;
     el.sendBtn.disabled = false;
@@ -128,9 +128,14 @@ const ContactModal = (() => {
     el.sendBtn.type = 'submit';
     el.sendBtn.classList.remove('btn--clicked');
     el.messageField.disabled = false;
-    el.messageField.classList.remove('contact-message--fading');
-    el.sentNote.hidden = true;
-    el.sentNote.classList.remove('contact-sent-note--visible');
+    // Only clear the box if it's currently showing our own
+    // confirmation text - an unsent draft left over from simply
+    // closing the popup without sending is deliberately preserved
+    // across a reopen, same as before this feature existed.
+    if (el.messageField.classList.contains('contact-message--sent')) {
+      el.messageField.value = '';
+    }
+    el.messageField.classList.remove('contact-message--fading', 'contact-message--sent');
     setStatus('', false);
   }
 
