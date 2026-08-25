@@ -1022,17 +1022,24 @@ button:focus-visible {
   opacity: 0.6;
 }
 
+/* Same absolute-fill technique as .square__question--diagram (see
+   styles for that) - a bare width:auto/height:auto SVG has no useful
+   intrinsic size to be "auto" from, so it was rendering at the
+   browser's small UA default instead of filling the space. Fixed
+   height here (unlike the main grid square) since a browse card's
+   height is content-sized, not box-constrained - the SVG needs a
+   definite height to fill. */
 .browse-card__diagram {
-  display: flex;
-  justify-content: center;
+  position: relative;
+  height: 90px;
   margin-bottom: 6px;
 }
 
 .browse-card__diagram svg {
-  max-width: 100%;
-  max-height: 90px;
-  width: auto;
-  height: auto;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .browse-card__question {
@@ -1257,19 +1264,38 @@ button:focus-visible {
 /* Diagram questions: no buffer anywhere - the outer content padding
    is zeroed and the question slot (now holding just the SVG, no text)
    fills the box completely, so the diagram gets the maximum possible
-   size. Setting width/height:100% directly on the <svg> (rather than
-   max-width/height, which sizes it to its own intrinsic box) is what
-   makes it actually stretch to fill - the viewBox's own aspect ratio
-   is preserved within that via SVG's default preserveAspectRatio. */
+   size within it.
+
+   The SVG is positioned absolutely against this relative parent
+   (inset: 0 + width/height: 100%) rather than just given
+   width/height: 100% in normal flow. Percentage heights on a normal-
+   flow child only resolve if every ancestor in the chain has a
+   *definite* height, and flex layouts don't reliably guarantee that
+   down through nested boxes - when it fails, height:100% silently
+   falls back to auto, and the browser then derives the SVG's height
+   from its width using the viewBox's own aspect ratio. That's exactly
+   "fits to width, ignores height" - the diagram would size correctly
+   only when its aspect ratio happened to match the box's, and
+   overflow/overlap the card below it otherwise. An absolutely
+   positioned box's percentage sizing resolves against its containing
+   block's padding box unconditionally, so this is reliable regardless
+   of how the box's height was itself arrived at. preserveAspectRatio
+   defaults to "xMidYMid meet" on every <svg> the diagram builders
+   emit, so it still letterboxes within that box rather than
+   stretching/distorting - width is the limiting dimension sometimes,
+   height (usually) the rest of the time, exactly as intended. */
 .square__content--diagram {
   padding: 0;
 }
 
 .square__question--diagram {
   padding: 0;
+  position: relative;
 }
 
 .square__question--diagram svg {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   display: block;

@@ -146,6 +146,10 @@ const TrigPythagDiag = (() => {
     return [x0, y - fontSize * 0.68, x1, y + fontSize * 0.38];
   }
   
+  function escapeXml(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function buildRightTriangleSVG(params, opts = {}) {
     const {
       width = 400,
@@ -261,7 +265,39 @@ const TrigPythagDiag = (() => {
     sideLabel('opposite', geo.shown.opposite);
     sideLabel('adjacent', geo.shown.adjacent);
     sideLabel('hypotenuse', geo.shown.hypotenuse);
-  
+
+    // Optional short caption (e.g. "Find x, 1 dp.") nestled into
+    // whichever top corner is clear of the triangle, rather than
+    // taking up separate space outside the diagram entirely.
+    //
+    // The triangle's peak (its topmost vertex - always either the far
+    // left or far right of the three, never the middle) is the one
+    // point the hypotenuse leans toward at the top, so the top corner
+    // on the OPPOSITE side from the peak is reliably clear of every
+    // line in the drawing - that's where the caption goes. Which side
+    // that is flips along with flipH, so this adapts automatically
+    // rather than needing a hardcoded corner.
+    //
+    // Added after every other extend() call, so bx0/by0/bx1/by1
+    // already reflect the fully-built triangle - the caption is
+    // placed just inside that existing box (normally already empty
+    // there, by construction) and only grows the box further if it
+    // genuinely needs more room than that (e.g. an unusually long
+    // caption, or a very shallow/steep triangle).
+    if (opts.promptText) {
+      const promptFontSize = opts.promptFontSize || 17;
+      const peak = polyPts.reduce((a, b) => (b[1] < a[1] ? b : a));
+      const triXs = polyPts.map(p => p[0]);
+      const midX = (Math.min(...triXs) + Math.max(...triXs)) / 2;
+      const putTopLeft = peak[0] > midX; // peak on the right -> caption goes top-left, and vice versa
+      const cornerPad = 6;
+      const anchor = putTopLeft ? 'start' : 'end';
+      const x = putTopLeft ? bx0 + cornerPad : bx1 - cornerPad;
+      const y = by0 + promptFontSize * 0.85;
+      body += `<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" text-anchor="${anchor}" dominant-baseline="middle" font-size="${promptFontSize}" font-family="sans-serif" font-weight="700">${escapeXml(opts.promptText)}</text>`;
+      extend(...textBoundsBox(x, y, anchor, opts.promptText, promptFontSize));
+    }
+
     const vbX = bx0 - pad, vbY = by0 - pad, vbW = (bx1 - bx0) + 2 * pad, vbH = (by1 - by0) + 2 * pad;
     return `<svg viewBox="${vbX.toFixed(1)} ${vbY.toFixed(1)} ${vbW.toFixed(1)} ${vbH.toFixed(1)}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
   }

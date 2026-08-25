@@ -672,23 +672,25 @@ const Grid = (() => {
     // don't overlap in the same corner.
     const showClearBtn = !state.shuttered;
 
-    // Diagram only shows in the plain question view - once any panel
-    // is open (answer/choices/hint/explain), the box is already tight
-    // enough without also carving out room for the SVG. Built fresh
-    // each render (cheap - just string concatenation), but flipH/flipV
-    // are pinned per-square (see diagramFlip above) so the diagram
-    // itself doesn't change on every re-render of the same question.
-    const diagramSvg = (q.diagramType && !state.activePanel)
+    const hasDiagram = !!q.diagramType;
+
+    // For a diagram question, the diagram *is* the question - the
+    // prompt text is dropped entirely (not just made small) so the
+    // whole box is available to it, in both the plain view and the
+    // split choices/answer view. flipH/flipV are pinned per-square
+    // (see diagramFlip above) so the diagram doesn't change on every
+    // re-render of the same question (zoom clicks, panel toggles).
+    const diagramSvg = hasDiagram
       ? DiagramRenderer.renderDiagram(q.diagramType, q.diagramParams, {
           flipH: state.diagramFlip.h,
-          flipV: state.diagramFlip.v
+          flipV: state.diagramFlip.v,
+          promptText: q.question
         })
       : '';
 
     wrap.innerHTML = `
-      <div class="square__content ${isSplit ? 'square__content--split' : ''}">
-        ${diagramSvg ? `<div class="square__diagram">${diagramSvg}</div>` : ''}
-        <div class="square__question" ${state.activePanel && !isSplit ? 'hidden' : ''}>${renderMath(q.question)}</div>
+      <div class="square__content ${isSplit ? 'square__content--split' : ''} ${hasDiagram ? 'square__content--diagram' : ''}">
+        <div class="square__question ${hasDiagram ? 'square__question--diagram' : ''}" ${state.activePanel && !isSplit ? 'hidden' : ''}>${hasDiagram ? diagramSvg : renderMath(q.question)}</div>
         ${state.activePanel ? renderPanel(q, state) : ''}
       </div>
       ${showHideToggle ? `<button class="square__hide-question-btn${showClearBtn ? ' square__hide-question-btn--shifted' : ''}" data-action="toggle-question" title="${state.questionHidden ? 'Show question' : 'Hide question'}">${state.questionHidden ? ICON_EYE_SMALL : ICON_EYE_OFF_SMALL}</button>` : ''}
@@ -1199,6 +1201,7 @@ const Grid = (() => {
   function renderBrowseCard(q, globalIndex) {
     const isOpen = openPickerIndex === globalIndex;
     const hasLevel = q.level !== null && q.level !== undefined;
+    const hasDiagram = !!q.diagramType;
     const pickerHtml = isOpen ? `
       <div class="browse-card__picker">
         ${squares.map((s, i) => `<button class="browse-card__picker-btn" data-swap-target="${i}" title="Replace question ${i + 1}">${i + 1}</button>`).join('')}
@@ -1207,14 +1210,18 @@ const Grid = (() => {
 
     // No pinned flip here (unlike the live grid) - a browse card only
     // ever renders once per page view, so there's no re-render to be
-    // stable against.
-    const diagramSvg = q.diagramType ? DiagramRenderer.renderDiagram(q.diagramType, q.diagramParams) : '';
+    // stable against. Caption is embedded in the SVG itself (see
+    // trigPythagDiag.js), so the separate question text below is
+    // skipped entirely for a diagram card - showing both would just
+    // repeat the same short prompt twice.
+    const diagramSvg = hasDiagram
+      ? DiagramRenderer.renderDiagram(q.diagramType, q.diagramParams, { promptText: q.question })
+      : '';
 
     return `
       <div class="browse-card${isOpen ? ' browse-card--open' : ''}" data-browse-index="${globalIndex}">
         ${hasLevel ? `<span class="browse-card__level">L${escapeHtml(q.level)}</span>` : ''}
-        ${diagramSvg ? `<div class="browse-card__diagram">${diagramSvg}</div>` : ''}
-        <div class="browse-card__question">${renderMath(q.question)}</div>
+        ${diagramSvg ? `<div class="browse-card__diagram">${diagramSvg}</div>` : `<div class="browse-card__question">${renderMath(q.question)}</div>`}
         ${pickerHtml}
       </div>
     `;
@@ -1480,7 +1487,11 @@ const Grid = (() => {
 
     const questionOffset = zoomOffsets[questionZoomKey(state)] || 0;
     const question = squareEl.querySelector('.square__question:not([hidden])');
-    if (question) autosizeElement(question, 1.3 + questionOffset, 0.7 + questionOffset, true);
+    // A diagram square has no text in .square__question to size - the
+    // SVG fills it via CSS (width/height: 100%) regardless of zoom.
+    if (question && !question.classList.contains('square__question--diagram')) {
+      autosizeElement(question, 1.3 + questionOffset, 0.7 + questionOffset, true);
+    }
 
     const shutterText = squareEl.querySelector('.square__shutter-text');
     if (shutterText) autosizeElement(shutterText, 2.2, 1.2);
