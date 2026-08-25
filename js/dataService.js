@@ -53,6 +53,13 @@ const DataService = (() => {
       : null;
     const qNum = Number(row['Q#']);
 
+    // Diagram Type is optional - most rows have no diagram, so an
+    // empty/missing cell normalises to null (checked with a simple
+    // truthiness test at render time) rather than ''. Diagram Params
+    // is left as the raw semicolon-delimited string; DiagramRenderer
+    // parses it itself, same as it always has.
+    const diagramTypeRaw = (row['Diagram Type'] || '').toString().trim();
+
     return {
       orderAdded: qNum, // global, sequential - doubles as the "recent" ranking key
       q: qNum,
@@ -65,7 +72,9 @@ const DataService = (() => {
       wrong1: pickNotatedOrRaw(row, 'Wrong1 (notated)', 'Wrong1 (raw)'),
       wrong2: pickNotatedOrRaw(row, 'Wrong 2 (notated)', 'Wrong 2 (raw)'),
       workedAnswer: pickNotatedOrRaw(row, 'Worked Answer (notated)', 'Worked Answer (raw)'),
-      hint: stripLeadingApostrophe(row['Hint'])
+      hint: stripLeadingApostrophe(row['Hint']),
+      diagramType: diagramTypeRaw || null,
+      diagramParams: row['Diagram Params'] || ''
     };
   }
 

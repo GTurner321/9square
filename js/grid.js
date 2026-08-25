@@ -503,6 +503,11 @@ const Grid = (() => {
         color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
         shutterKind: null,
         shutterHtml: null,
+        // Decided once per displayed question (not per render) so the
+        // diagram doesn't visibly jump every time the square
+        // re-renders (zoom, panel toggle, autosize) - only a genuinely
+        // new question (refresh/undo/new grid) gets a fresh flip.
+        diagramFlip: { h: Math.random() < 0.5, v: Math.random() < 0.5 },
         undoStack: [] // questions this square previously showed, most-recent last
       };
     });
@@ -667,8 +672,22 @@ const Grid = (() => {
     // don't overlap in the same corner.
     const showClearBtn = !state.shuttered;
 
+    // Diagram only shows in the plain question view - once any panel
+    // is open (answer/choices/hint/explain), the box is already tight
+    // enough without also carving out room for the SVG. Built fresh
+    // each render (cheap - just string concatenation), but flipH/flipV
+    // are pinned per-square (see diagramFlip above) so the diagram
+    // itself doesn't change on every re-render of the same question.
+    const diagramSvg = (q.diagramType && !state.activePanel)
+      ? DiagramRenderer.renderDiagram(q.diagramType, q.diagramParams, {
+          flipH: state.diagramFlip.h,
+          flipV: state.diagramFlip.v
+        })
+      : '';
+
     wrap.innerHTML = `
       <div class="square__content ${isSplit ? 'square__content--split' : ''}">
+        ${diagramSvg ? `<div class="square__diagram">${diagramSvg}</div>` : ''}
         <div class="square__question" ${state.activePanel && !isSplit ? 'hidden' : ''}>${renderMath(q.question)}</div>
         ${state.activePanel ? renderPanel(q, state) : ''}
       </div>
@@ -1014,6 +1033,7 @@ const Grid = (() => {
       shutterKind: state.shutterKind,
       shutterHtml: state.shutterHtml,
       zoomOffsets: { question: 0, hint: 0, explain: 0 },
+      diagramFlip: { h: Math.random() < 0.5, v: Math.random() < 0.5 },
       undoStack: remainingUndoStack
     };
 
@@ -1066,6 +1086,7 @@ const Grid = (() => {
       color: priorState ? priorState.color : PALETTE[Math.floor(Math.random() * PALETTE.length)],
       shutterKind: priorState ? priorState.shutterKind : null,
       shutterHtml: priorState ? priorState.shutterHtml : null,
+      diagramFlip: { h: Math.random() < 0.5, v: Math.random() < 0.5 },
       // Fresh content gets a fresh zoom level, same reasoning as a
       // whole new grid - this was also missing outright before, which
       // was the actual cause of zoom silently breaking after a
@@ -1184,9 +1205,15 @@ const Grid = (() => {
       </div>
     ` : '';
 
+    // No pinned flip here (unlike the live grid) - a browse card only
+    // ever renders once per page view, so there's no re-render to be
+    // stable against.
+    const diagramSvg = q.diagramType ? DiagramRenderer.renderDiagram(q.diagramType, q.diagramParams) : '';
+
     return `
       <div class="browse-card${isOpen ? ' browse-card--open' : ''}" data-browse-index="${globalIndex}">
         ${hasLevel ? `<span class="browse-card__level">L${escapeHtml(q.level)}</span>` : ''}
+        ${diagramSvg ? `<div class="browse-card__diagram">${diagramSvg}</div>` : ''}
         <div class="browse-card__question">${renderMath(q.question)}</div>
         ${pickerHtml}
       </div>
