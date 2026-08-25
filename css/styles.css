@@ -654,7 +654,14 @@ button:focus-visible {
   border-radius: 8px;
   border: none;
   cursor: pointer;
-  transition: transform 0.08s ease, box-shadow 0.08s ease;
+  transition: transform 0.08s ease, box-shadow 0.08s ease, color 0.25s ease;
+}
+
+/* A smoother Send -> Close swap: fade the label out, swap the text
+   while invisible, fade it back in - rather than an instant jump. See
+   contactModal.js's morphSendButtonToClose. */
+#contactSendBtn.btn--label-fading {
+  color: transparent;
 }
 
 .btn:active { transform: translateY(1px); }
@@ -1831,19 +1838,27 @@ sup {
 
 /* The transition lives on the base rule (not only inside the
    .contact-message--fading rule) so it animates in BOTH directions:
-   adding the class fades the typed message out, and later removing it
-   fades the grey "(message has been sent)" text - swapped in while
-   still invisible, see contactModal.js - back in, in the same box. */
+   adding the class fades the typed message's TEXT out, and later
+   removing it fades the grey "(message has been sent)" text - swapped
+   in while still invisible, see contactModal.js - back in, in the
+   same box. Only color is transitioned (not opacity), so the box
+   itself - border, background - stays fully visible throughout; it's
+   just the letters that go transparent and back.
+   Rule order matters here: .contact-message--sent is declared first,
+   .contact-message--fading second, so when both classes are present
+   at once (mid-sequence) the fading rule's transparent wins over the
+   sent rule's grey - only once --fading is removed does the grey
+   actually show. */
 #contactMessage {
-  transition: opacity 0.5s ease;
-}
-
-#contactMessage.contact-message--fading {
-  opacity: 0;
+  transition: color 0.5s ease;
 }
 
 #contactMessage.contact-message--sent {
   color: var(--muted);
+}
+
+#contactMessage.contact-message--fading {
+  color: transparent;
 }
 
 .field__sublabel {

@@ -71,12 +71,13 @@ const ContactModal = (() => {
   // can be, for the mailto fallback - see sendViaMailto). The
   // confirmation text lives right inside the message box itself
   // (rather than a separate element elsewhere in the popup), reusing
-  // the exact same opacity transition for both halves: adding
-  // .contact-message--fading fades the typed text OUT, and later
-  // removing that same class fades the grey confirmation text back IN
-  // in its place - one mechanism, run in each direction. Every step's
-  // timer id is tracked so a mid-sequence close() (very likely - most
-  // people will just close the popup once they see it start) can
+  // the exact same color transition for both halves: adding
+  // .contact-message--fading fades the typed text OUT (to transparent -
+  // the box itself, border and background, stays put throughout), and
+  // later removing that same class fades the grey confirmation text
+  // back IN in its place - one mechanism, run in each direction. Every
+  // step's timer id is tracked so a mid-sequence close() (very likely -
+  // most people will just close the popup once they see it start) can
   // cancel whatever hasn't fired yet, rather than it going off later
   // against a fresh, unrelated draft.
   let sentTimeoutIds = [];
@@ -87,24 +88,38 @@ const ContactModal = (() => {
 
   function fadeOutMessageThenConfirm() {
     Sound.playSendWhoosh();
-    el.messageField.classList.add('contact-message--fading'); // opacity -> 0 over 0.5s
+    el.messageField.classList.add('contact-message--fading'); // text -> transparent over 0.5s, box stays visible
 
     sentTimeoutIds.push(window.setTimeout(() => {
-      // Fully invisible at this point - safe to swap what's underneath
-      // without the change itself being seen.
+      // Text is fully transparent at this point - safe to swap what's
+      // underneath without the change itself being seen.
       el.messageField.value = '(message has been sent)';
       el.messageField.classList.add('contact-message--sent');
 
       sentTimeoutIds.push(window.setTimeout(() => {
-        // Removing the class reverses the same transition - opacity
-        // climbs back to 1, fading the grey confirmation text in.
+        // Removing the class reverses the same transition - color
+        // climbs back from transparent to grey, fading the
+        // confirmation text in.
         el.messageField.classList.remove('contact-message--fading');
       }, 1000));
     }, 500));
   }
 
+  // Send -> Close as a fade-swap-fade rather than an instant text
+  // jump: the label fades to transparent, swaps underneath while
+  // invisible, then fades back in reading "Close".
+  function morphSendButtonToClose() {
+    el.sendBtn.classList.add('btn--label-fading');
+    sentTimeoutIds.push(window.setTimeout(() => {
+      el.sendBtn.textContent = 'Close';
+      el.sendBtn.type = 'button';
+      el.sendBtn.addEventListener('click', close);
+      el.sendBtn.classList.remove('btn--label-fading');
+    }, 250));
+  }
+
   // Once a message is genuinely away (or as away as it can be, for the
-  // mailto fallback - see sendViaMailto), the button itself becomes
+  // mailto fallback - see sendViaMailto), the button smoothly becomes
   // the confirmation too: it turns into a plain "Close" and stops
   // being a submit button, so there's nothing left to auto-hide or
   // time out - the popup only ever closes on a deliberate action, and
@@ -113,10 +128,8 @@ const ContactModal = (() => {
   function enterSentState() {
     el.messageField.disabled = true;
     el.sendBtn.disabled = false;
-    el.sendBtn.textContent = 'Close';
-    el.sendBtn.type = 'button';
-    el.sendBtn.addEventListener('click', close);
     setStatus('', false);
+    morphSendButtonToClose();
     fadeOutMessageThenConfirm();
   }
 
@@ -126,7 +139,7 @@ const ContactModal = (() => {
     el.sendBtn.disabled = false;
     el.sendBtn.textContent = 'Send message';
     el.sendBtn.type = 'submit';
-    el.sendBtn.classList.remove('btn--clicked');
+    el.sendBtn.classList.remove('btn--clicked', 'btn--label-fading');
     el.messageField.disabled = false;
     // Only clear the box if it's currently showing our own
     // confirmation text - an unsent draft left over from simply
