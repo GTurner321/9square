@@ -789,7 +789,10 @@ const Setup = (() => {
     }
     students = parsed;
     const slotName = SaveClass.save(students);
-    el.studentsSummary.textContent = `${students.length} student${students.length === 1 ? '' : 's'} saved as ${slotName} in local storage.`;
+    // Local storage survives normal AND hard refreshes - it's only
+    // lost if this browser's site data/cookies get cleared, or this
+    // was a private/incognito window that's since closed.
+    el.studentsSummary.textContent = `${students.length} student${students.length === 1 ? '' : 's'} saved as ${slotName} on this browser. Survives refreshes, but is lost if site data is cleared.`;
     flashSummarySaved();
     loadSavedGroups();
   }

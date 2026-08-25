@@ -249,7 +249,7 @@ body {
   min-width: 140px;
   align-self: stretch;
   font-size: 0.82rem;
-  padding: 5px 12px;
+  padding: 9px 12px;
 }
 
 /* ---------- Setup actions (Generate / Return to quiz) ---------- */
@@ -434,7 +434,7 @@ button:focus-visible {
      Start fresh/Saved group tabs too, which have far more room to
      spare (only two of them). */
   font-size: 0.82rem;
-  padding: 5px 6px;
+  padding: 9px 6px;
   border-radius: 7px;
   border: none;
   background: transparent;
@@ -1803,9 +1803,9 @@ sup {
 }
 
 .contact-modal__actions {
-  margin-top: 6px;
+  margin-top: 18px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .field__sublabel {

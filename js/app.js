@@ -35,7 +35,7 @@ const App = (() => {
     el.hideAllBtn.addEventListener('click', onHideRevealClick);
     el.gridSizeBtn.addEventListener('click', onGridSizeClick);
     el.browseBtn.addEventListener('click', onBrowseClick);
-    el.globalStudentBtn.addEventListener('click', () => Grid.toggleGlobalStudents());
+    el.globalStudentBtn.addEventListener('click', onGlobalStudentClick);
     el.saveBtn.addEventListener('click', onSaveClick);
     el.fullscreenBtn.addEventListener('click', toggleFullscreen);
     el.returnQuizBtn.addEventListener('click', returnToQuiz);
@@ -196,6 +196,28 @@ const App = (() => {
     }
   }
 
+  function onGlobalStudentClick() {
+    const result = Grid.toggleGlobalStudents();
+    if (result === 'no-students') showHeaderMessage('No students added', 2000);
+  }
+
+  // Shared banner (the same element the save confirmation uses) for
+  // any short-lived header message, click-triggered rather than a
+  // hover tooltip - "No students added" needs to actually be seen,
+  // not just be sitting in a title attribute nobody hovers over. Only
+  // one message is ever showing at a time; a new call always replaces
+  // whatever's currently displayed and restarts its own countdown.
+  let headerMessageTimeoutId = null;
+  function showHeaderMessage(text, durationMs) {
+    if (headerMessageTimeoutId) clearTimeout(headerMessageTimeoutId);
+    el.saveConfirm.textContent = text;
+    el.saveConfirm.hidden = false;
+    headerMessageTimeoutId = setTimeout(() => {
+      el.saveConfirm.hidden = true;
+      headerMessageTimeoutId = null;
+    }, durationMs);
+  }
+
   function showGrid(config) {
     el.setupView.hidden = true;
     el.gridView.hidden = false;
@@ -239,9 +261,10 @@ const App = (() => {
     const data = Grid.getSaveData();
     if (!data) return;
     const slotName = SaveQuiz.save(data.descriptor, data.order);
-    el.saveConfirm.textContent = `Saved as ${slotName} — expires in 2 days, only visible in this browser.`;
-    el.saveConfirm.hidden = false;
-    setTimeout(() => { el.saveConfirm.hidden = true; }, 5000);
+    // Local storage survives normal AND hard refreshes - it's only
+    // lost if this browser's site data/cookies get cleared, or the
+    // page is opened in a private/incognito window that then closes.
+    showHeaderMessage(`Saved as ${slotName} — expires in 2 days. Survives refreshes, but is lost if this browser's site data is cleared.`, 5000);
   }
 
   function toggleFullscreen() {

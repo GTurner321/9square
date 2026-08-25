@@ -50,11 +50,8 @@ const ContactModal = (() => {
   }
 
   function sendViaMailto() {
-    const name = (new FormData(el.form).get('name') || '').toString().trim();
     const message = el.messageField.value.trim();
-    const subject = '9 Square feedback' + (name ? ` from ${name}` : '');
-    const body = message + (name ? `\n\n— ${name}` : '');
-    const mailto = `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const mailto = `mailto:${CONFIG.CONTACT_EMAIL}?subject=${encodeURIComponent('9 Square feedback')}&body=${encodeURIComponent(message)}`;
     window.location.href = mailto;
 
     // Can't know whether the person's device actually has an email

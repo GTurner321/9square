@@ -1327,7 +1327,7 @@ const Grid = (() => {
 
   function toggleGlobalStudents() {
     if (browseModeActive) return;
-    if (config.students.length === 0) return;
+    if (config.students.length === 0) return 'no-students';
     globalRevealed = !globalRevealed;
     squareStates.forEach(state => {
       if (state) state.studentRevealed = globalRevealed;
