@@ -130,19 +130,26 @@ const ParallelLinesDiag = (() => {
 
     let body = '';
 
-    // Draws one crossing's horizontal line + transversal segment +
-    // one labelled arc, and returns the crossing point.
-    function drawCrossing(theta, y, tickMark) {
-      const crossing = [0, y];
+    // Both crossings lie on ONE straight transversal at angle theta -
+    // crossingB's position is derived from crossingT + theta, not
+    // independently placed, so the two horizontal lines' crossings
+    // are genuinely collinear (this is what makes drawing the
+    // transversal as a single unbroken line below correct, rather
+    // than two independently-angled segments that only coincidentally
+    // looked similar).
+    function crossingsOnTransversal(theta) {
+      const crossingT = [0, vGap];
+      const t = (2 * vGap) / Math.sin(theta * DEG2RAD);
+      const crossingB = addScaled(crossingT, direction(theta + 180), t);
+      return { T: crossingT, B: crossingB };
+    }
+
+    // Draws one crossing's horizontal line (+ optional parallel tick).
+    function drawHorizontalLine(crossing, tickMark) {
       const hLeft = addScaled(crossing, direction(180), halfWidth);
       const hRight = addScaled(crossing, direction(0), halfWidth);
       body += lineEl(hLeft, hRight);
       extendSvg(hLeft); extendSvg(hRight);
-
-      const tEnd1 = addScaled(crossing, direction(theta), halfWidth * 0.75 + overhang);
-      const tEnd2 = addScaled(crossing, direction(theta + 180), halfWidth * 0.75 + overhang);
-      body += lineEl(tEnd1, tEnd2);
-      extendSvg(tEnd1); extendSvg(tEnd2);
 
       if (tickMark) {
         // Standard single-arrowhead parallel-line tick, partway along
@@ -153,7 +160,17 @@ const ParallelLinesDiag = (() => {
         body += lineEl(tickCenter, a);
         body += lineEl(tickCenter, b);
       }
-      return crossing;
+    }
+
+    // Draws the transversal as ONE unbroken line spanning both
+    // crossings, with overhang only at its two outer ends - not one
+    // segment per crossing (which is what was producing a visible
+    // split down the middle).
+    function drawTransversal(theta, crossingT, crossingB) {
+      const tEnd1 = addScaled(crossingT, direction(theta), overhang);
+      const tEnd2 = addScaled(crossingB, direction(theta + 180), overhang);
+      body += lineEl(tEnd1, tEnd2);
+      extendSvg(tEnd1); extendSvg(tEnd2);
     }
 
     // Draws the small arc + label for one named corner at a crossing.
@@ -189,13 +206,11 @@ const ParallelLinesDiag = (() => {
         const [slot, deg] = s.split(':');
         return { ...parseSlot(slot), deg };
       });
-      const crossingByLine = {};
-      parts.forEach(p => {
-        if (!crossingByLine[p.line]) {
-          const y = p.line === 'T' ? vGap : -vGap;
-          crossingByLine[p.line] = drawCrossing(decorativeTheta, y, false);
-        }
-      });
+      const { T: crossingT, B: crossingB } = crossingsOnTransversal(decorativeTheta);
+      const crossingByLine = { T: crossingT, B: crossingB };
+      drawHorizontalLine(crossingT, false);
+      drawHorizontalLine(crossingB, false);
+      drawTransversal(decorativeTheta, crossingT, crossingB);
       parts.forEach(p => {
         labelCorner(crossingByLine[p.line], p.corner, decorativeTheta, `${p.deg}°`);
       });
@@ -207,9 +222,11 @@ const ParallelLinesDiag = (() => {
       const theta = isPrimaryCorner(given.corner) ? givenDeg : 180 - givenDeg;
       const findDeg = isPrimaryCorner(find.corner) ? theta : 180 - theta;
 
-      const crossingT = drawCrossing(theta, vGap, true);
-      const crossingB = drawCrossing(theta, -vGap, true);
+      const { T: crossingT, B: crossingB } = crossingsOnTransversal(theta);
       const crossingByLine = { T: crossingT, B: crossingB };
+      drawHorizontalLine(crossingT, true);
+      drawHorizontalLine(crossingB, true);
+      drawTransversal(theta, crossingT, crossingB);
 
       labelCorner(crossingByLine[given.line], given.corner, theta, `${givenDeg}°`);
       const findLabel = params.reveal === 'true' ? `${Math.round(findDeg * 10) / 10}°` : 'x';

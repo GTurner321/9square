@@ -135,6 +135,7 @@ const PieChartDiag = (() => {
     // radial lines converging through it the way a centre placement did.
     if (params.center) {
       const cornerPt = angleToXY(vertex, 45, radius + 20);
+      cornerPt[0] += 14; // nudge further right specifically, independent of the diagonal placement
       body += textEl(cornerPt[0], cornerPt[1], params.center, 'middle', centerFontSize, 700);
       extend(...textBoundsBox(cornerPt[0], cornerPt[1], 'middle', params.center, centerFontSize));
     }

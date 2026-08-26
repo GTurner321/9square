@@ -171,8 +171,8 @@ const PolygonAnglesDiag = (() => {
     const pad = opts.pad || 8;
     const lineHeight = promptFontSize * 1.25;
     const baseLen = opts.baseLen || 110;
-    const arcRadius = opts.arcRadius || 26;
-    const labelRadius = opts.labelRadius || 46;
+    const arcRadius = opts.arcRadius || 18;
+    const labelRadius = opts.labelRadius || 30;
     const extLen = opts.extLen || 40;
 
     let bx0 = Infinity, by0 = Infinity, bx1 = -Infinity, by1 = -Infinity;
@@ -216,7 +216,7 @@ const PolygonAnglesDiag = (() => {
       const gp1 = addScaled(v0, direction(0), arcRadius);
       const gp2 = addScaled(v0, direction(g), arcRadius);
       body += arcPath(gp1, gp2, arcRadius, g > 180 ? 1 : 0, 0);
-      const gl = addScaled(v0, direction(g / 2), arcRadius + 20);
+      const gl = addScaled(v0, direction(g / 2), arcRadius + 14);
       body += textEl(gl, givenLabel, 'middle', fontSize);
       extend(...textBoundsBox(gl, 'middle', givenLabel, fontSize));
 
@@ -224,7 +224,7 @@ const PolygonAnglesDiag = (() => {
       const fp1 = addScaled(v3, direction(180), arcRadius);
       const fp2 = addScaled(v3, direction(180 + findAngle), arcRadius);
       body += arcPath(fp1, fp2, arcRadius, findAngle > 180 ? 1 : 0, 0);
-      const fl = addScaled(v3, direction(180 + findAngle / 2), arcRadius + 20);
+      const fl = addScaled(v3, direction(180 + findAngle / 2), arcRadius + 14);
       body += textEl(fl, findLabel, 'middle', fontSize);
       extend(...textBoundsBox(fl, 'middle', findLabel, fontSize));
       void findDeg; // the true value is derived (co-interior); the params copy is for CSV self-documentation only
@@ -273,7 +273,7 @@ const PolygonAnglesDiag = (() => {
         const inwardDir = bisectorDirection(prev, V, next);
         const isExtended = i === extendVertexIndex;
         const labelDir = isExtended ? inwardDir : [-inwardDir[0], -inwardDir[1]];
-        const labelR = isExtended ? arcRadius + 16 : labelRadius;
+        const labelR = isExtended ? arcRadius + 10 : labelRadius;
         const lp = addScaled(V, labelDir, labelR);
         body += textEl(lp, label, 'middle', fontSize);
         extend(...textBoundsBox(lp, 'middle', label, fontSize));
