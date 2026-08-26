@@ -88,22 +88,6 @@ const BearingsDiag = (() => {
     return `<polygon points="${tip[0].toFixed(1)},${tip[1].toFixed(1)} ${left[0].toFixed(1)},${left[1].toFixed(1)} ${right[0].toFixed(1)},${right[1].toFixed(1)}" fill="#1a1a1a"/>`;
   }
 
-  // Small double-tick mark straddling a line at bearing `bearingDeg`,
-  // positioned partway along it - the standard geometry notation for
-  // "this line is parallel to another marked the same way".
-  function parallelTicks(point, bearingDeg, atFraction, lineLength) {
-    const center = angleToXY(point, bearingDeg, lineLength * atFraction);
-    const perp1 = bearingDeg + 90, perp2 = bearingDeg - 90;
-    let out = '';
-    [-5, 5].forEach(offset => {
-      const mid = angleToXY(center, bearingDeg, offset);
-      const a = angleToXY(mid, perp1, 5);
-      const b = angleToXY(mid, perp2, 5);
-      out += lineEl(a, b, false);
-    });
-    return out;
-  }
-
   function buildBearingsSVG(params, opts = {}) {
     const fontSize = opts.fontSize || 17;
     const promptFontSize = opts.promptFontSize || 16;
@@ -151,11 +135,6 @@ const BearingsDiag = (() => {
       body += textEl(toNorthTip[0], toNorthTip[1] - 10, 'N', 'middle', fontSize);
       extend(...textBoundsBox(fromNorthTip[0], fromNorthTip[1] - 10, 'middle', 'N', fontSize));
       extend(...textBoundsBox(toNorthTip[0], toNorthTip[1] - 10, 'middle', 'N', fontSize));
-
-      if (params.parallel === 'true') {
-        body += parallelTicks(from, 0, 0.5, northLength);
-        body += parallelTicks(to, 0, 0.5, northLength);
-      }
 
       // Given bearing, arc + label at "from" (north -> line, sweeping
       // through whichever side the actual bearing lies on).

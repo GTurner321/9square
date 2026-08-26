@@ -170,7 +170,7 @@ const RectilinearPerimeterDiag = (() => {
     if (opts.promptText) {
       const columnWidth = 150;
       const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
-      const gap = 24;
+      const gap = 14;
       const blockHeight = lines.length * lineHeight;
       const cy = (by0 + by1) / 2;
       const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
