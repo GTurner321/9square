@@ -215,7 +215,7 @@ const PolygonAnglesDiag = (() => {
       // leg v0-v3 is the transversal cutting the two parallel sides.
       const gp1 = addScaled(v0, direction(0), arcRadius);
       const gp2 = addScaled(v0, direction(g), arcRadius);
-      body += arcPath(gp1, gp2, arcRadius, g > 180 ? 1 : 0, 1);
+      body += arcPath(gp1, gp2, arcRadius, g > 180 ? 1 : 0, 0);
       const gl = addScaled(v0, direction(g / 2), arcRadius + 20);
       body += textEl(gl, givenLabel, 'middle', fontSize);
       extend(...textBoundsBox(gl, 'middle', givenLabel, fontSize));
@@ -223,7 +223,7 @@ const PolygonAnglesDiag = (() => {
       const findAngle = 180 - g; // co-interior
       const fp1 = addScaled(v3, direction(180), arcRadius);
       const fp2 = addScaled(v3, direction(180 + findAngle), arcRadius);
-      body += arcPath(fp1, fp2, arcRadius, findAngle > 180 ? 1 : 0, 1);
+      body += arcPath(fp1, fp2, arcRadius, findAngle > 180 ? 1 : 0, 0);
       const fl = addScaled(v3, direction(180 + findAngle / 2), arcRadius + 20);
       body += textEl(fl, findLabel, 'middle', fontSize);
       extend(...textBoundsBox(fl, 'middle', findLabel, fontSize));
@@ -252,7 +252,14 @@ const PolygonAnglesDiag = (() => {
         extendSvg(vertices[i]);
       }
 
-      // Interior angle arc + label at each vertex that has one.
+      // Interior angle arc + label at each vertex that has one. Labels
+      // sit OUTSIDE the shape (away from its centre) by default, since
+      // several labels all pointing inward toward a small shape's
+      // centre is what was causing them to pile up on one another;
+      // the one exception is the extended vertex (if any), where the
+      // exterior/vertically-opposite label already claims the outside
+      // space, so the interior label is kept tight to its own arc instead.
+      const extendVertexIndex = params.extend ? Number(params.extend.split(':')[0]) : -1;
       for (let i = 0; i < n; i++) {
         const label = angleDefs[i].label;
         if (!label) continue;
@@ -261,9 +268,13 @@ const PolygonAnglesDiag = (() => {
         const dNext = normalize([next[0] - V[0], next[1] - V[1]]);
         const p1 = addScaled(V, dPrev, arcRadius);
         const p2 = addScaled(V, dNext, arcRadius);
-        const sweepFlag = crossSign(V, addScaled(V, dPrev, 1), addScaled(V, dNext, 1)) > 0 ? 1 : 0;
+        const sweepFlag = crossSign(V, addScaled(V, dPrev, 1), addScaled(V, dNext, 1)) > 0 ? 0 : 1;
         body += arcPath(p1, p2, arcRadius, angleDefs[i].deg > 180 ? 1 : 0, sweepFlag);
-        const lp = addScaled(V, bisectorDirection(prev, V, next), labelRadius);
+        const inwardDir = bisectorDirection(prev, V, next);
+        const isExtended = i === extendVertexIndex;
+        const labelDir = isExtended ? inwardDir : [-inwardDir[0], -inwardDir[1]];
+        const labelR = isExtended ? arcRadius + 16 : labelRadius;
+        const lp = addScaled(V, labelDir, labelR);
         body += textEl(lp, label, 'middle', fontSize);
         extend(...textBoundsBox(lp, 'middle', label, fontSize));
       }
@@ -282,15 +293,13 @@ const PolygonAnglesDiag = (() => {
         const extDeg = Number(exteriorParts[1]);
         const extLabel = exteriorParts[2];
 
-        const rayAway = kind === 'next' ? dAwayPrev : null; // 'next' extends only the incoming edge
-
         if (kind === 'next') {
           const extTip = addScaled(V, dAwayPrev, extLen);
           body += lineEl(V, extTip, true);
           extendSvg(extTip);
           const p1 = addScaled(V, dAwayPrev, arcRadius);
           const p2 = addScaled(V, dToNext, arcRadius);
-          const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dToNext, 1)) > 0 ? 1 : 0;
+          const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dToNext, 1)) > 0 ? 0 : 1;
           body += arcPath(p1, p2, arcRadius, extDeg > 180 ? 1 : 0, sweepFlag);
           const lp = addScaled(V, normalize([dAwayPrev[0] + dToNext[0], dAwayPrev[1] + dToNext[1]]), labelRadius);
           body += textEl(lp, extLabel, 'middle', fontSize);
@@ -303,13 +312,12 @@ const PolygonAnglesDiag = (() => {
           extendSvg(extTip1); extendSvg(extTip2);
           const p1 = addScaled(V, dAwayPrev, arcRadius);
           const p2 = addScaled(V, dAwayNext, arcRadius);
-          const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dAwayNext, 1)) > 0 ? 1 : 0;
+          const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dAwayNext, 1)) > 0 ? 0 : 1;
           body += arcPath(p1, p2, arcRadius, extDeg > 180 ? 1 : 0, sweepFlag);
           const lp = addScaled(V, normalize([dAwayPrev[0] + dAwayNext[0], dAwayPrev[1] + dAwayNext[1]]), labelRadius);
           body += textEl(lp, extLabel, 'middle', fontSize);
           extend(...textBoundsBox(lp, 'middle', extLabel, fontSize));
         }
-        void rayAway;
       }
     }
 
