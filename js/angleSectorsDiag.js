@@ -122,9 +122,9 @@ const AngleSectorsDiag = (() => {
   function buildAngleSectorsSVG(params, opts = {}) {
     const fontSize = opts.fontSize || 18;           // sector labels
     const promptFontSize = opts.promptFontSize || 16; // caption
-    const rayLength = opts.rayLength || 130;
-    const arcRadius = opts.arcRadius || 46;
-    const labelRadius = opts.labelRadius || 95;
+    const baseRayLength = opts.rayLength || 130;
+    const arcRadius = opts.arcRadius || 32;
+    const labelRadius = opts.labelRadius || 62;
     const lineHeight = promptFontSize * 1.25;
     const pad = opts.pad || 8;
 
@@ -149,6 +149,15 @@ const AngleSectorsDiag = (() => {
     const cfg = MODE_CONFIG[mode];
     const vertex = [0, 0];
     const bearings = computeBearings(sectorDefs.map(s => s.deg), cfg.startBearing, cfg.sweepDir);
+
+    // Arm length by mode - a full circle of long rays around a point
+    // reads as much busier than the same length fanned into a
+    // half-disk or quarter-disk, so point/line each get shortened
+    // (rightAngle is left at the base length, per feedback that mode
+    // was already fine).
+    const rayLength = mode === 'point' ? baseRayLength * 0.6
+      : mode === 'line' ? baseRayLength * 0.8
+      : baseRayLength;
 
     let bx0 = Infinity, by0 = Infinity, bx1 = -Infinity, by1 = -Infinity;
     const extend = (x0, y0, x1 = x0, y1 = y0) => {
@@ -232,16 +241,21 @@ const AngleSectorsDiag = (() => {
           extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
         });
       } else {
-        const lines = wrapText(opts.promptText, 150, promptFontSize);
-        const gap = 14;
+        const columnWidth = 150;
+        const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
+        const gap = 24; // buffer between the caption column and the diagram - widened per feedback
         const blockHeight = lines.length * lineHeight;
         const cy = (by0 + by1) / 2;
         const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
-        const x = bx0 - gap;
+        // Centred as a block (equal-length lines share one centre x),
+        // not right-justified against the diagram's edge - a ragged
+        // left edge from anchor="end" was reading as accidental
+        // right-justification when line lengths varied.
+        const cx = bx0 - gap - columnWidth / 2;
         lines.forEach((line, i) => {
           const y = startY + i * lineHeight;
-          body += textEl(x, y, line, 'end', promptFontSize, 700);
-          extend(...textBoundsBox(x, y, 'end', line, promptFontSize));
+          body += textEl(cx, y, line, 'middle', promptFontSize, 700);
+          extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
         });
       }
     }
