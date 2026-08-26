@@ -183,8 +183,8 @@ const BearingsDiag = (() => {
       // Point labels (A/B, D/C, etc.), offset clear of the line and arrows.
       const fromLabelDir = (bearingDeg + 180 + 30) % 360;
       const toLabelDir = (backBearing + 180 + 30) % 360;
-      const fromNamePt = angleToXY(from, fromLabelDir, 24);
-      const toNamePt = angleToXY(to, toLabelDir, 24);
+      const fromNamePt = angleToXY(from, fromLabelDir, 16);
+      const toNamePt = angleToXY(to, toLabelDir, 16);
       body += textEl(fromNamePt[0], fromNamePt[1], params.from, 'middle', fontSize, 700);
       body += textEl(toNamePt[0], toNamePt[1], params.to, 'middle', fontSize, 700);
       extend(...textBoundsBox(fromNamePt[0], fromNamePt[1], 'middle', params.from, fontSize));
@@ -225,14 +225,22 @@ const BearingsDiag = (() => {
       extend(...textBoundsBox(rayLabelPt[0], rayLabelPt[1], 'middle', params.label, fontSize));
     }
 
-    // Prompt caption below the whole diagram - clear of every mode's
-    // geometry regardless of which way the given bearing points.
+    // Prompt caption to the left, as a centred block - same
+    // placement rule as every other diagram type in this app. (The
+    // previous below-diagram placement mixed fontSize into its first
+    // line's vertical offset instead of promptFontSize, which is what
+    // produced the uneven line spacing - this shared block sidesteps
+    // that entirely rather than patching it.)
     if (opts.promptText) {
-      const lines = wrapText(opts.promptText, Math.max(200, bx1 - bx0), promptFontSize);
-      const cx = (bx0 + bx1) / 2;
-      const gap = 12;
+      const columnWidth = 150;
+      const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
+      const gap = 24;
+      const blockHeight = lines.length * lineHeight;
+      const cy = (by0 + by1) / 2;
+      const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
+      const cx = bx0 - gap - columnWidth / 2;
       lines.forEach((line, i) => {
-        const y = by1 + gap + fontSize * 0.4 + i * lineHeight;
+        const y = startY + i * lineHeight;
         body += textEl(cx, y, line, 'middle', promptFontSize, 700);
         extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
       });

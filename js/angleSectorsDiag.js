@@ -223,41 +223,26 @@ const AngleSectorsDiag = (() => {
       extend(...textBoundsBox(lp[0], lp[1], 'middle', labelText, fontSize));
     }
 
-    // --- Prompt caption, embedded in the diagram itself. Straight-
-    //     line diagrams get it centred above (the fan opens downward,
-    //     so that's the space that's actually free); the other two
-    //     get it to the left, wrapped over as many lines as it needs -
-    //     both fans open rightward-ish, leaving the left side clear. ---
+    // --- Prompt caption, embedded in the diagram itself, always to
+    //     the left as a centred block (one shared placement rule
+    //     across every mode, rather than mode-dependent). ---
     if (opts.promptText) {
-      if (mode === 'line') {
-        const lines = wrapText(opts.promptText, Math.max(180, bx1 - bx0), promptFontSize);
-        const cx = (bx0 + bx1) / 2;
-        const gap = 10;
-        const blockHeight = lines.length * lineHeight;
-        const topY = by0 - gap - blockHeight + promptFontSize * 0.8;
-        lines.forEach((line, i) => {
-          const y = topY + i * lineHeight;
-          body += textEl(cx, y, line, 'middle', promptFontSize, 700);
-          extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
-        });
-      } else {
-        const columnWidth = 150;
-        const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
-        const gap = 24; // buffer between the caption column and the diagram - widened per feedback
-        const blockHeight = lines.length * lineHeight;
-        const cy = (by0 + by1) / 2;
-        const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
-        // Centred as a block (equal-length lines share one centre x),
-        // not right-justified against the diagram's edge - a ragged
-        // left edge from anchor="end" was reading as accidental
-        // right-justification when line lengths varied.
-        const cx = bx0 - gap - columnWidth / 2;
-        lines.forEach((line, i) => {
-          const y = startY + i * lineHeight;
-          body += textEl(cx, y, line, 'middle', promptFontSize, 700);
-          extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
-        });
-      }
+      const columnWidth = 150;
+      const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
+      const gap = 24; // buffer between the caption column and the diagram
+      const blockHeight = lines.length * lineHeight;
+      const cy = (by0 + by1) / 2;
+      const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
+      // Centred as a block (equal-length lines share one centre x),
+      // not right-justified against the diagram's edge - a ragged
+      // left edge from anchor="end" was reading as accidental
+      // right-justification when line lengths varied.
+      const cx = bx0 - gap - columnWidth / 2;
+      lines.forEach((line, i) => {
+        const y = startY + i * lineHeight;
+        body += textEl(cx, y, line, 'middle', promptFontSize, 700);
+        extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
+      });
     }
 
     const vbX = bx0 - pad, vbY = by0 - pad, vbW = (bx1 - bx0) + 2 * pad, vbH = (by1 - by0) + 2 * pad;

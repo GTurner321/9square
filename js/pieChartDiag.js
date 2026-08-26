@@ -127,25 +127,30 @@ const PieChartDiag = (() => {
       }
     }
 
-    // Centre label (typically the total) - the one spot on a pie
-    // chart no wedge boundary passes directly through, so it reads
-    // cleanly even with every radial line converging there.
+    // Total label, offset to the NE corner just outside the circle
+    // rather than dead centre - the bounding square around a circle
+    // always has empty pockets in its corners (the circle doesn't
+    // reach them), so this sits in genuinely free space without
+    // depending on which wedges happen to be filled, and never has
+    // radial lines converging through it the way a centre placement did.
     if (params.center) {
-      body += textEl(vertex[0], vertex[1], params.center, 'middle', centerFontSize, 700);
-      extend(...textBoundsBox(vertex[0], vertex[1], 'middle', params.center, centerFontSize));
+      const cornerPt = angleToXY(vertex, 45, radius + 20);
+      body += textEl(cornerPt[0], cornerPt[1], params.center, 'middle', centerFontSize, 700);
+      extend(...textBoundsBox(cornerPt[0], cornerPt[1], 'middle', params.center, centerFontSize));
     }
 
-    // Prompt caption above the circle - never collides with the centre
-    // label or any wedge, so it's a safe, consistent spot regardless
-    // of which wedges are shaded.
+    // Prompt caption to the left, as a centred block - same
+    // placement rule as every other diagram type in this app.
     if (opts.promptText) {
-      const lines = wrapText(opts.promptText, Math.max(180, bx1 - bx0), promptFontSize);
-      const cx = (bx0 + bx1) / 2;
-      const gap = 10;
+      const columnWidth = 150;
+      const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
+      const gap = 24;
       const blockHeight = lines.length * lineHeight;
-      const topY = by0 - gap - blockHeight + promptFontSize * 0.8;
+      const cy = (by0 + by1) / 2;
+      const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
+      const cx = bx0 - gap - columnWidth / 2;
       lines.forEach((line, i) => {
-        const y = topY + i * lineHeight;
+        const y = startY + i * lineHeight;
         body += textEl(cx, y, line, 'middle', promptFontSize, 700);
         extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
       });
