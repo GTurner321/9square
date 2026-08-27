@@ -215,6 +215,10 @@ const AngleSectorsDiag = (() => {
       const largeArcFlag = sweepDeg > 180 ? 1 : 0;
       const sweepFlag = cfg.sweepDir > 0 ? 1 : 0; // increasing bearing = clockwise on screen = SVG sweep-flag 1
       body += `<path d="M ${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} ${sweepFlag} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}" fill="none" stroke="#1e5f5f" stroke-width="1.5"/>`;
+      // Endpoints alone don't bound the arc for a wide sweep (up to
+      // 235° in this app's actual data) - it can bulge well past
+      // either endpoint, so extend the full circle it's drawn on.
+      extend(vertex[0] - arcRadius, vertex[1] - arcRadius, vertex[0] + arcRadius, vertex[1] + arcRadius);
 
       const midBearing = b0 + (b1 - b0) / 2;
       const lp = angleToXY(vertex, midBearing, labelRadius);

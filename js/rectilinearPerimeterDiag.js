@@ -67,9 +67,18 @@ const RectilinearPerimeterDiag = (() => {
     if (current) lines.push(current);
     return lines;
   }
+  // Recognised unit suffixes only - this is what lets "8cm" parse as
+  // 8 while "2a" or "3x" correctly parse as null (an algebraic
+  // coefficient, not a unit), rather than silently misreading the
+  // leading digit as the whole value.
+  const KNOWN_UNITS = ['cm²', 'cm', 'm²', 'm', 'mm²', 'mm', '°', '%'];
   function numericValue(label) {
-    const m = String(label).match(/-?\d+(\.\d+)?/);
-    return m ? parseFloat(m[0]) : null;
+    const s = String(label).trim();
+    const m = s.match(/^-?\d+(\.\d+)?/);
+    if (!m) return null;
+    const rest = s.slice(m[0].length).trim();
+    if (rest !== '' && !KNOWN_UNITS.includes(rest)) return null;
+    return parseFloat(m[0]);
   }
 
   function buildRectilinearPerimeterSVG(params, opts = {}) {

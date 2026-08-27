@@ -56,9 +56,18 @@ const RectAreaDiag = (() => {
   // Extracts the leading numeric magnitude from a label like "12cm" -
   // returns null for an unknown ('x', an algebraic expression), so
   // callers can fall back to a decorative default for that side.
+  // Recognised unit suffixes only - this is what lets "8cm" parse as
+  // 8 while "2a" or "3x" correctly parse as null (an algebraic
+  // coefficient, not a unit), rather than silently misreading the
+  // leading digit as the whole value.
+  const KNOWN_UNITS = ['cm²', 'cm', 'm²', 'm', 'mm²', 'mm', '°', '%'];
   function numericValue(label) {
-    const m = String(label).match(/-?\d+(\.\d+)?/);
-    return m ? parseFloat(m[0]) : null;
+    const s = String(label).trim();
+    const m = s.match(/^-?\d+(\.\d+)?/);
+    if (!m) return null;
+    const rest = s.slice(m[0].length).trim();
+    if (rest !== '' && !KNOWN_UNITS.includes(rest)) return null;
+    return parseFloat(m[0]);
   }
 
   function buildRectAreaSVG(params, opts = {}) {
@@ -108,11 +117,13 @@ const RectAreaDiag = (() => {
     body += lineEl(v0, v1); body += lineEl(v1, v2); body += lineEl(v2, v3); body += lineEl(v3, v0);
 
     if (isSquare) {
-      // Single-tick equal-side marks, standard convention for "all sides equal".
+      // Single-tick equal-side marks, standard convention for "all
+      // sides equal" - a proper tick crosses its side at 90°, not on
+      // a diagonal.
       const tick = (mid, dir) => {
         const [x, y] = mid;
-        if (dir === 'h') return lineEl([x - 5, y - 6], [x + 5, y + 6]);
-        return lineEl([x - 6, y - 5], [x + 6, y + 5]);
+        if (dir === 'h') return lineEl([x, y - 7], [x, y + 7]);
+        return lineEl([x - 7, y], [x + 7, y]);
       };
       body += tick([W / 2, 0], 'h');
       body += tick([W, H / 2], 'v');

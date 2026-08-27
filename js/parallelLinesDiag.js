@@ -194,6 +194,13 @@ const ParallelLinesDiag = (() => {
       // so the SVG sweep-flag is the opposite of the "increasing
       // angle" sweep-flag it would be in the internal frame.
       body += `<path d="M ${sq1[0].toFixed(1)} ${sq1[1].toFixed(1)} A ${arcRadius} ${arcRadius} 0 ${largeArcFlag} 0 ${sq2[0].toFixed(1)} ${sq2[1].toFixed(1)}" fill="none" stroke="#1e5f5f" stroke-width="1.5"/>`;
+      // A corner region can be anywhere up to just under 180° - the
+      // arc can bulge past a cardinal direction between its two
+      // endpoints, so bound the full circle rather than just p1/p2.
+      extendSvg(addScaled(crossing, [1, 0], arcRadius));
+      extendSvg(addScaled(crossing, [-1, 0], arcRadius));
+      extendSvg(addScaled(crossing, [0, 1], arcRadius));
+      extendSvg(addScaled(crossing, [0, -1], arcRadius));
 
       const labelPt = addScaled(crossing, direction(bis), arcRadius + labelGap);
       body += textEl(labelPt, text, 'middle', fontSize);

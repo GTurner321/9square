@@ -57,9 +57,18 @@ const TrapeziumAreaDiag = (() => {
     if (current) lines.push(current);
     return lines;
   }
+  // Recognised unit suffixes only - this is what lets "8cm" parse as
+  // 8 while "2a" or "3x" correctly parse as null (an algebraic
+  // coefficient, not a unit), rather than silently misreading the
+  // leading digit as the whole value.
+  const KNOWN_UNITS = ['cm²', 'cm', 'm²', 'm', 'mm²', 'mm', '°', '%'];
   function numericValue(label) {
-    const m = String(label).match(/-?\d+(\.\d+)?/);
-    return m ? parseFloat(m[0]) : null;
+    const s = String(label).trim();
+    const m = s.match(/^-?\d+(\.\d+)?/);
+    if (!m) return null;
+    const rest = s.slice(m[0].length).trim();
+    if (rest !== '' && !KNOWN_UNITS.includes(rest)) return null;
+    return parseFloat(m[0]);
   }
 
   function buildTrapeziumAreaSVG(params, opts = {}) {
@@ -121,21 +130,22 @@ const TrapeziumAreaDiag = (() => {
 
     } else {
       const aVal = numericValue(params.a), bVal = numericValue(params.b);
-      let aPx, bPx, pxPerUnit;
-      if (aVal !== null && bVal !== null) {
-        pxPerUnit = maxDim / Math.max(aVal, bVal);
+      let aPx, bPx, heightPx;
+      if (aVal !== null && bVal !== null && hVal !== null) {
+        // All three are real numbers - draw to true proportions.
+        const pxPerUnit = maxDim / Math.max(aVal, bVal);
         aPx = aVal * pxPerUnit; bPx = bVal * pxPerUnit;
-      } else if (bVal !== null) {
-        bPx = maxDim; aPx = bPx * 0.6;
-        pxPerUnit = bPx / bVal;
-      } else if (aVal !== null) {
-        aPx = maxDim * 0.7; bPx = aPx * 1.5;
-        pxPerUnit = aPx / aVal;
+        heightPx = Math.max(minDim, hVal * pxPerUnit);
       } else {
-        aPx = maxDim * 0.6; bPx = maxDim;
-        pxPerUnit = maxDim / 15; // no real unit known on either side - arbitrary decorative scale
+        // Something here is algebraic (e.g. a=a, b=2a) rather than a
+        // clean number - mixing a real measurement against a
+        // decorative stand-in for an unknown is what produced a wildly
+        // wrong scale before (a real height against a side read as a
+        // tiny "2"), so instead of trying to partially use whichever
+        // values happen to be clean, the whole shape goes generic
+        // together: base = 2 x height, as requested.
+        bPx = maxDim; aPx = bPx * 0.65; heightPx = bPx / 2;
       }
-      const heightPx = Math.max(minDim, (hVal !== null ? hVal * pxPerUnit : Math.min(aPx, bPx) * 0.5));
       const offset = (bPx - aPx) / 2;
 
       const v0 = [0, heightPx], v1 = [bPx, heightPx], v2 = [offset + aPx, 0], v3 = [offset, 0];

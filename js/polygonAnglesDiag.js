@@ -173,6 +173,7 @@ const PolygonAnglesDiag = (() => {
     const baseLen = opts.baseLen || 110;
     const arcRadius = opts.arcRadius || 12;
     const labelRadius = opts.labelRadius || 20;
+    const extLabelRadius = opts.extLabelRadius || 34; // exterior/vertically-opposite labels sit further out than interior ones
     const extLen = opts.extLen || 40;
 
     let bx0 = Infinity, by0 = Infinity, bx1 = -Infinity, by1 = -Infinity;
@@ -216,6 +217,8 @@ const PolygonAnglesDiag = (() => {
       const gp1 = addScaled(v0, direction(0), arcRadius);
       const gp2 = addScaled(v0, direction(g), arcRadius);
       body += arcPath(gp1, gp2, arcRadius, g > 180 ? 1 : 0, 0);
+      extendSvg(addScaled(v0, [1, 0], arcRadius)); extendSvg(addScaled(v0, [-1, 0], arcRadius));
+      extendSvg(addScaled(v0, [0, 1], arcRadius)); extendSvg(addScaled(v0, [0, -1], arcRadius));
       const gl = addScaled(v0, direction(g / 2), arcRadius + 9);
       body += textEl(gl, givenLabel, 'middle', fontSize);
       extend(...textBoundsBox(gl, 'middle', givenLabel, fontSize));
@@ -224,6 +227,8 @@ const PolygonAnglesDiag = (() => {
       const fp1 = addScaled(v3, direction(180), arcRadius);
       const fp2 = addScaled(v3, direction(180 + findAngle), arcRadius);
       body += arcPath(fp1, fp2, arcRadius, findAngle > 180 ? 1 : 0, 0);
+      extendSvg(addScaled(v3, [1, 0], arcRadius)); extendSvg(addScaled(v3, [-1, 0], arcRadius));
+      extendSvg(addScaled(v3, [0, 1], arcRadius)); extendSvg(addScaled(v3, [0, -1], arcRadius));
       const fl = addScaled(v3, direction(180 + findAngle / 2), arcRadius + 9);
       body += textEl(fl, findLabel, 'middle', fontSize);
       extend(...textBoundsBox(fl, 'middle', findLabel, fontSize));
@@ -270,6 +275,8 @@ const PolygonAnglesDiag = (() => {
         const p2 = addScaled(V, dNext, arcRadius);
         const sweepFlag = crossSign(V, addScaled(V, dPrev, 1), addScaled(V, dNext, 1)) > 0 ? 0 : 1;
         body += arcPath(p1, p2, arcRadius, angleDefs[i].deg > 180 ? 1 : 0, sweepFlag);
+        extendSvg(addScaled(V, [1, 0], arcRadius)); extendSvg(addScaled(V, [-1, 0], arcRadius));
+        extendSvg(addScaled(V, [0, 1], arcRadius)); extendSvg(addScaled(V, [0, -1], arcRadius));
         const inwardDir = bisectorDirection(prev, V, next);
         const isExtended = i === extendVertexIndex;
         const labelDir = isExtended ? inwardDir : [-inwardDir[0], -inwardDir[1]];
@@ -293,6 +300,12 @@ const PolygonAnglesDiag = (() => {
         const extDeg = Number(exteriorParts[1]);
         const extLabel = exteriorParts[2];
 
+        // Covers both branches below - same vertex, same arc radius,
+        // and (per the fix above) needed regardless of how wide the
+        // exposed angle's sweep turns out to be.
+        extendSvg(addScaled(V, [1, 0], arcRadius)); extendSvg(addScaled(V, [-1, 0], arcRadius));
+        extendSvg(addScaled(V, [0, 1], arcRadius)); extendSvg(addScaled(V, [0, -1], arcRadius));
+
         if (kind === 'next') {
           const extTip = addScaled(V, dAwayPrev, extLen);
           body += lineEl(V, extTip, true);
@@ -301,7 +314,7 @@ const PolygonAnglesDiag = (() => {
           const p2 = addScaled(V, dToNext, arcRadius);
           const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dToNext, 1)) > 0 ? 0 : 1;
           body += arcPath(p1, p2, arcRadius, extDeg > 180 ? 1 : 0, sweepFlag);
-          const lp = addScaled(V, normalize([dAwayPrev[0] + dToNext[0], dAwayPrev[1] + dToNext[1]]), labelRadius);
+          const lp = addScaled(V, normalize([dAwayPrev[0] + dToNext[0], dAwayPrev[1] + dToNext[1]]), extLabelRadius);
           body += textEl(lp, extLabel, 'middle', fontSize);
           extend(...textBoundsBox(lp, 'middle', extLabel, fontSize));
         } else { // 'both'
@@ -314,7 +327,7 @@ const PolygonAnglesDiag = (() => {
           const p2 = addScaled(V, dAwayNext, arcRadius);
           const sweepFlag = crossSign(V, addScaled(V, dAwayPrev, 1), addScaled(V, dAwayNext, 1)) > 0 ? 0 : 1;
           body += arcPath(p1, p2, arcRadius, extDeg > 180 ? 1 : 0, sweepFlag);
-          const lp = addScaled(V, normalize([dAwayPrev[0] + dAwayNext[0], dAwayPrev[1] + dAwayNext[1]]), labelRadius);
+          const lp = addScaled(V, normalize([dAwayPrev[0] + dAwayNext[0], dAwayPrev[1] + dAwayNext[1]]), extLabelRadius);
           body += textEl(lp, extLabel, 'middle', fontSize);
           extend(...textBoundsBox(lp, 'middle', extLabel, fontSize));
         }

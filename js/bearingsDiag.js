@@ -142,6 +142,7 @@ const BearingsDiag = (() => {
       const p2 = angleToXY(from, bearingDeg, arcRadius);
       const largeArc1 = bearingDeg > 180 ? 1 : 0;
       body += `<path d="M ${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A ${arcRadius} ${arcRadius} 0 ${largeArc1} 1 ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}" fill="none" stroke="#1e5f5f" stroke-width="1.5"/>`;
+      extend(from[0] - arcRadius, from[1] - arcRadius, from[0] + arcRadius, from[1] + arcRadius);
       const fromLabelPt = angleToXY(from, bearingDeg / 2, arcRadius + labelGap);
       body += textEl(fromLabelPt[0], fromLabelPt[1], bearingLabel, 'middle', fontSize);
       extend(...textBoundsBox(fromLabelPt[0], fromLabelPt[1], 'middle', bearingLabel, fontSize));
@@ -155,6 +156,7 @@ const BearingsDiag = (() => {
       const q2 = angleToXY(to, backBearing, arcRadius);
       const largeArc2 = reciprocal > 180 ? 1 : 0;
       body += `<path d="M ${q1[0].toFixed(1)} ${q1[1].toFixed(1)} A ${arcRadius} ${arcRadius} 0 ${largeArc2} 1 ${q2[0].toFixed(1)} ${q2[1].toFixed(1)}" fill="none" stroke="#1e5f5f" stroke-width="1.5"/>`;
+      extend(to[0] - arcRadius, to[1] - arcRadius, to[0] + arcRadius, to[1] + arcRadius);
       const toLabelPt = angleToXY(to, backBearing / 2, arcRadius + labelGap);
       body += textEl(toLabelPt[0], toLabelPt[1], 'x', 'middle', fontSize);
       extend(...textBoundsBox(toLabelPt[0], toLabelPt[1], 'middle', 'x', fontSize));
@@ -195,6 +197,12 @@ const BearingsDiag = (() => {
         const p2 = angleToXY(vertex, bearingDeg, arcRadius);
         const largeArc = bearingDeg > 180 ? 1 : 0;
         body += `<path d="M ${p1[0].toFixed(1)} ${p1[1].toFixed(1)} A ${arcRadius} ${arcRadius} 0 ${largeArc} 1 ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}" fill="none" stroke="#1e5f5f" stroke-width="1.5"/>`;
+        // The arc can bulge well past its own endpoints (e.g. a
+        // reflex/large-arc sweep through due-south when the ray points
+        // roughly north) - extending just p1/p2 isn't enough to
+        // guarantee the crop includes it, so extend the full circle
+        // the arc is drawn on instead.
+        extend(vertex[0] - arcRadius, vertex[1] - arcRadius, vertex[0] + arcRadius, vertex[1] + arcRadius);
       }
 
       // Labelled with the compass direction name, not the numeric
