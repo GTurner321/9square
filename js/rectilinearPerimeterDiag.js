@@ -7,7 +7,7 @@
    given lengths - a genuinely freeform composite shape would need a
    different (much harder) system.
 
-   Four kinds:
+   Six kinds:
      kind=notch;width=<l>;height=<l>;notchW=<l>;notchH=<l>[;showMissing=true]
        A rectangle with a rectangular notch removed from the top-right
        corner. showMissing=true additionally labels the two DERIVED
@@ -19,10 +19,19 @@
      kind=joined;seg1=<l>;seg2=<l>;height=<l>
        Two rectangles joined along their `height`-length edge, shown
        as one combined rectangle with a dashed line marking the join.
+       A segment given algebraically ("x", "x+3") renders at the same
+       width as the height rather than guessing a size from it - this
+       also covers the DF-expand-brackets-via-area-model shadow set
+       (Area = height x (seg1+seg2), expanded).
+     kind=joinedAreas;height=<l>;area1=<l>;area2=<l>
+       Same two-rectangle shape, but each rectangle's AREA is written
+       inside it instead of a length below it - the factorising-
+       direction counterpart to `joined` (given both areas and the
+       height, find a missing width).
      kind=cross;squareSide=<l>
        A plus-sign made of 5 identical squares.
 
-   All four accept an optional `caption` (a given value with nowhere
+   All six accept an optional `caption` (a given value with nowhere
    else to live) shown centred below the shape.
 
    Registers itself into DiagramRenderer - see trigPythagDiag.js for
@@ -149,8 +158,17 @@ const RectilinearPerimeterDiag = (() => {
 
     } else if (params.kind === 'joined') {
       const s1Val = numericValue(params.seg1), s2Val = numericValue(params.seg2), hVal = numericValue(params.height);
-      const scale = maxDim / (s1Val + s2Val);
-      const S1 = s1Val * scale, S2 = s2Val * scale, H = Math.max(50, hVal * scale);
+      // Height is always the one real given number in these questions
+      // (it's never the unknown), so it anchors the scale - a segment
+      // given as a plain number scales against it properly; an
+      // algebraic segment ("x", "x+3") renders at the same width as
+      // the height rather than trying to extract a misleading partial
+      // value from it (the bug that made "2a" render as a sliver
+      // elsewhere in this app).
+      const H = 90;
+      const pxPerUnit = hVal !== null ? H / hVal : H / 6;
+      const S1 = s1Val !== null ? s1Val * pxPerUnit : H;
+      const S2 = s2Val !== null ? s2Val * pxPerUnit : H;
 
       const v0 = [0, H], v1 = [S1 + S2, H], v2 = [S1 + S2, 0], v3 = [0, 0];
       [v0, v1, v2, v3].forEach(p => extend(...p));
@@ -161,6 +179,30 @@ const RectilinearPerimeterDiag = (() => {
       body += label(S1 + S2 / 2, H + 20, params.seg2, 'middle');
       body += label(-12, H / 2, params.height, 'end');
       if (params.caption) body += label((S1 + S2) / 2, H + 44, params.caption, 'middle', capFontSize);
+
+    } else if (params.kind === 'joinedAreas') {
+      // Same two-rectangle shape as 'joined', but each sub-rectangle's
+      // AREA is written inside it rather than a length below it - for
+      // the factorising-direction questions (given the two areas,
+      // find the missing dimension). Both rectangles are drawn equal-
+      // width deliberately: inferring a width from an area expression
+      // would need dividing by the height, which may itself not be a
+      // clean number, so this sidesteps that rather than guessing.
+      const hVal = numericValue(params.height);
+      const H = 90;
+      const pxPerUnit = hVal !== null ? H / hVal : H / 6;
+      void pxPerUnit; // height is drawn at a fixed pixel size regardless - only used for the printed label
+      const W = 90; // fixed width per rectangle
+
+      const v0 = [0, H], v1 = [2 * W, H], v2 = [2 * W, 0], v3 = [0, 0];
+      [v0, v1, v2, v3].forEach(p => extend(...p));
+      body += polyEl([v0, v1, v2, v3]);
+      body += lineEl([W, 0], [W, H], true);
+
+      body += label(W / 2, H / 2, params.area1, 'middle');
+      body += label(W + W / 2, H / 2, params.area2, 'middle');
+      body += label(-12, H / 2, params.height, 'end');
+      if (params.caption) body += label(W, H + 24, params.caption, 'middle', capFontSize);
 
     } else { // cross
       const sVal = numericValue(params.squareSide);
