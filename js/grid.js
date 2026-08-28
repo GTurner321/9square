@@ -16,6 +16,14 @@ const Grid = (() => {
   let globalRevealed = false;
   let cachedBasePool = null;
 
+  // Must match the max-width in styles.css's "Mobile mode" media query
+  // - below this width, squares start already revealed (no shutter),
+  // since that view has no reveal-all button to uncover them with.
+  const MOBILE_BREAKPOINT = 700;
+  function isMobileView() {
+    return window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
+  }
+
   let gridMode = '9';        // '9' | '4'
   const CENTER_INDEX = 4;
   const CORNER_INDICES = [0, 2, 6, 8];
@@ -491,7 +499,7 @@ const Grid = (() => {
         cleared: false,
         studentName: hasStudents ? StudentPicker.next(studentQueue) : null,
         studentRevealed: false,
-        shuttered: true,
+        shuttered: !isMobileView(),
         shutterGradient: randomShutterGradient(),
         // Question/hint/explanation each remember their own zoom level
         // independently (switching between them doesn't reset the
