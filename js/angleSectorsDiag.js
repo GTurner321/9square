@@ -237,7 +237,7 @@ const AngleSectorsDiag = (() => {
       if (mode === 'line') {
         const lines = wrapText(opts.promptText, Math.max(160, bx1 - bx0), promptFontSize);
         const cx = (bx0 + bx1) / 2;
-        const gap = 4;
+        const gap = 1;
         const blockHeight = lines.length * lineHeight;
         const topY = by0 - gap - blockHeight + promptFontSize * 0.8;
         lines.forEach((line, i) => {

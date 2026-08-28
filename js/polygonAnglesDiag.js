@@ -308,7 +308,13 @@ const PolygonAnglesDiag = (() => {
         const prev = vertices[(i - 1 + n) % n], V = vertices[i], next = vertices[(i + 1) % n];
         const dPrev = normalize([prev[0] - V[0], prev[1] - V[1]]);
         const dNext = normalize([next[0] - V[0], next[1] - V[1]]);
-        const isRightAngle = Math.abs(angleDefs[i].deg - 90) < 0.5;
+        // The right-angle square marker is only used when 90° is a
+        // GIVEN value (the label literally shows a number) - if the
+        // label is an unknown ('x', an expression) that happens to
+        // solve to 90°, using the square symbol would show the answer
+        // before it's been worked out, so an arc is used regardless.
+        const isNumericDegreeLabel = /^\d+(\.\d+)?°?$/.test(label.trim());
+        const isRightAngle = Math.abs(angleDefs[i].deg - 90) < 0.5 && isNumericDegreeLabel;
         if (isRightAngle) {
           // Standard convention: a small square bracket (2 sides
           // perpendicular to the edges meeting here) instead of an arc.
@@ -330,7 +336,13 @@ const PolygonAnglesDiag = (() => {
         const inwardDir = bisectorDirection(prev, V, next);
         const isExtended = i === extendVertexIndex;
         const labelDir = isExtended ? inwardDir : [-inwardDir[0], -inwardDir[1]];
-        const labelR = isExtended ? arcRadius + 16 : labelRadius;
+        // Standard exterior angle = 180 - interior. Only when that's
+        // acute (i.e. the interior angle itself is obtuse) does the
+        // outside corner stay pointed/tight enough that a label needs
+        // real clearance from the shape's own edges - everywhere else
+        // there's already plenty of open room right next to the vertex.
+        const exteriorIsAcute = (180 - angleDefs[i].deg) < 90;
+        const labelR = isExtended ? arcRadius + 16 : (exteriorIsAcute ? labelRadius : 20);
         const lp = addScaled(V, labelDir, labelR);
         body += textEl(lp, label, 'middle', fontSize);
         extend(...textBoundsBox(lp, 'middle', label, fontSize));
