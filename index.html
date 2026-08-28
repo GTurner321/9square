@@ -219,10 +219,17 @@
         </button>
         <button type="button" class="icon-btn icon-btn--symbol" id="fullscreenBtn" title="Fullscreen">⤢</button>
       </div>
+      <div class="score-inline" id="scoreDisplay">
+        <span class="score-inline__label">SCORE</span>
+        <span class="score-inline__value" id="scoreValue">0/0</span>
+      </div>
     </div>
     <p class="save-confirm" id="saveConfirm" hidden></p>
   </header>
   <div class="grid" id="gridContainer"></div>
+  <div class="load-more-row" id="loadMoreRow">
+    <button type="button" class="btn btn--generate btn--secondary" id="loadMoreBtn">+9 more questions</button>
+  </div>
   <div class="browse-panel" id="browsePanel" hidden>
     <p class="browse-panel__note">Choose replacement questions</p>
     <div class="browse-panel__grid" id="browseGrid"></div>

@@ -24,6 +24,32 @@ const Grid = (() => {
     return window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT}px)`).matches;
   }
 
+  // Mobile-only score tracker: "questions answered correctly on the
+  // first click" as a fraction of "questions answered at all" (choice
+  // resolved, right or wrong). Reset on every fresh Generate/load;
+  // grows through refreshes and "+N more" alike, since each is just
+  // another square with its own independent choice state.
+  let score = { correct: 0, attempted: 0 };
+
+  function resetScore() {
+    score = { correct: 0, attempted: 0 };
+    updateScoreDisplay();
+  }
+
+  function updateScoreDisplay() {
+    if (el.scoreValue) el.scoreValue.textContent = `${score.correct}/${score.attempted}`;
+  }
+
+  // Called exactly once per square, at the moment its choices resolve
+  // (correct click, or a second distinct wrong click auto-revealing
+  // the answer) - never on a first wrong click, which leaves the
+  // square still open for another guess.
+  function recordAttempt(wasCorrectFirstTry) {
+    score.attempted++;
+    if (wasCorrectFirstTry) score.correct++;
+    updateScoreDisplay();
+  }
+
   let gridMode = '9';        // '9' | '4'
   const CENTER_INDEX = 4;
   const CORNER_INDICES = [0, 2, 6, 8];
@@ -430,6 +456,15 @@ const Grid = (() => {
     el.browseGrid = document.getElementById('browseGrid');
     el.browsePager = document.getElementById('browsePager');
     if (el.browsePanel) el.browsePanel.addEventListener('click', onBrowsePanelClick);
+
+    // Mobile-only: score fraction box (header) and the "+N more
+    // questions" row below the list. Both exist in the markup
+    // regardless of screen size, just CSS-hidden above the mobile
+    // breakpoint - see styles.css.
+    el.scoreValue = document.getElementById('scoreValue');
+    el.loadMoreRow = document.getElementById('loadMoreRow');
+    el.loadMoreBtn = document.getElementById('loadMoreBtn');
+    if (el.loadMoreBtn) el.loadMoreBtn.addEventListener('click', loadMoreQuestions);
   }
 
 
@@ -470,6 +505,43 @@ const Grid = (() => {
     };
   }
 
+  /**
+   * Builds the per-square UI state object for one square - shared by
+   * the initial Generate/load and by "+N more questions" on mobile, so
+   * both produce squares that behave identically (shutter, zoom,
+   * palette colour, student assignment, undo stack, everything).
+   */
+  function createSquareState(square, hasStudents) {
+    if (!square) return null;
+    return {
+      activePanel: null,
+      choiceOrder: null,
+      choiceResolved: false,
+      questionHidden: false,
+      cleared: false,
+      studentName: hasStudents ? StudentPicker.next(studentQueue) : null,
+      studentRevealed: false,
+      shuttered: !isMobileView(),
+      shutterGradient: randomShutterGradient(),
+      // Question/hint/explanation each remember their own zoom level
+      // independently (switching between them doesn't reset the
+      // others - going back to a previously-zoomed one picks up
+      // where it was left). Answer/choices were never in the zoom
+      // control's scope, so they don't get an entry here - they just
+      // render at their normal size.
+      zoomOffsets: { question: 0, hint: 0, explain: 0 },
+      color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
+      shutterKind: null,
+      shutterHtml: null,
+      // Decided once per displayed question (not per render) so the
+      // diagram doesn't visibly jump every time the square
+      // re-renders (zoom, panel toggle, autosize) - only a genuinely
+      // new question (refresh/undo/new grid) gets a fresh flip.
+      diagramFlip: { h: Math.random() < 0.5, v: Math.random() < 0.5 },
+      undoStack: [] // questions this square previously showed, most-recent last
+    };
+  }
+
   function buildStatesAndRender() {
     const hasStudents = config.students.length > 0;
     studentQueue = hasStudents ? StudentPicker.createQueue(config.students) : null;
@@ -489,42 +561,18 @@ const Grid = (() => {
     if (el.gridView) el.gridView.classList.remove('browsing');
     if (el.browsePanel) el.browsePanel.hidden = true;
 
-    squareStates = squares.map(square => {
-      if (!square) return null;
-      return {
-        activePanel: null,
-        choiceOrder: null,
-        choiceResolved: false,
-        questionHidden: false,
-        cleared: false,
-        studentName: hasStudents ? StudentPicker.next(studentQueue) : null,
-        studentRevealed: false,
-        shuttered: !isMobileView(),
-        shutterGradient: randomShutterGradient(),
-        // Question/hint/explanation each remember their own zoom level
-        // independently (switching between them doesn't reset the
-        // others - going back to a previously-zoomed one picks up
-        // where it was left). Answer/choices were never in the zoom
-        // control's scope, so they don't get an entry here - they just
-        // render at their normal size.
-        zoomOffsets: { question: 0, hint: 0, explain: 0 },
-        color: PALETTE[Math.floor(Math.random() * PALETTE.length)],
-        shutterKind: null,
-        shutterHtml: null,
-        // Decided once per displayed question (not per render) so the
-        // diagram doesn't visibly jump every time the square
-        // re-renders (zoom, panel toggle, autosize) - only a genuinely
-        // new question (refresh/undo/new grid) gets a fresh flip.
-        diagramFlip: { h: Math.random() < 0.5, v: Math.random() < 0.5 },
-        undoStack: [] // questions this square previously showed, most-recent last
-      };
-    });
+    squareStates = squares.map(square => createSquareState(square, hasStudents));
 
     assignShutterContent([0, 1, 2, 3, 4, 5, 6, 7, 8], SHUTTER_SUMS_9, true);
 
     gridMode = '9';
     refreshQueue = [];
     globalRevealed = false;
+    resetScore();
+    if (el.loadMoreBtn) {
+      el.loadMoreBtn.disabled = false;
+      el.loadMoreBtn.textContent = '+9 more questions';
+    }
     render();
     // Disabled per request - startShutterPulse()/stopShutterPulse() are
     // left fully intact below in case this gets switched back on later,
@@ -556,7 +604,42 @@ const Grid = (() => {
   }
 
   function visibleIndices() {
+    // Mobile has no 9/4 toggle and can grow past 9 via "+N more
+    // questions" - show every square that's been generated so far,
+    // in order, rather than a fixed 9/4 index set.
+    if (isMobileView()) return squares.map((_, i) => i);
     return gridMode === '4' ? CORNER_INDICES : [0, 1, 2, 3, 4, 5, 6, 7, 8];
+  }
+
+  /**
+   * Mobile "+N more questions": appends another batch to the end of
+   * the list, duplicate-free against every question already showing
+   * (including ones brought in by earlier refreshes), and re-renders.
+   * If the pool is exhausted, appends nothing and disables the button
+   * rather than padding the list with blanks - a blank only makes
+   * sense as "this square used to have something", which doesn't
+   * apply to a batch that's never had a question in it.
+   */
+  function loadMoreQuestions() {
+    if (!config) return;
+    const hasStudents = config.students.length > 0;
+    const excludeQuestions = new Set(squares.filter(Boolean).map(s => s.question));
+    const { squares: more } = SelectionEngine.generateMore(config, SelectionEngine.SQUARE_COUNT, excludeQuestions);
+    const picked = more.filter(Boolean);
+
+    if (picked.length === 0) {
+      if (el.loadMoreBtn) {
+        el.loadMoreBtn.disabled = true;
+        el.loadMoreBtn.textContent = 'No more questions available';
+      }
+      return;
+    }
+
+    picked.forEach(sq => {
+      squares.push(sq);
+      squareStates.push(createSquareState(sq, hasStudents));
+    });
+    render();
   }
 
   // Draws attention to an untouched grid before anyone's clicked
@@ -927,6 +1010,7 @@ const Grid = (() => {
       // two items visible: the correct answer and this last wrong pick.
       state.choiceResolved = true;
       state.correctWasClicked = false;
+      recordAttempt(false);
       rerenderSquare(squareIndex);
       return;
     }
@@ -954,8 +1038,14 @@ const Grid = (() => {
   }
 
   function resolveWithCorrectClicked(state, squareIndex) {
+    // "First time" specifically means no wrong option was clicked on
+    // this square before this correct one - a correct pick reached
+    // after a wrong guess still resolves the square (counts as
+    // attempted) but doesn't add to the correct-first-time count.
+    const firstTry = !(state.wrongClickedIndices && state.wrongClickedIndices.length > 0);
     state.choiceResolved = true;
     state.correctWasClicked = true;
+    recordAttempt(firstTry);
     Sound.playCorrect();
 
     // Both wrong options show red/cross immediately (un-fading either

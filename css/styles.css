@@ -843,6 +843,40 @@ button:focus-visible {
   font-size: 0.9rem;
 }
 
+/* ---------- Score fraction box (mobile only - see media query below) ---------- */
+
+.score-inline {
+  display: none;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-inline__label {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--chalk-yellow-faded);
+}
+
+.score-inline__value {
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--chalk-yellow);
+  min-width: 48px;
+  text-align: center;
+}
+
+/* ---------- "+N more questions" (mobile only) ---------- */
+
+.load-more-row {
+  display: none;
+  justify-content: center;
+  padding: 20px 16px 36px;
+  background: var(--bg);
+}
+
 /* ---------- Save confirmation banner ---------- */
 
 .save-confirm {
@@ -1755,13 +1789,25 @@ sup {
     padding-right: 16px;
   }
 
-  /* Grid view header: back button (and title) only. */
+  /* Grid view header: back button, title, and the score box only -
+     score-inline is shown here (it's display:none by default above),
+     everything else that isn't backBtn/the title is hidden. */
   #quotesBtn,
   #gridSizeBtn,
   #browseBtn,
   .timer-inline,
   .grid-header-actions {
     display: none;
+  }
+  .score-inline {
+    display: flex;
+  }
+
+  /* Header stays visible throughout the (now page-level) scroll. */
+  #gridView .board--grid {
+    position: sticky;
+    top: 0;
+    z-index: 20;
   }
 
   /* One scrollable column instead of a fixed-height 3x3 (or 2x2) grid
@@ -1780,6 +1826,17 @@ sup {
   }
   .square {
     min-height: 220px;
+  }
+
+  /* No standalone "reveal the answer" shortcut - scoring relies on
+     the multiple-choice buttons, so the direct-reveal button would
+     let a question be skipped without answering it. */
+  .icon[data-action="answer"] {
+    display: none;
+  }
+
+  .load-more-row {
+    display: flex;
   }
 }
 

@@ -36,7 +36,7 @@ const SelectionEngine = (() => {
     return tagged.length >= CONFIG.MIN_LEVEL_TAGGED_QUESTIONS;
   }
 
-  return { getEligibleTopics, bankHasUsableLevels, generate, refreshSlot, SQUARE_COUNT };
+  return { getEligibleTopics, bankHasUsableLevels, generate, generateMore, refreshSlot, SQUARE_COUNT };
 
   /**
    * Builds the 9-square (3x3) selection for a Generate action.
@@ -52,11 +52,43 @@ const SelectionEngine = (() => {
       ? config.questions.filter(q => config.topics.includes(q.topic))
       : config.questions.slice();
 
-    const levelTargets = computeLevelTargets(config.levelMode);
+    const levelTargets = computeLevelTargetsForCount(config.levelMode, SQUARE_COUNT);
     const used = new Set();
     const squares = [];
 
     for (let i = 0; i < SQUARE_COUNT; i++) {
+      const levelTarget = levelTargets[i];
+      const picked = pickForSlot(basePool, levelTarget, config.method, used);
+      if (picked) {
+        used.add(picked);
+        squares.push({ question: picked, levelTarget });
+      } else {
+        squares.push(null);
+      }
+    }
+
+    return { squares, basePool };
+  }
+
+  /**
+   * Mobile "+N more questions" — picks a further batch the same way
+   * generate() does (same level-mode/method rules, continuing the
+   * progressive level pattern from wherever it left off), but
+   * duplicate-free against everything already showing, not just this
+   * batch. excludeQuestions is a Set of question objects already on
+   * screen (from every earlier batch, including refreshes) - the
+   * caller owns that set, this never mutates it.
+   */
+  function generateMore(config, count, excludeQuestions) {
+    const basePool = (config.topics && config.topics.length)
+      ? config.questions.filter(q => config.topics.includes(q.topic))
+      : config.questions.slice();
+
+    const levelTargets = computeLevelTargetsForCount(config.levelMode, count);
+    const used = new Set(excludeQuestions);
+    const squares = [];
+
+    for (let i = 0; i < count; i++) {
       const levelTarget = levelTargets[i];
       const picked = pickForSlot(basePool, levelTarget, config.method, used);
       if (picked) {
@@ -83,18 +115,24 @@ const SelectionEngine = (() => {
     return pickForSlot(basePool, levelTarget, method, currentlyDisplayed);
   }
 
-  function computeLevelTargets(levelMode) {
+  /**
+   * Generalised version of the old fixed-9 computeLevelTargets -
+   * 'progressive' cycles through level 1/2/3 in GRID_ROWS-sized runs
+   * for as many items as asked for (so a "+9 more" batch continues the
+   * same 1,1,1,2,2,2,3,3,3 pattern rather than needing its own rule).
+   */
+  function computeLevelTargetsForCount(levelMode, count) {
     if (levelMode === 'progressive') {
       const targets = [];
-      for (let row = 0; row < GRID_ROWS; row++) {
-        for (let col = 0; col < GRID_ROWS; col++) targets.push(row + 1);
+      for (let i = 0; i < count; i++) {
+        targets.push((Math.floor(i / GRID_ROWS) % 3) + 1);
       }
       return targets;
     }
     if (['1', '2', '3'].includes(levelMode)) {
-      return new Array(SQUARE_COUNT).fill(Number(levelMode));
+      return new Array(count).fill(Number(levelMode));
     }
-    return new Array(SQUARE_COUNT).fill(null); // 'mix'
+    return new Array(count).fill(null); // 'mix'
   }
 
   /**
