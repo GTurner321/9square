@@ -227,26 +227,38 @@ const AngleSectorsDiag = (() => {
       extend(...textBoundsBox(lp[0], lp[1], 'middle', labelText, fontSize));
     }
 
-    // --- Prompt caption, embedded in the diagram itself, always to
-    //     the left as a centred block (one shared placement rule
-    //     across every mode, rather than mode-dependent). ---
+    // --- Prompt caption, embedded in the diagram itself. Straight-
+    //     line mode's fan opens downward, so the empty space is
+    //     genuinely ABOVE it, not to the left - placing it there keeps
+    //     the caption close instead of stretching sideways past an
+    //     already-wide horizontal line. Point/right-angle modes keep
+    //     the left-column placement used throughout this app. ---
     if (opts.promptText) {
-      const columnWidth = 150;
-      const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
-      const gap = 14; // buffer between the caption column and the diagram
-      const blockHeight = lines.length * lineHeight;
-      const cy = (by0 + by1) / 2;
-      const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
-      // Centred as a block (equal-length lines share one centre x),
-      // not right-justified against the diagram's edge - a ragged
-      // left edge from anchor="end" was reading as accidental
-      // right-justification when line lengths varied.
-      const cx = bx0 - gap - columnWidth / 2;
-      lines.forEach((line, i) => {
-        const y = startY + i * lineHeight;
-        body += textEl(cx, y, line, 'middle', promptFontSize, 700);
-        extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
-      });
+      if (mode === 'line') {
+        const lines = wrapText(opts.promptText, Math.max(160, bx1 - bx0), promptFontSize);
+        const cx = (bx0 + bx1) / 2;
+        const gap = 4;
+        const blockHeight = lines.length * lineHeight;
+        const topY = by0 - gap - blockHeight + promptFontSize * 0.8;
+        lines.forEach((line, i) => {
+          const y = topY + i * lineHeight;
+          body += textEl(cx, y, line, 'middle', promptFontSize, 700);
+          extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
+        });
+      } else {
+        const columnWidth = 130;
+        const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
+        const gap = 4;
+        const blockHeight = lines.length * lineHeight;
+        const cy = (by0 + by1) / 2;
+        const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
+        const cx = bx0 - gap - columnWidth / 2;
+        lines.forEach((line, i) => {
+          const y = startY + i * lineHeight;
+          body += textEl(cx, y, line, 'middle', promptFontSize, 700);
+          extend(...textBoundsBox(cx, y, 'middle', line, promptFontSize));
+        });
+      }
     }
 
     const vbX = bx0 - pad, vbY = by0 - pad, vbW = (bx1 - bx0) + 2 * pad, vbH = (by1 - by0) + 2 * pad;

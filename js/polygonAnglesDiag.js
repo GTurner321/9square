@@ -159,6 +159,43 @@ const PolygonAnglesDiag = (() => {
     return [v0, v1, v2, v3];
   }
 
+  // Re-orients the built quadrilateral (a rigid rotation only - vertex
+  // indices, and therefore which angle label sits where, are
+  // untouched) so its LONGEST edge ends up as the bottom, when one can
+  // be determined - some angle combinations (e.g. a steep obtuse pair
+  // adjacent to the original base) otherwise produce a base that's far
+  // shorter than another side, and the resulting quadrilateral can end
+  // up disproportionately tall. If the height is still large relative
+  // to the base even after that, the whole shape is scaled down
+  // uniformly (fonts stay their normal fixed size, only the polygon
+  // shrinks) rather than left to blow out the diagram.
+  function orientQuadrilateral(vertices, baseLen) {
+    const n = vertices.length;
+    let longestIdx = 0, longestLen = -1;
+    for (let i = 0; i < n; i++) {
+      const len = dist(vertices[i], vertices[(i + 1) % n]);
+      if (len > longestLen) { longestLen = len; longestIdx = i; }
+    }
+    const P = vertices[longestIdx], Q = vertices[(longestIdx + 1) % n];
+    const theta = Math.atan2(Q[1] - P[1], Q[0] - P[0]);
+    const cos = Math.cos(-theta), sin = Math.sin(-theta);
+    let rotated = vertices.map(([x, y]) => {
+      const dx = x - P[0], dy = y - P[1];
+      return [dx * cos - dy * sin, dx * sin + dy * cos];
+    });
+
+    const ys = rotated.map(p => p[1]);
+    const height = Math.max(...ys) - Math.min(...ys);
+    const maxReasonableHeight = baseLen * 1.4;
+    if (height > maxReasonableHeight) {
+      const shrink = maxReasonableHeight / height;
+      rotated = rotated.map(([x, y]) => [x * shrink, y * shrink]);
+    }
+    return rotated;
+  }
+
+  function dist(P, Q) { return Math.hypot(Q[0] - P[0], Q[1] - P[1]); }
+
   function bisectorDirection(prev, V, next) {
     const dPrev = normalize([prev[0] - V[0], prev[1] - V[1]]);
     const dNext = normalize([next[0] - V[0], next[1] - V[1]]);
@@ -172,7 +209,7 @@ const PolygonAnglesDiag = (() => {
     const lineHeight = promptFontSize * 1.25;
     const baseLen = opts.baseLen || 110;
     const arcRadius = opts.arcRadius || 12;
-    const labelRadius = opts.labelRadius || 20;
+    const labelRadius = opts.labelRadius || 28;
     const extLabelRadius = opts.extLabelRadius || 34; // exterior/vertically-opposite labels sit further out than interior ones
     const extLen = opts.extLen || 40;
 
@@ -249,7 +286,7 @@ const PolygonAnglesDiag = (() => {
         console.warn(`PolygonAnglesDiag: angles sum to ${sum}, expected ${expectedSum}`);
       }
 
-      const vertices = isTriangle ? buildTriangle(angles, baseLen) : buildQuadrilateral(angles, baseLen);
+      const vertices = isTriangle ? buildTriangle(angles, baseLen) : orientQuadrilateral(buildQuadrilateral(angles, baseLen), baseLen);
 
       // Outline.
       for (let i = 0; i < n; i++) {
@@ -271,16 +308,29 @@ const PolygonAnglesDiag = (() => {
         const prev = vertices[(i - 1 + n) % n], V = vertices[i], next = vertices[(i + 1) % n];
         const dPrev = normalize([prev[0] - V[0], prev[1] - V[1]]);
         const dNext = normalize([next[0] - V[0], next[1] - V[1]]);
-        const p1 = addScaled(V, dPrev, arcRadius);
-        const p2 = addScaled(V, dNext, arcRadius);
-        const sweepFlag = crossSign(V, addScaled(V, dPrev, 1), addScaled(V, dNext, 1)) > 0 ? 0 : 1;
-        body += arcPath(p1, p2, arcRadius, angleDefs[i].deg > 180 ? 1 : 0, sweepFlag);
-        extendSvg(addScaled(V, [1, 0], arcRadius)); extendSvg(addScaled(V, [-1, 0], arcRadius));
-        extendSvg(addScaled(V, [0, 1], arcRadius)); extendSvg(addScaled(V, [0, -1], arcRadius));
+        const isRightAngle = Math.abs(angleDefs[i].deg - 90) < 0.5;
+        if (isRightAngle) {
+          // Standard convention: a small square bracket (2 sides
+          // perpendicular to the edges meeting here) instead of an arc.
+          const rs = 11;
+          const c1 = addScaled(V, dPrev, rs);
+          const c2 = addScaled(c1, dNext, rs);
+          const c3 = addScaled(V, dNext, rs);
+          const s1 = toSvg(c1), s2 = toSvg(c2), s3 = toSvg(c3);
+          body += `<path d="M ${s1[0].toFixed(1)} ${s1[1].toFixed(1)} L ${s2[0].toFixed(1)} ${s2[1].toFixed(1)} L ${s3[0].toFixed(1)} ${s3[1].toFixed(1)}" fill="none" stroke="#1a1a1a" stroke-width="1.5"/>`;
+          extendSvg(c2);
+        } else {
+          const p1 = addScaled(V, dPrev, arcRadius);
+          const p2 = addScaled(V, dNext, arcRadius);
+          const sweepFlag = crossSign(V, addScaled(V, dPrev, 1), addScaled(V, dNext, 1)) > 0 ? 0 : 1;
+          body += arcPath(p1, p2, arcRadius, angleDefs[i].deg > 180 ? 1 : 0, sweepFlag);
+          extendSvg(addScaled(V, [1, 0], arcRadius)); extendSvg(addScaled(V, [-1, 0], arcRadius));
+          extendSvg(addScaled(V, [0, 1], arcRadius)); extendSvg(addScaled(V, [0, -1], arcRadius));
+        }
         const inwardDir = bisectorDirection(prev, V, next);
         const isExtended = i === extendVertexIndex;
         const labelDir = isExtended ? inwardDir : [-inwardDir[0], -inwardDir[1]];
-        const labelR = isExtended ? arcRadius + 6 : labelRadius;
+        const labelR = isExtended ? arcRadius + 16 : labelRadius;
         const lp = addScaled(V, labelDir, labelR);
         body += textEl(lp, label, 'middle', fontSize);
         extend(...textBoundsBox(lp, 'middle', label, fontSize));
@@ -335,9 +385,9 @@ const PolygonAnglesDiag = (() => {
     }
 
     if (opts.promptText) {
-      const columnWidth = 150;
+      const columnWidth = 130;
       const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
-      const gap = 14;
+      const gap = 4;
       const blockHeight = lines.length * lineHeight;
       const cy = (by0 + by1) / 2;
       const startY = cy - blockHeight / 2 + promptFontSize * 0.8;

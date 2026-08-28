@@ -124,8 +124,14 @@ const RectilinearPerimeterDiag = (() => {
 
       body += label(W / 2, H + 20, params.width, 'middle');
       body += label(-12, H / 2, params.height, 'end');
-      body += label((v2[0] + v3[0]) / 2, NH - 10, params.notchW, 'middle');
-      body += label(v3[0] + 12, NH / 2, params.notchH, 'start');
+      // showNotchDims defaults to true (unchanged behaviour for every
+      // existing row) - set to 'false' when the notch's own dimensions
+      // are stated in the question text instead, so the diagram doesn't
+      // give away the very subtraction step the question is testing.
+      if (params.showNotchDims !== 'false') {
+        body += label((v2[0] + v3[0]) / 2, NH - 10, params.notchW, 'middle');
+        body += label(v3[0] - 12, NH / 2, params.notchH, 'end');
+      }
 
       if (params.showMissing === 'true') {
         const missingTop = wVal - nwVal, missingRight = hVal - nhVal;
@@ -219,9 +225,9 @@ const RectilinearPerimeterDiag = (() => {
     }
 
     if (opts.promptText) {
-      const columnWidth = 150;
+      const columnWidth = 130;
       const lines = wrapText(opts.promptText, columnWidth, promptFontSize);
-      const gap = 14;
+      const gap = 4;
       const blockHeight = lines.length * lineHeight;
       const cy = (by0 + by1) / 2;
       const startY = cy - blockHeight / 2 + promptFontSize * 0.8;
