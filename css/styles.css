@@ -1736,9 +1736,51 @@ sup {
   .card { padding: 18px; }
 }
 
+/* ---------- Mobile mode (<=700px) ----------
+   Same breakpoint SelectionEngine/Grid use in JS (see MOBILE_BREAKPOINT
+   in grid.js) to decide whether squares start unshuttered - keep the
+   two in sync if this number ever changes. On mobile: no "add
+   students" side in setup, the 9-square grid becomes one scrollable
+   column of full-width question cards, and the quiz header is reduced
+   to just the back button. */
 @media (max-width: 700px) {
-  .grid { grid-template-columns: 1fr; grid-template-rows: repeat(9, minmax(110px, 1fr)); }
-  .grid--four { grid-template-rows: repeat(4, minmax(110px, 1fr)); }
+
+  /* Setup page: quiz side only, full width - no student list. */
+  .setup-side--students,
+  .setup-divider {
+    display: none;
+  }
+  .setup-side--quiz {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  /* Grid view header: back button (and title) only. */
+  #quotesBtn,
+  #gridSizeBtn,
+  #browseBtn,
+  .timer-inline,
+  .grid-header-actions {
+    display: none;
+  }
+
+  /* One scrollable column instead of a fixed-height 3x3 (or 2x2) grid
+     that squeezes text to fit - each card takes the height its
+     content actually needs, and the page scrolls for the rest. */
+  #gridView {
+    height: auto;
+    min-height: 100vh;
+  }
+  .grid,
+  .grid--four {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    grid-auto-rows: auto;
+    overflow: visible;
+  }
+  .square {
+    min-height: 220px;
+  }
 }
 
 /* ---------- Quotes popup ---------- */
