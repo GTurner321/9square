@@ -851,14 +851,6 @@ button:focus-visible {
   gap: 8px;
 }
 
-.score-inline__label {
-  font-family: var(--font-body);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  color: var(--chalk-yellow-faded);
-}
-
 .score-inline__value {
   font-family: var(--font-mono);
   font-size: 1.3rem;
@@ -1637,6 +1629,33 @@ sup {
   opacity: 1;
 }
 
+/* Mobile-only "try the answer button" demo - the choices icon goes
+   green (and pulses, briefly) to draw the eye to it, while the three
+   answer buttons pulse in sync. See grid.js scheduleAnswerDemo. */
+.square__icons .icon--demo-active {
+  background: var(--success);
+  color: #fff;
+  opacity: 1;
+}
+
+.square__icons .icon--demo-pulsing {
+  animation: demo-pulse-btn 0.9s ease-in-out infinite;
+}
+
+@keyframes demo-pulse-btn {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.choice-btn--demo-pulse {
+  animation: demo-pulse-choice 0.9s ease-in-out infinite;
+}
+
+@keyframes demo-pulse-choice {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 122, 91, 0.45); }
+  50% { transform: scale(1.04); box-shadow: 0 0 0 5px rgba(76, 122, 91, 0); }
+}
+
 /* "Go back" button - only present in the DOM for ~5s after a refresh
    (see grid.js scheduleUndoExpiry), so it pops in to draw the eye
    rather than silently appearing, and needs no separate "leaving"
@@ -1787,6 +1806,9 @@ sup {
   .setup-side--quiz {
     padding-left: 16px;
     padding-right: 16px;
+  }
+  #setupFullscreenBtn {
+    display: none;
   }
 
   /* Grid view header: back button, title, and the score box only -

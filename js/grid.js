@@ -50,6 +50,97 @@ const Grid = (() => {
     updateScoreDisplay();
   }
 
+  // ---------------- Mobile: first-question "answer" demo ----------------
+  // 5s after a fresh Generate, square 0 auto-opens its choices panel to
+  // show a first-time user what the ☰ button does - pulsing for 3s,
+  // held (button still green, no pulse) for 2s, then reverting to
+  // plain question view. Any click anywhere in that square before it
+  // finishes cancels the pulse/green styling immediately, but the
+  // click itself is still handled normally afterwards (see
+  // onGridClick) - it doesn't get swallowed.
+  let demoTimeoutIds = [];
+  let demoSquareIndex = null;
+
+  function scheduleAnswerDemo() {
+    cancelAnswerDemo();
+    if (!isMobileView()) return;
+    const idx = 0;
+    const sq = squares[idx];
+    if (!sq || !(sq.question.wrong1 && sq.question.wrong2)) return;
+    demoSquareIndex = idx;
+    demoTimeoutIds.push(setTimeout(() => runAnswerDemo(idx), 5000));
+  }
+
+  function runAnswerDemo(idx) {
+    if (demoSquareIndex !== idx) return; // cancelled during the 5s wait
+    const state = squareStates[idx];
+    // Only steps in if the square is still exactly as generated - if
+    // the user already opened a panel, cleared it, refreshed it etc.
+    // (without that having been caught as a cancellation somehow),
+    // leave it alone rather than yanking their state around.
+    if (!state || state.cleared || state.activePanel) { demoSquareIndex = null; return; }
+
+    state.activePanel = 'choices';
+    state.demoPhase = 'pulsing';
+    rerenderSquare(idx);
+
+    demoTimeoutIds.push(setTimeout(() => {
+      if (demoSquareIndex !== idx) return;
+      const s = squareStates[idx];
+      if (!s) { demoSquareIndex = null; return; }
+      s.demoPhase = 'settled'; // button stays green, pulsing stops
+      rerenderSquare(idx);
+
+      demoTimeoutIds.push(setTimeout(() => {
+        if (demoSquareIndex !== idx) return;
+        const s2 = squareStates[idx];
+        demoSquareIndex = null;
+        if (s2) {
+          s2.demoPhase = null;
+          if (!s2.choiceResolved) s2.activePanel = null; // back to question view, button unclicked
+          rerenderSquare(idx);
+        }
+      }, 2000));
+    }, 3000));
+  }
+
+  /**
+   * Stops the demo's visual styling (pulse/green) the moment there's
+   * any real interaction with the demo square, whether that's during
+   * the initial 5s wait or mid-demo. Doesn't touch activePanel/
+   * choiceResolved - whatever the actual click does with those happens
+   * separately in onGridClick, right after this runs.
+   */
+  function cancelAnswerDemo() {
+    demoTimeoutIds.forEach(id => clearTimeout(id));
+    demoTimeoutIds = [];
+    if (demoSquareIndex === null) return;
+    const idx = demoSquareIndex;
+    const state = squareStates[idx];
+    const wasVisible = !!(state && state.demoPhase);
+    demoSquareIndex = null;
+    if (state) state.demoPhase = null;
+    if (wasVisible) rerenderSquare(idx);
+  }
+
+  // ---------------- Mobile: auto-clear after answering ----------------
+  // 3s after a square's choices resolve (correct first click, correct
+  // after a wrong guess, or two distinct wrong guesses), the square is
+  // auto-cleared - same end state as clicking its ✕ button - leaving
+  // the usual blank/restorable placeholder behind.
+  function scheduleAutoClear(index) {
+    if (!isMobileView()) return;
+    const state = squareStates[index];
+    if (!state) return;
+    setTimeout(() => {
+      const s = squareStates[index];
+      if (!s || s !== state) return; // this square's been refreshed since - abandon
+      if (!s.choiceResolved || s.cleared) return;
+      s.cleared = true;
+      rerenderSquare(index);
+    }, 3000);
+  }
+
   let gridMode = '9';        // '9' | '4'
   const CENTER_INDEX = 4;
   const CORNER_INDICES = [0, 2, 6, 8];
@@ -523,6 +614,7 @@ const Grid = (() => {
       studentRevealed: false,
       shuttered: !isMobileView(),
       shutterGradient: randomShutterGradient(),
+      demoPhase: null, // mobile-only "first question" answer-button demo - see scheduleAnswerDemo
       // Question/hint/explanation each remember their own zoom level
       // independently (switching between them doesn't reset the
       // others - going back to a previously-zoomed one picks up
@@ -574,6 +666,7 @@ const Grid = (() => {
       el.loadMoreBtn.textContent = '+9 more questions';
     }
     render();
+    scheduleAnswerDemo();
     // Disabled per request - startShutterPulse()/stopShutterPulse() are
     // left fully intact below in case this gets switched back on later,
     // this is just the one call site that turns it on.
@@ -794,7 +887,7 @@ const Grid = (() => {
         <div class="square__icons">
           ${showCalcIcon ? `<span class="icon icon--indicator" title="${isCalc ? 'Calculator allowed' : 'No calculator'}">${isCalc ? ICON_CALC : ICON_NO_CALC}</span>` : ''}
           <button class="icon" data-action="answer" title="Show answer" aria-pressed="${state.activePanel === 'answer'}">✓</button>
-          ${hasChoices ? `<button class="icon" data-action="choices" title="Show answer choices" aria-pressed="${state.activePanel === 'choices'}">☰</button>` : ''}
+          ${hasChoices ? `<button class="icon${state.demoPhase ? ' icon--demo-active' : ''}${state.demoPhase === 'pulsing' ? ' icon--demo-pulsing' : ''}" data-action="choices" title="Show answer choices" aria-pressed="${state.activePanel === 'choices'}">☰</button>` : ''}
           ${hasHint ? `<button class="icon" data-action="hint" title="Show hint" aria-pressed="${state.activePanel === 'hint'}">?</button>` : ''}
           ${hasExplain ? `<button class="icon" data-action="explain" title="Show explanation" aria-pressed="${state.activePanel === 'explain'}">i</button>` : ''}
           <button class="icon" data-action="refresh" title="Choose a different question">↻</button>
@@ -842,6 +935,8 @@ const Grid = (() => {
           cls += ' choice-btn--correct';
           mark = state.correctWasClicked ? ' ✓' : '';
         }
+
+        if (state.demoPhase === 'pulsing') cls += ' choice-btn--demo-pulse';
 
         return `<button class="${cls}" data-choice-index="${i}" ${disabled ? 'disabled' : ''}><span class="choice-btn__label">${renderMath(c.text)}${mark}</span></button>`;
       }).join('');
@@ -891,6 +986,12 @@ const Grid = (() => {
     const square = squares[index];
     if (!square) return;
     const state = squareStates[index];
+
+    // Any interaction with the demo square stops its pulse/green
+    // styling immediately - the click itself is still handled by
+    // whichever branch below matches it (toggling a panel, picking an
+    // answer, etc.), so this never swallows the click.
+    if (demoSquareIndex === index) cancelAnswerDemo();
 
     const restoreBtn = e.target.closest('[data-action="restore-square"]');
     if (restoreBtn) {
@@ -1011,6 +1112,7 @@ const Grid = (() => {
       state.choiceResolved = true;
       state.correctWasClicked = false;
       recordAttempt(false);
+      scheduleAutoClear(squareIndex);
       rerenderSquare(squareIndex);
       return;
     }
@@ -1046,6 +1148,7 @@ const Grid = (() => {
     state.choiceResolved = true;
     state.correctWasClicked = true;
     recordAttempt(firstTry);
+    scheduleAutoClear(squareIndex);
     Sound.playCorrect();
 
     // Both wrong options show red/cross immediately (un-fading either

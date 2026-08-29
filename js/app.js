@@ -73,6 +73,11 @@ const App = (() => {
   function initSetupTitleAnimation() {
     const titleEl = document.getElementById('setupTitleText');
     if (!titleEl) return; // not on this view
+    // Mobile just says "9 SQUARE" throughout - no cycling to "MATHS
+    // STARTER GRIDS" and back. Must match the breakpoint styles.css
+    // and grid.js use for mobile mode. titleEl's markup already
+    // defaults to "9 SQUARE", so skipping the schedule is enough.
+    if (window.matchMedia('(max-width: 700px)').matches) return;
     // Scoped to #setupView specifically - .board__title-squares also
     // exists in the grid view's header, which uses the exact same
     // class names.
