@@ -38,19 +38,32 @@ const Analytics = (() => {
     return !!(CONFIG.SUPABASE_URL && CONFIG.SUPABASE_ANON_KEY);
   }
 
+  // Uses the browser's CSPRNG rather than Math.random() - not because this
+  // id is used for anything sensitive (it's a throwaway per-tab
+  // correlation key for anonymous analytics rows, gone when the tab
+  // closes), but because automated scanners flag Math.random() wherever
+  // it produces an "id"-shaped value, regardless of what it's used for.
+  // crypto.getRandomValues is supported everywhere this site targets, so
+  // there's no need for a Math.random() fallback at all.
+  function generateId() {
+    if (crypto.randomUUID) return crypto.randomUUID();
+    const bytes = crypto.getRandomValues(new Uint8Array(16));
+    return Array.from(bytes, b => b.toString(16).padStart(2, '0')).join('');
+  }
+
   function getSessionId() {
     if (sessionId) return sessionId;
     try {
       let sid = sessionStorage.getItem('doNow9_sid');
       if (!sid) {
-        sid = (crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2));
+        sid = generateId();
         sessionStorage.setItem('doNow9_sid', sid);
       }
       sessionId = sid;
     } catch (e) {
       // Private-browsing modes etc. can block sessionStorage - fall back
       // to an in-memory id for the life of this page view only.
-      sessionId = String(Date.now()) + Math.random().toString(16).slice(2);
+      sessionId = generateId();
     }
     return sessionId;
   }
